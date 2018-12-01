@@ -1,0 +1,21 @@
+{
+  "name": "espn-fantasyfootball-api",
+  "version": "0.0.1",
+  "description": "A NodeJS API to connect to ESPN's fantasy football API",
+  "main": "index.js",
+  "author": {
+    "name" : "Mike Kreiser",
+    "email" : "mikepkreiser@gmail.com",
+    "url" : "http://mikekreiser.com/"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mkreiser/ESPN-FantasyFootball-API.git"
+  },
+  "bugs": { "url": "https://github.com/mkreiser/ESPN-FantasyFootball-API/issues" },
+  "homepage": "https://github.com/mkreiser/ESPN-FantasyFootball-API#readme",
+  "keywords": ["ESPN", "fantasy football", "api"]
+}
