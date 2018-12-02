@@ -83,9 +83,12 @@ class ApiModel {
   }
 
   /**
-   * TODO: error hanlding when route is undefined
+   * Makes a call to the passed route with the passed params.
    * @async
-   * @todo Write docs
+   * @throws {Error} If route is not passed
+   * @param  {string} options.route
+   * @param  {Object} options.params Params to pass on the GET call.
+   * @return {Promise}
    */
   static read({ route, params } = {}) {
     if (!route) {
@@ -96,9 +99,13 @@ class ApiModel {
   }
 
   /**
-   * TODO: error hanlding when route is undefined
+   * Makes a call to the passed route with the passed params. Defers actual GET call to
+   * `static read` Automatically includes the id of the instance in the params.
    * @async
-   * @todo Write docs
+   * @throws {Error} If route is not passed
+   * @param  {string} options.route
+   * @param  {Object} options.params Params to pass on the GET call.
+   * @return {Promise}
    */
   read({ route, params } = {}) {
     const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.id });
