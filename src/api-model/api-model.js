@@ -88,6 +88,10 @@ class ApiModel {
    * @todo Write docs
    */
   static read({ route, params } = {}) {
+    if (!route) {
+      throw new Error(`${this.displayName}: static read: cannot read without route`);
+    }
+
     return axios.get(route, params);
   }
 
