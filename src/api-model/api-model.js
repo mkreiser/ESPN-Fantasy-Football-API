@@ -51,4 +51,4 @@ class ApiModel {
   }
 }
 
-export default ApiModel
+export default ApiModel;
