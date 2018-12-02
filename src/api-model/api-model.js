@@ -108,12 +108,28 @@ class ApiModel {
    * @return {Promise}
    */
   read({ route, params } = {}) {
-    const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.id });
+    const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.getId() });
 
     return this.constructor.read({
       route,
       params: paramsWithId
     });
+  }
+
+  /**
+   * Gets the instance's id, using `static idName` to set the correct attribute.
+   * @return {number}
+   */
+  getId() {
+    return _.get(this, this.constructor.idName);
+  }
+
+  /**
+   * Gets the instance's id, using `static idName` to set the correct attribute.
+   * @param {number} id
+   */
+  setId(id) {
+    _.set(this, this.constructor.idName, id);
   }
 }
 

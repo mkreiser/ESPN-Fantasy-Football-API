@@ -14,6 +14,8 @@ class TestApiModel extends ApiModel {
     someValue: 'some_value',
     someNestedData: 'nested.item'
   };
+
+  static idName = 'testId';
 }
 
 describe('ApiModel', () => {
@@ -256,6 +258,27 @@ describe('ApiModel', () => {
         const params = { some: 'params' };
 
         expect(apiModel.read({ route, params })).toBe(promise);
+      });
+    });
+
+    describe('getId', () => {
+      test('returns the id defined at static idName', () => {
+        const id = 'some id';
+        const model = TestApiModel.buildFromLocal();
+        _.set(model, TestApiModel.idName, id);
+
+        expect(model.getId()).toBe(id);
+      });
+    });
+
+    describe('setId', () => {
+      test('returns the id defined at static idName', () => {
+        const id = 'some id';
+        const model = TestApiModel.buildFromLocal();
+        _.set(model, TestApiModel.idName, null);
+
+        model.setId(id);
+        expect(_.get(model, TestApiModel.idName)).toBe(id);
       });
     });
   });
