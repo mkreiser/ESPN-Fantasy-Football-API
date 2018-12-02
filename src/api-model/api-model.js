@@ -7,6 +7,13 @@ import _ from 'lodash';
  */
 class ApiModel {
   /**
+   * The class name. Minification will break `this.constructor.name`, so this allows for verbose
+   * printing even in minified code.
+   * @type {String}
+   */
+  static displayName = 'ApiModel';
+
+  /**
    * Denotes which attribute the ID of the model is defined on. This is typically the model name
    * appended by 'Id' (e.g. 'leagueId', 'teamId').
    * @type {String}
