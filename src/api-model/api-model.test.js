@@ -3,6 +3,13 @@ import _ from 'lodash';
 
 import ApiModel from './api-model.js';
 
+class TestApiModel extends ApiModel {
+  static responseMap = {
+    someValue: 'some_value',
+    someNestedData: 'nested.item'
+  };
+}
+
 describe('ApiModel', () => {
   let apiModel;
 
@@ -15,6 +22,48 @@ describe('ApiModel', () => {
   });
 
   describe('class methods', () => {
+    describe('buildFromServer', () => {
+      test('returns an instance of the class', () => {
+        const model = TestApiModel.buildFromServer();
+        expect(model).toBeInstanceOf(TestApiModel);
+      });
+
+      test('maps passed data to the instance keys', () => {
+        const value = 'some magical stuff'
+        const response = { 'some_value': value };
+
+        const model = TestApiModel.buildFromServer(response);
+        expect(model.someValue).toBe(value);
+      });
+
+      test('maps nested data', () => {
+        const value = 'some magical stuff'
+        const response = {
+          nested: {
+            item: value
+          }
+        };
+
+        const model = TestApiModel.buildFromServer(response);
+        expect(model.someNestedData).toBe(value);
+      });
+    });
+
+    describe('buildFromLocal', () => {
+      test('returns an instance of the class', () => {
+        const model = TestApiModel.buildFromLocal();
+        expect(model).toBeInstanceOf(TestApiModel);
+      });
+
+      test('maps passed data to the instance keys', () => {
+        const value = 'some magical stuff'
+        const data = { someValue: value };
+
+        const model = TestApiModel.buildFromLocal(data);
+        expect(model.someValue).toBe(value);
+      });
+    });
+
     describe('get cache', () => {
       describe('when _cache is not set', () => {
         beforeEach(() => {
