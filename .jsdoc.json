@@ -1,11 +1,14 @@
 {
-    "plugins": [],
-    "recurseDepth": 10,
+    "plugins": [
+      "plugins/markdown"
+    ],
     "source": {
-        "include": ["src"]
+      "include": ["src"]
     },
     "opts": {
-      "destination": "./docs/",
-      "recurse": true
+      "destination": "docs",
+      "readme": "README.md",
+      "recurse": true,
+      "template": "node_modules/@pixi/jsdoc-template"
     }
 }
