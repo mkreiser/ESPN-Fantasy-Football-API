@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Team attribute population from local object parses data correctly 1`] = `
+Team {
+  "abbreviation": "mk",
+  "divisionStanding": 2,
+  "firstName": "2 Gurleys",
+  "lastName": "One Cup",
+  "leagueStanding": 3,
+  "losses": 5,
+  "pointsAgainst": 1186.94,
+  "pointsFor": 1288.64,
+  "teamId": 9,
+  "ties": 0,
+  "waiverRank": 2,
+  "wins": 8,
+}
+`;
+
+exports[`Team attribute population from server response parses data correctly 1`] = `
+Team {
+  "abbreviation": "mk",
+  "divisionStanding": 2,
+  "firstName": "2 Gurleys",
+  "lastName": "One Cup",
+  "leagueStanding": 3,
+  "losses": 5,
+  "pointsAgainst": 1186.94,
+  "pointsFor": 1288.64,
+  "teamId": 9,
+  "ties": 0,
+  "waiverRank": 2,
+  "wins": 8,
+}
+`;
