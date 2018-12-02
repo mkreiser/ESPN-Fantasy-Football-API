@@ -13,8 +13,11 @@ class ApiModel {
    */
   static idName = 'id';
 
-  static _buildApiModel({ data, isDataFromServer }) {
-    const model = new this();
+  /**
+   * @private
+   */
+  static _buildApiModel({ data, constructorParams, isDataFromServer }) {
+    const model = new this(constructorParams);
 
     _.forEach(this.responseMap, (value, key) => {
       const item = _.get(data, isDataFromServer ? value : key);
@@ -28,22 +31,26 @@ class ApiModel {
    * Returns a new instance of the ApiModel populated with the passed data that came from ESPN,
    * mapping the attributes defined in the value of responseMap to the matching key. Use this method
    * when constructing ApiModels with responses.
-   * @param  {*} data Data originating from the server.
+   * @param  {object} data Data originating from the server.
+   * @param  {object} constructorParams Params to be passed to the instance's constructor. Useful
+   *                                    for passing parent data, such as `leagueId`.
    * @return {ApiModel} A new instance of the ApiModel populated with the passed data.
    */
-  static buildFromServer(data) {
-    return this._buildApiModel({ data, isDataFromServer: true });
+  static buildFromServer(data, constructorParams) {
+    return this._buildApiModel({ data, constructorParams, isDataFromServer: true });
   }
 
   /**
    * Returns a new instance of the ApiModel populated with the passed data that originated locally.
    * Passed data attributes are excepted to be matching the keys of the responseMap. Use this method
    * when constructing ApiModels with local data.
-   * @param  {*} data Data originating locally.
+   * @param  {object} data Data originating locally.
+   * @param  {object} constructorParams Params to be passed to the instance's constructor. Useful
+   *                                    for passing parent data, such as `leagueId`.
    * @return {ApiModel} A new instance of the ApiModel populated with the passed data.
    */
-  static buildFromLocal(data) {
-    return this._buildApiModel({ data, isDataFromServer: false });
+  static buildFromLocal(data, constructorParams) {
+    return this._buildApiModel({ data, constructorParams, isDataFromServer: false });
   }
 
   /**
