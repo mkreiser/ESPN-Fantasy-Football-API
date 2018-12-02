@@ -3,7 +3,8 @@
       "plugins/markdown"
     ],
     "source": {
-      "include": ["src"]
+      "include": ["src"],
+      "excludePattern": ".+\\.(test|stubs).js(x|doc)?$"
     },
     "opts": {
       "destination": "docs",
