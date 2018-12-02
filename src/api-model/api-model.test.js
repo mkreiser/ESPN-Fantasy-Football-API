@@ -4,6 +4,12 @@ import _ from 'lodash';
 import ApiModel from './api-model.js';
 
 class TestApiModel extends ApiModel {
+  constructor(options = {}) {
+    super(options);
+
+    this.constructorOption = options.constructorOption;
+  }
+
   static responseMap = {
     someValue: 'some_value',
     someNestedData: 'nested.item'
@@ -22,45 +28,118 @@ describe('ApiModel', () => {
   });
 
   describe('class methods', () => {
+    describe('_buildApiModel', () => {
+      let data;
+
+      beforeEach(() => {
+        data = {
+          some_value: 'some item',
+          nested: {
+            item: 'some nested item'
+          }
+        };
+      });
+
+      afterEach(() => {
+        data = null;
+      });
+
+      test('returns an instance of the class', () => {
+        const model = TestApiModel._buildApiModel({ data });
+        expect(model).toBeInstanceOf(TestApiModel);
+      });
+
+      test('passes constructorParams to instance constructor', () => {
+        const constructorParams = { constructorOption: 'some option' };
+
+        const model = TestApiModel._buildApiModel({ data, constructorParams });
+        expect(model.constructorOption).toBe(constructorParams.constructorOption);
+      });
+
+      test('does not map keys not defined in responseMap', () => {
+        data = { notInMap: 'some wack stuff' };
+
+        const model = TestApiModel._buildApiModel({ data });
+        expect(model.notInMap).toBeUndefined();
+      });
+
+      describe('when isDataFromServer is true', () => {
+        test('maps passed data onto the instance using responseMap', () => {
+          const model = TestApiModel._buildApiModel({ data, isDataFromServer: true });
+          expect(model.someValue).toBe(data.some_value);
+          expect(model.someNestedData).toBe(data.nested.item);
+        });
+
+        test('does not map data passed in the form of a local object', () => {
+          data = { someValue: 'some server data' };
+
+          const model = TestApiModel._buildApiModel({ data, isDataFromServer: true });
+          expect(model.someValue).toBeUndefined();
+          expect(model.some_value).toBeUndefined();
+        });
+      });
+
+      describe('when isDataFromServer is false', () => {
+        beforeEach(() => {
+          data = {
+            someValue: 'some value',
+            someNestedData: 'some nested data'
+          };
+        });
+
+        test('maps passed data onto the instance using responseMap', () => {
+          const model = TestApiModel._buildApiModel({ data, isDataFromServer: false });
+          expect(model.someValue).toBe(data.someValue);
+          expect(model.someNestedData).toBe(data.someNestedData);
+        });
+
+        test('does not map data passed in the form of a server response', () => {
+          data = { some_value: 'some server data' };
+
+          const model = TestApiModel._buildApiModel({ data, isDataFromServer: false });
+          expect(model.someValue).toBeUndefined();
+          expect(model.some_value).toBeUndefined();
+        });
+      });
+    });
+
     describe('buildFromServer', () => {
+      test('calls _buildApiModel with isDataFromServer true', () => {
+        jest.spyOn(TestApiModel, '_buildApiModel');
+        const data = { some: 'data' };
+        const constructorParams = { more: 'params' };
+
+        TestApiModel.buildFromServer(data, constructorParams);
+        expect(TestApiModel._buildApiModel).toBeCalledWith({
+          data,
+          constructorParams,
+          isDataFromServer: true
+        });
+      });
+
       test('returns an instance of the class', () => {
         const model = TestApiModel.buildFromServer();
         expect(model).toBeInstanceOf(TestApiModel);
       });
-
-      test('maps passed data to the instance keys', () => {
-        const value = 'some magical stuff';
-        const response = { some_value: value };
-
-        const model = TestApiModel.buildFromServer(response);
-        expect(model.someValue).toBe(value);
-      });
-
-      test('maps nested data', () => {
-        const value = 'some magical stuff';
-        const response = {
-          nested: {
-            item: value
-          }
-        };
-
-        const model = TestApiModel.buildFromServer(response);
-        expect(model.someNestedData).toBe(value);
-      });
     });
 
     describe('buildFromLocal', () => {
+      test('calls _buildApiModel with isDataFromServer false', () => {
+        jest.spyOn(TestApiModel, '_buildApiModel');
+        const data = { some: 'data' };
+        const constructorParams = { more: 'params' };
+
+        TestApiModel.buildFromLocal(data, constructorParams);
+        expect(TestApiModel._buildApiModel).toBeCalledWith({
+          data,
+          constructorParams,
+          isDataFromServer: false
+        });
+      });
+
       test('returns an instance of the class', () => {
         const model = TestApiModel.buildFromLocal();
         expect(model).toBeInstanceOf(TestApiModel);
-      });
-
-      test('maps passed data to the instance keys', () => {
-        const value = 'some magical stuff';
-        const data = { someValue: value };
-
-        const model = TestApiModel.buildFromLocal(data);
-        expect(model.someValue).toBe(value);
       });
     });
 
