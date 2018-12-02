@@ -4,9 +4,26 @@ import ApiModel from '../api-model/api-model.js';
  * Represents a fantasy football team in a League. To get team information, a request must be made
  * to the `leagueSettings` route. There is not a generic team route on the ESPN API. Teams should
  * be populate when you get a League, so additional request should be unnecessary.
- * @class
+ * @extends ApiModel
  */
 class Team extends ApiModel {
+  constructor(options = {}) {
+    super(options);
+
+    /**
+     * Id of the League to which the team belongs. Required to make reads on the Team instance.
+     * @type {number}
+     */
+    this.leagueId = options.leagueId;
+
+    /**
+     * Id of the season (i.e. the year) to which the team belongs. Required to make reads on the
+     * Team instance.
+     * @type {number}
+     */
+    this.seasonId = options.seasonId;
+  }
+
   /**
    * @typedef {object} TeamModel
    * @property {number} teamId
