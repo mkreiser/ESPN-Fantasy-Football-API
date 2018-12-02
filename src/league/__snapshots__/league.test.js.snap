@@ -1,0 +1,35 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`League attribute population from local object parses data correctly 1`] = `
+League {
+  "firstMatchupId": 1,
+  "firstWeekId": 1,
+  "lastMatchupId": 15,
+  "lastWeekId": 17,
+  "leagueId": 336358,
+  "name": "The Ocho",
+  "numPlayoffTeams": 4,
+  "numRegularSeasonMatchups": 13,
+  "numTeams": 8,
+  "playoffMatchupLength": 2,
+  "scoringDecimalPlaces": 2,
+  "seasonId": "2017",
+}
+`;
+
+exports[`League attribute population from server response parses data correctly 1`] = `
+League {
+  "firstMatchupId": 1,
+  "firstWeekId": 1,
+  "lastMatchupId": 15,
+  "lastWeekId": 17,
+  "leagueId": 336358,
+  "name": "The Ocho",
+  "numPlayoffTeams": 4,
+  "numRegularSeasonMatchups": 13,
+  "numTeams": 8,
+  "playoffMatchupLength": 2,
+  "scoringDecimalPlaces": 2,
+  "seasonId": "2017",
+}
+`;
