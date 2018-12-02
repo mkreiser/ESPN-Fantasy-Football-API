@@ -189,11 +189,10 @@ describe('ApiModel', () => {
 
     describe('read', () => {
       describe('when no parameters are passed', () => {
-        test('calls axios.get', () => {
-          jest.spyOn(axios, 'get').mockImplementation();
-
-          ApiModel.read();
-          expect(axios.get).toBeCalledWith(undefined, undefined);
+        test('throws error via static read', () => {
+          expect(() => ApiModel.read()).toThrowError(
+            `${ApiModel.displayName}: static read: cannot read without route`
+          );
         });
       });
 
@@ -226,14 +225,14 @@ describe('ApiModel', () => {
       });
 
       describe('when no parameters are passed', () => {
-        test('calls static read', () => {
-          apiModel.read();
-          expect(ApiModel.read).toBeCalledWith({
-            route: undefined,
-            params: {
-              id: undefined
-            }
-          });
+        beforeEach(() => {
+          ApiModel.read.mockRestore();
+        });
+
+        test('throws error via static read', () => {
+          expect(() => apiModel.read()).toThrowError(
+            `${ApiModel.displayName}: static read: cannot read without route`
+          );
         });
       });
 
