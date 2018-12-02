@@ -29,15 +29,15 @@ describe('ApiModel', () => {
       });
 
       test('maps passed data to the instance keys', () => {
-        const value = 'some magical stuff'
-        const response = { 'some_value': value };
+        const value = 'some magical stuff';
+        const response = { some_value: value };
 
         const model = TestApiModel.buildFromServer(response);
         expect(model.someValue).toBe(value);
       });
 
       test('maps nested data', () => {
-        const value = 'some magical stuff'
+        const value = 'some magical stuff';
         const response = {
           nested: {
             item: value
@@ -56,7 +56,7 @@ describe('ApiModel', () => {
       });
 
       test('maps passed data to the instance keys', () => {
-        const value = 'some magical stuff'
+        const value = 'some magical stuff';
         const data = { someValue: value };
 
         const model = TestApiModel.buildFromLocal(data);

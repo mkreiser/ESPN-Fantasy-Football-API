@@ -1,0 +1,11 @@
+{
+    "plugins": [],
+    "recurseDepth": 10,
+    "source": {
+        "include": ["src"]
+    },
+    "opts": {
+      "destination": "./docs/",
+      "recurse": true
+    }
+}

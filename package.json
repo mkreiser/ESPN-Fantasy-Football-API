@@ -9,9 +9,13 @@
     "url": "http://mikekreiser.com/"
   },
   "scripts": {
-    "build": "webpack",
+    "build": "npm run clean:dist && webpack",
+    "build:docs": "npm run clean:docs && jsdoc -c .jsdoc.json",
+    "clean": "npm run clean:dist && npm run clean:docs",
+    "clean:dist": "rm -rf dist",
+    "clean:docs": "rm -rf docs",
     "ci": "npm run lint && npm run test && npm run build",
-    "lint": "eslint index.js",
+    "lint": "eslint index.js src/**/*.js",
     "test": "jest --maxWorkers=2",
     "test:watch": "jest --watch --maxWorkers=2"
   },
@@ -33,6 +37,7 @@
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/preset-env": "^7.1.6",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
     "eslint": "^5.9.0",
@@ -41,10 +46,12 @@
     "eslint-plugin-jsx-a11y": "^6.1.2",
     "eslint-plugin-react": "^7.11.1",
     "jest": "^23.6.0",
+    "jsdoc": "^3.5.5",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   },
   "dependencies": {
-    "axios": "^0.18.0"
+    "axios": "^0.18.0",
+    "lodash": "^4.17.11"
   }
 }

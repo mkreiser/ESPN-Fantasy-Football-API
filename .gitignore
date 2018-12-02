@@ -9,6 +9,7 @@ yarn-error.log*
 
 # Coverage directory used by tools like istanbul
 coverage
+docs
 
 .npm
 node_modules/
