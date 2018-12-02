@@ -75,12 +75,20 @@ class ApiModel {
     this._cache = cache;
   }
 
-  // TODO: error hanlding when route is undefined
+  /**
+   * TODO: error hanlding when route is undefined
+   * @async
+   * @todo Write docs
+   */
   static read({ route, params } = {}) {
     return axios.get(route, params);
   }
 
-  // TODO: error hanlding when route is undefined
+  /**
+   * TODO: error hanlding when route is undefined
+   * @async
+   * @todo Write docs
+   */
   read({ route, params } = {}) {
     const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.id });
 
