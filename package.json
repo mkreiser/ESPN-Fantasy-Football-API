@@ -10,11 +10,12 @@
   },
   "scripts": {
     "build": "npm run clean:dist && webpack",
+    "build:all": "npm run build && npm run build:docs",
     "build:docs": "npm run clean:docs && jsdoc -c .jsdoc.json",
     "clean": "npm run clean:dist && npm run clean:docs",
     "clean:dist": "rm -rf dist",
     "clean:docs": "rm -rf docs",
-    "ci": "npm run lint && npm run test && npm run build",
+    "ci": "npm run lint && npm run test && npm run build:all",
     "lint": "eslint index.js src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest --maxWorkers=2",
