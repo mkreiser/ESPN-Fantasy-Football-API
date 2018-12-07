@@ -11,8 +11,11 @@
   },
   "rules": {
     "comma-dangle": ["error", "never"],
+    "no-multi-assign": "off",
     "no-underscore-dangle": "off",
     "no-unused-expressions": "off",
+    "one-var": "off",
+    "one-var-declaration-per-line": "off",
 
     "import/extensions": "off"
   }

@@ -21,16 +21,37 @@ class ApiModel {
   static idName = 'id';
 
   /**
+   * Returns the passed instance of the ApiModel populated with the passed data, mapping the
+   * attributes defined in the value of responseMap to the matching key.
    * @private
+   * @param  {object} options.data
+   * @param  {ApiModel} options.model The model to populate. This model will be mutated.
+   * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
+   *                                            data came locally (typically from another ApiModel).
+   * @return {ApiModel} The mutated ApiModel model.
    */
-  static _buildApiModel({ data, constructorParams, isDataFromServer }) {
-    const model = new this(constructorParams);
-
+  static _populateApiModel({ data, model, isDataFromServer }) {
     _.forEach(this.responseMap, (value, key) => {
       const item = _.get(data, isDataFromServer ? value : key);
       _.set(model, key, item);
     });
 
+    return model;
+  }
+
+  /**
+   * Returns a new instance of an ApiModel populated with passed data
+   * @private
+   * @param  {object} options.data
+   * @param  {object} options.constructorParams Params to be passed to the instance's constructor.
+   *                                            Useful for passing parent data, such as `leagueId`.
+   * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
+   *                                            data came locally (typically from another ApiModel).
+   * @return {ApiModel} The mutated ApiModel model.
+   */
+  static _buildNewApiModel({ data, constructorParams, isDataFromServer }) {
+    const model = new this(constructorParams);
+    this._populateApiModel({ data, model, isDataFromServer });
     return model;
   }
 
@@ -44,7 +65,7 @@ class ApiModel {
    * @return {ApiModel} A new instance of the ApiModel populated with the passed data.
    */
   static buildFromServer(data, constructorParams) {
-    return this._buildApiModel({ data, constructorParams, isDataFromServer: true });
+    return this._buildNewApiModel({ data, constructorParams, isDataFromServer: true });
   }
 
   /**
@@ -57,7 +78,7 @@ class ApiModel {
    * @return {ApiModel} A new instance of the ApiModel populated with the passed data.
    */
   static buildFromLocal(data, constructorParams) {
-    return this._buildApiModel({ data, constructorParams, isDataFromServer: false });
+    return this._buildNewApiModel({ data, constructorParams, isDataFromServer: false });
   }
 
   /**
@@ -90,29 +111,39 @@ class ApiModel {
    * @param  {Object} options.params Params to pass on the GET call.
    * @return {Promise}
    */
-  static read({ route, params } = {}) {
+  static read({ route, params } = { route: this.constructor.route }) {
     if (!route) {
       throw new Error(`${this.displayName}: static read: cannot read without route`);
     }
 
-    return axios.get(route, params);
+    // eslint-disable-next-line no-console
+    return axios.get(route, { params }).catch(() => console.warn('read errored'));
   }
 
   /**
    * Makes a call to the passed route with the passed params. Defers actual GET call to
-   * `static read` Automatically includes the id of the instance in the params.
+   * `static read` Automatically includes the id of the instance in the params. On successful read,
+   * populates the instance with the new response data.
    * @async
    * @throws {Error} If route is not passed
    * @param  {string} options.route
    * @param  {Object} options.params Params to pass on the GET call.
    * @return {Promise}
    */
-  read({ route, params } = {}) {
+  read({ route, params } = { route: this.constructor.route }) {
     const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.getId() });
 
     return this.constructor.read({
       route,
       params: paramsWithId
+    }).then((response) => {
+      this.constructor._populateApiModel({
+        data: response.data,
+        model: this,
+        isDataFromServer: true
+      });
+
+      return response; // Allows promise chaining to work with response.
     });
   }
 
