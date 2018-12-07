@@ -15,6 +15,16 @@
 
 `dist/index-node-dev.js` - Development file built for node environments
 
+## Sample Usage
+```javascript
+// Loads a League in a Node console
+const espn = require('./dist/index-node-dev.js');
+const League = espn.League;
+const l = League.buildFromLocal({ leagueId: 336358, seasonId: 2018 });
+l
+l.read().then(() => console.log(l));
+```
+
 ## Scripts
 
 | Script     | Description                                                             | Options |
