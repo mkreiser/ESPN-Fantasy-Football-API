@@ -69,6 +69,14 @@ class Team extends ApiModel {
   static idName = 'teamId';
 
   static displayName = 'Team';
+
+  static read({ route, params } = { route: this.constructor.route }) {
+    if (!params.leagueId) {
+      throw new Error(`${this.displayName}: static read: cannot read without leagueId param`);
+    }
+
+    super.read({ route, params });
+  }
 }
 
 export default Team;
