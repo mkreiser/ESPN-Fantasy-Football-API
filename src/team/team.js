@@ -67,6 +67,8 @@ class Team extends ApiModel {
   };
 
   static idName = 'teamId';
+
+  static displayName = 'Team';
 }
 
 export default Team;
