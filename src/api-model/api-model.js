@@ -60,6 +60,11 @@ class ApiModel {
      *
      * @example
      * static responseMap = {
+     *   teamId: 'teamId',
+     *   team: {
+     *     key: 'team_on_response',
+     *     ApiModel: true
+     *   },
      *   teams: { // ResponseMapValueObject
      *     key: 'teams_on_response',
      *     ApiModel: Team,
