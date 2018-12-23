@@ -1,11 +1,20 @@
 import axios from 'axios';
 import _ from 'lodash';
+import q from 'q';
 
 /**
  * The base class for all models.
  * @class
  */
 class ApiModel {
+  constructor(options = {}) {
+    this.constructor._populateApiModel({
+      data: options,
+      model: this,
+      isDataFromServer: false
+    });
+  }
+
   /**
    * The class name. Minification will break `this.constructor.name`, so this allows for verbose
    * printing even in minified code.
