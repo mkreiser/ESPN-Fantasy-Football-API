@@ -111,7 +111,7 @@ class ApiModel {
   }
 
   /**
-   * Returns a new instance of an ApiModel populated with passed data
+   * Returns a new instance of an ApiModel populated with passed data.
    * @private
    * @param  {object} options.data
    * @param  {object} options.constructorParams Params to be passed to the instance's constructor.
@@ -182,11 +182,17 @@ class ApiModel {
   }
 
   /**
-   * Makes a call to the passed route with the passed params.
+   * Makes a call to the passed route with the passed params. If reload is true, then any matching
+   * cached model is ignored and overridden on successful read. If reload is false and a matching
+   * model is found in the cache, the cached model is returned in an immediately resolving promise.
+   * If reload is false but no cached model is found, the request will be made to load the model for
+   * the first time.
    * @async
    * @throws {Error} If route is not passed
-   * @param  {string} options.route
-   * @param  {Object} options.params Params to pass on the GET call.
+   * @param  {ApiModel} options.model The model to populate rather than creating a new instance.
+   * @param  {string} options.route   The route on the API to call.
+   * @param  {Object} options.params  Params to pass on the GET call.
+   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
   static read(
@@ -216,8 +222,9 @@ class ApiModel {
    * populates the instance with the new response data.
    * @async
    * @throws {Error} If route is not passed
-   * @param  {string} options.route
-   * @param  {Object} options.params Params to pass on the GET call.
+   * @param  {string} options.route   The route on the API to call.
+   * @param  {Object} options.params  Params to pass on the GET call.
+   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
   read({
