@@ -57,7 +57,12 @@ class ApiModel {
      * @property {ApiModel} ApiModel The ApiModel to create with the response data.
      * @property {boolean} isArray Whether or not the response data is an array. Useful for
      *                             attributes such as "teams".
-     *
+     * @property {function} manualParse A function to manually apply logic to the response. This
+     *                                  function must return its result to be attached to the
+     *                                   populated ApiModel. This function should return instances
+     *                                   of the ApiModel specified on the same object. The
+     *                                   arguements to this function are: (data at the key),
+     *                                   (the whole response), (the model being populated).
      * @example
      * static responseMap = {
      *   teamId: 'teamId',
@@ -65,10 +70,15 @@ class ApiModel {
      *     key: 'team_on_response',
      *     ApiModel: true
      *   },
-     *   teams: { // ResponseMapValueObject
+     *   teams: {
      *     key: 'teams_on_response',
      *     ApiModel: Team,
      *     isArray: true
+     *   },
+     *   manualTeams: {
+     *     key: 'manual_teams_on_response',
+     *     ApiModel: Team,
+     *     manualParse: (keyData, allData, populatingModel) => Team.buildFromServer(keyData)
      *   }
      * };
      *
@@ -88,11 +98,15 @@ class ApiModel {
           );
         }
 
-        const ValueApiModelClass = value.ApiModel;
         const responseData = _.get(data, value.key);
+        if (_.isFunction(value.manualParse)) {
+          item = value.manualParse(responseData, data, model);
+        } else {
+          const ValueApiModelClass = value.ApiModel;
 
-        const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
-        item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+          const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
+          item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+        }
       } else {
         throw new Error(
           `${this.displayName}: _populateApiModel: Did not recognize responseMap value type for ` +

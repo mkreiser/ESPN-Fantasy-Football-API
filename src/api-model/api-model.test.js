@@ -63,6 +63,11 @@ class TestApiModel extends ApiModel {
       key: 'map_models',
       ApiModel: MappingTestApiModel,
       isArray: true
+    },
+    someManualModel: {
+      key: 'manual',
+      ApiModel: MappingTestApiModel,
+      manualParse: jest.fn()
     }
   };
 
@@ -223,41 +228,10 @@ describe('ApiModel', () => {
             });
 
             describe('when the object defines key and ApiModel', () => {
-              describe('when the object specifies isArray: true', () => {
-                test('maps the data to instances of the ApiModel defined on the object', () => {
+              describe('when the object defines a manualParse function', () => {
+                test('calls the manualParse function', () => {
                   data = {
-                    map_models: [{
-                      mapping_id: 1,
-                      some_value: 'works recursively too'
-                    }, {
-                      mapping_id: 2,
-                      nested: {
-                        item: 'also works recursively'
-                      }
-                    }]
-                  };
-
-                  const returnedModel = TestApiModel._populateApiModel({
-                    data, model, isDataFromServer: true
-                  });
-
-                  expect.assertions(2 * 4);
-                  _.forEach(returnedModel.someModels, (populatedModel, index) => {
-                    expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
-
-                    expect(populatedModel.mappingId).toBe(data.map_models[index].mapping_id);
-                    expect(populatedModel.someValue).toBe(data.map_models[index].some_value);
-                    expect(populatedModel.someNestedData).toBe(
-                      _.get(data.map_models[index], 'nested.item')
-                    );
-                  });
-                });
-              });
-
-              describe('when the object specifies isArray: false', () => {
-                test('maps the data to an instance of the ApiModel defined on the object', () => {
-                  data = {
-                    map_model: {
+                    manual: {
                       mapping_id: 1,
                       some_value: 'works recursively too',
                       nested: {
@@ -266,18 +240,91 @@ describe('ApiModel', () => {
                     }
                   };
 
+                  TestApiModel._populateApiModel({
+                    data, model, isDataFromServer: true
+                  });
+                  expect(TestApiModel.responseMap.someManualModel.manualParse).toBeCalledWith(
+                    data.manual, data, model
+                  );
+                });
+
+                test('uses the return of the manualParse function', () => {
+                  data = {
+                    manual: {
+                      mapping_id: 1,
+                      some_value: 'works recursively too',
+                      nested: {
+                        item: 'also works recursively'
+                      }
+                    }
+                  };
+                  const returnData = {};
+                  TestApiModel.responseMap.someManualModel.manualParse.mockReturnValue(returnData);
+
                   const returnedModel = TestApiModel._populateApiModel({
                     data, model, isDataFromServer: true
                   });
+                  expect(returnedModel.someManualModel).toBe(returnData);
+                });
+              });
 
-                  const populatedModel = returnedModel.someModel;
-                  expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
+              describe('when the object does not define a manualParse function', () => {
+                describe('when the object specifies isArray: true', () => {
+                  test('maps the data to instances of the ApiModel defined on the object', () => {
+                    data = {
+                      map_models: [{
+                        mapping_id: 1,
+                        some_value: 'works recursively too'
+                      }, {
+                        mapping_id: 2,
+                        nested: {
+                          item: 'also works recursively'
+                        }
+                      }]
+                    };
 
-                  expect(populatedModel.mappingId).toBe(data.map_model.mapping_id);
-                  expect(populatedModel.someValue).toBe(data.map_model.some_value);
-                  expect(populatedModel.someNestedData).toBe(
-                    _.get(data.map_model, 'nested.item')
-                  );
+                    const returnedModel = TestApiModel._populateApiModel({
+                      data, model, isDataFromServer: true
+                    });
+
+                    expect.assertions(2 * 4);
+                    _.forEach(returnedModel.someModels, (populatedModel, index) => {
+                      expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
+
+                      expect(populatedModel.mappingId).toBe(data.map_models[index].mapping_id);
+                      expect(populatedModel.someValue).toBe(data.map_models[index].some_value);
+                      expect(populatedModel.someNestedData).toBe(
+                        _.get(data.map_models[index], 'nested.item')
+                      );
+                    });
+                  });
+                });
+
+                describe('when the object specifies isArray: false', () => {
+                  test('maps the data to an instance of the ApiModel defined on the object', () => {
+                    data = {
+                      map_model: {
+                        mapping_id: 1,
+                        some_value: 'works recursively too',
+                        nested: {
+                          item: 'also works recursively'
+                        }
+                      }
+                    };
+
+                    const returnedModel = TestApiModel._populateApiModel({
+                      data, model, isDataFromServer: true
+                    });
+
+                    const populatedModel = returnedModel.someModel;
+                    expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
+
+                    expect(populatedModel.mappingId).toBe(data.map_model.mapping_id);
+                    expect(populatedModel.someValue).toBe(data.map_model.some_value);
+                    expect(populatedModel.someNestedData).toBe(
+                      _.get(data.map_model, 'nested.item')
+                    );
+                  });
                 });
               });
             });
@@ -361,49 +408,66 @@ describe('ApiModel', () => {
             });
 
             describe('when the object defines key and ApiModel', () => {
-              describe('when the object specifies isArray: true', () => {
+              describe('when the object defines a manualParse function', () => {
                 test('maps the data attribute at the map key, ignoring the map value', () => {
-                  const array = [
-                    new MappingTestApiModel({
-                      mapping_id: 1,
-                      some_value: 'works recursively too'
-                    }),
-                    new MappingTestApiModel({
-                      mapping_id: 2,
-                      nested: {
-                        item: 'also works recursively'
-                      }
-                    })
-                  ];
-                  data = {
-                    someModels: array
-                  };
+                  const someManualModel = new MappingTestApiModel({
+                    mapping_id: 1,
+                    some_value: 'works recursively too'
+                  });
+
+                  data = { someManualModel };
 
                   const returnedModel = TestApiModel._populateApiModel({
                     data, model, isDataFromServer: false
                   });
-
-                  expect(returnedModel.someModels).toBe(array);
+                  expect(returnedModel.someManualModel).toBe(someManualModel);
                 });
               });
 
-              describe('when the object specifies isArray: false', () => {
-                test('maps the data to an instance of the ApiModel defined on the object', () => {
-                  data = {
-                    someModel: new MappingTestApiModel({
-                      mapping_id: 1,
-                      some_value: 'works recursively too',
-                      nested: {
-                        item: 'also works recursively'
-                      }
-                    })
-                  };
+              describe('when the object does not define a manualParse function', () => {
+                describe('when the object specifies isArray: true', () => {
+                  test('maps the data attribute at the map key, ignoring the map value', () => {
+                    const array = [
+                      new MappingTestApiModel({
+                        mapping_id: 1,
+                        some_value: 'works recursively too'
+                      }),
+                      new MappingTestApiModel({
+                        mapping_id: 2,
+                        nested: {
+                          item: 'also works recursively'
+                        }
+                      })
+                    ];
+                    data = {
+                      someModels: array
+                    };
 
-                  const returnedModel = TestApiModel._populateApiModel({
-                    data, model, isDataFromServer: false
+                    const returnedModel = TestApiModel._populateApiModel({
+                      data, model, isDataFromServer: false
+                    });
+                    expect(returnedModel.someModels).toBe(array);
                   });
+                });
 
-                  expect(returnedModel.someModel).toBe(data.someModel);
+                describe('when the object specifies isArray: false', () => {
+                  test('maps the data to an instance of the ApiModel defined on the object', () => {
+                    data = {
+                      someModel: new MappingTestApiModel({
+                        mapping_id: 1,
+                        some_value: 'works recursively too',
+                        nested: {
+                          item: 'also works recursively'
+                        }
+                      })
+                    };
+
+                    const returnedModel = TestApiModel._populateApiModel({
+                      data, model, isDataFromServer: false
+                    });
+
+                    expect(returnedModel.someModel).toBe(data.someModel);
+                  });
                 });
               });
             });
