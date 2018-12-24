@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import ApiModel from '../api-model/api-model.js';
 
 /**
@@ -70,12 +72,32 @@ class Team extends ApiModel {
 
   static displayName = 'Team';
 
-  static read({ route, params } = { route: this.constructor.route }) {
-    if (!params.leagueId) {
+  static read(
+    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+  ) {
+    if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId param`);
     }
 
-    super.read({ route, params });
+    return super.read({ model, route, params, reload });
+  }
+
+  read({
+    route = this.constructor.route, params, reload = true
+  } = {
+    route: this.constructor.route, reload: true
+  }) {
+    const paramsWithId = _.assign({}, params, {
+      leagueId: this.leagueId,
+      seasonId: this.seasonId
+    });
+
+    return super.read({
+      route,
+      model: this,
+      params: paramsWithId,
+      reload
+    });
   }
 }
 
