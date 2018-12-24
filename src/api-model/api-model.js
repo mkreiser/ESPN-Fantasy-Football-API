@@ -6,6 +6,14 @@ import _ from 'lodash';
  * @class
  */
 class ApiModel {
+  constructor(options = {}) {
+    this.constructor._populateApiModel({
+      data: options,
+      model: this,
+      isDataFromServer: false
+    });
+  }
+
   /**
    * The class name. Minification will break `this.constructor.name`, so this allows for verbose
    * printing even in minified code.
@@ -31,10 +39,73 @@ class ApiModel {
    * @return {ApiModel} The mutated ApiModel model.
    */
   static _populateApiModel({ data, model, isDataFromServer }) {
+    if (!model) {
+      throw new Error(`${this.displayName}: _populateApiModel: Did not receive model to populate`);
+    } else if (_.isEmpty(data)) {
+      return model;
+    }
+
+    /**
+     * @typedef {object} ResponseMapValueObject
+     *
+     * The `responseMap` can have two values: a string or a ResponseMapValueObject. When string, the
+     * data found on that response is directly mapped to the ApiModel without mutation. When
+     * ResponseMapValueObject, the data at the `key` will be used to create ApiModel(s) that are
+     * then assigned onto the parent ApiModel as an attribute at the key of the `responseMap`.
+     *
+     * @property {string} key The key on the response data where the data can be found.
+     * @property {ApiModel} ApiModel The ApiModel to create with the response data.
+     * @property {boolean} isArray Whether or not the response data is an array. Useful for
+     *                             attributes such as "teams".
+     *
+     * @example
+     * static responseMap = {
+     *   teamId: 'teamId',
+     *   team: {
+     *     key: 'team_on_response',
+     *     ApiModel: true
+     *   },
+     *   teams: { // ResponseMapValueObject
+     *     key: 'teams_on_response',
+     *     ApiModel: Team,
+     *     isArray: true
+     *   }
+     * };
+     *
+     */
     _.forEach(this.responseMap, (value, key) => {
-      const item = _.get(data, isDataFromServer ? value : key);
+      let item;
+
+      if (!isDataFromServer) {
+        item = _.get(data, key);
+      } else if (_.isString(value)) {
+        item = _.get(data, value);
+      } else if (_.isPlainObject(value)) {
+        if (!(value.key && value.ApiModel)) {
+          throw new Error(
+            `${this.displayName}: _populateApiModel: Invalid responseMap object. Object must ` +
+            'define key and ApiModel. See docs for typedef of ResponseMapValueObject.'
+          );
+        }
+
+        const ValueApiModelClass = value.ApiModel;
+        const responseData = _.get(data, value.key);
+
+        const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
+        item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+      } else {
+        throw new Error(
+          `${this.displayName}: _populateApiModel: Did not recognize responseMap value type for ` +
+          `key ${key}`
+        );
+      }
+
       _.set(model, key, item);
     });
+
+    if (isDataFromServer) {
+      this.cache[model.getId()] = model;
+    }
 
     return model;
   }
@@ -104,6 +175,13 @@ class ApiModel {
   }
 
   /**
+   * Resets cache to an empty object
+   */
+  static clearCache() {
+    this._cache = {};
+  }
+
+  /**
    * Makes a call to the passed route with the passed params.
    * @async
    * @throws {Error} If route is not passed
@@ -111,13 +189,25 @@ class ApiModel {
    * @param  {Object} options.params Params to pass on the GET call.
    * @return {Promise}
    */
-  static read({ route, params } = { route: this.constructor.route }) {
+  static read(
+    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+  ) {
     if (!route) {
       throw new Error(`${this.displayName}: static read: cannot read without route`);
     }
 
-    // eslint-disable-next-line no-console
-    return axios.get(route, { params }).catch(() => console.warn('read errored'));
+    const id = _.get(params, this.idName) || _.get(model, this.idName);
+    if (id && !reload && _.get(this.cache, id)) {
+      return Promise.resolve(_.get(this.cache, id));
+    }
+
+    return axios.get(route, { params }).then((response) => {
+      return model ? this._populateApiModel({
+        data: response.data,
+        model,
+        isDataFromServer: true
+      }) : this.buildFromServer(response.data);
+    });
   }
 
   /**
@@ -130,20 +220,24 @@ class ApiModel {
    * @param  {Object} options.params Params to pass on the GET call.
    * @return {Promise}
    */
-  read({ route, params } = { route: this.constructor.route }) {
-    const paramsWithId = _.assign({}, params, { [this.constructor.idName]: this.getId() });
+  read({
+    route = this.constructor.route, params, reload = true
+  } = {
+    route: this.constructor.route, reload: true
+  }) {
+    const id = this.getId();
+    if (!id) {
+      throw new Error(
+        `${this.constructor.displayName}: static read: cannot read on instance without an id`
+      );
+    }
 
+    const paramsWithId = _.assign({}, params, { [this.constructor.idName]: id });
     return this.constructor.read({
       route,
-      params: paramsWithId
-    }).then((response) => {
-      this.constructor._populateApiModel({
-        data: response.data,
-        model: this,
-        isDataFromServer: true
-      });
-
-      return response; // Allows promise chaining to work with response.
+      model: this,
+      params: paramsWithId,
+      reload
     });
   }
 

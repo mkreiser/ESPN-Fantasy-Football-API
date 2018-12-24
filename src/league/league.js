@@ -63,6 +63,8 @@ class League extends ApiModel {
     lastWeekId: 'leaguesettings.finalScoringPeriodId'
   };
 
+  static displayName = 'League';
+
   static idName = 'leagueId';
 
   static route = 'leagueSettings';
