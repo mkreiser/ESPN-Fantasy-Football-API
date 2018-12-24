@@ -85,6 +85,7 @@ describe('Team', () => {
         team.leagueId = leagueId;
         team.seasonId = seasonId;
 
+        // Super lazy way to test
         jest.spyOn(ApiModel.prototype, 'read').mockImplementation();
 
         team.read({ params: { some: 'params' } });
@@ -111,6 +112,7 @@ describe('Team', () => {
         team.leagueId = leagueId;
         team.seasonId = seasonId;
 
+        // Super lazy way to test
         jest.spyOn(ApiModel.prototype, 'read').mockImplementation();
 
         team.read();

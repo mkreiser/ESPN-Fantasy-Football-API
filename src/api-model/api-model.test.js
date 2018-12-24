@@ -1050,18 +1050,45 @@ describe('ApiModel', () => {
         });
       });
 
+      describe('when route is not passed', () => {
+        test('calls static read with idName merged into params', () => {
+          jest.spyOn(TestApiModel, 'read');
+          const id = 'id';
+          apiModel.testId = id;
+
+          const params = { some: 'params' };
+          const expectedParams = _.assign({}, params, { testId: id });
+
+          apiModel.read({ params });
+          expect(TestApiModel.read).toBeCalledWith({
+            route: TestApiModel.route, model: apiModel, params: expectedParams, reload: true
+          });
+        });
+
+        test('returns result of static read', async () => {
+          const route = 'some-route';
+          const params = { some: 'params' };
+          apiModel.testId = 42;
+
+          deferred.resolve({});
+
+          expect.assertions(1);
+          const returnedResult = await apiModel.read({ route, params });
+          expect(returnedResult).toBeInstanceOf(TestApiModel);
+        });
+      });
+
       test('calls static read with idName merged into params', () => {
         jest.spyOn(TestApiModel, 'read');
         const id = 'id';
         apiModel.testId = id;
 
-        const route = 'some-route';
         const params = { some: 'params' };
         const expectedParams = _.assign({}, params, { testId: id });
 
-        apiModel.read({ route, params });
+        apiModel.read({ params });
         expect(TestApiModel.read).toBeCalledWith({
-          route, model: apiModel, params: expectedParams, reload: true
+          route: TestApiModel.route, model: apiModel, params: expectedParams, reload: true
         });
       });
 
