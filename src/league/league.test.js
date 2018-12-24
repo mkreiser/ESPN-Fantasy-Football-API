@@ -1,4 +1,7 @@
+import _ from 'lodash';
+
 import ApiModel from '../api-model/api-model.js';
+import Team from '../team/team.js';
 import League from './league.js';
 
 import { localObject, serverResponse } from './league.stubs.js';
@@ -35,6 +38,113 @@ describe('League', () => {
 
     test('parses data correctly', () => {
       expect(league).toMatchSnapshot();
+    });
+  });
+
+  describe('responseMap', () => {
+    describe('teams', () => {
+      describe('manualParse', () => {
+        test('maps teams data to Team instances', () => {
+          const responseData = {
+            1: {
+              teamId: 1
+            },
+            2: {
+              teamId: 2
+            },
+            3: {
+              teamId: 3
+            }
+          };
+
+          const returnedTeams = League.responseMap.teams.manualParse(responseData);
+
+          expect.assertions(1 * 3);
+          _.forEach(returnedTeams, (team) => {
+            expect(team).toBeInstanceOf(Team);
+          });
+        });
+
+        describe('when leagueId is passed on the response', () => {
+          test('passes leagueId as a number', () => {
+            const leagueId = '123133';
+            const responseData = {
+              1: {
+                teamId: 1
+              }
+            };
+            const response = {
+              leaguesettings: { id: leagueId }
+            };
+
+            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
+            expect.assertions(1 * 1);
+            _.forEach(returnedTeams, (team) => {
+              expect(team.leagueId).toBe(_.toNumber(leagueId));
+            });
+          });
+        });
+
+        describe('when leagueId is not passed on the response', () => {
+          test('passes undefined for leagueId', () => {
+            const leagueId = undefined;
+            const responseData = {
+              1: {
+                teamId: 1
+              }
+            };
+            const response = {
+              leaguesettings: { id: leagueId }
+            };
+
+            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
+            expect.assertions(1 * 1);
+            _.forEach(returnedTeams, (team) => {
+              expect(team.leagueId).toBeUndefined();
+            });
+          });
+        });
+
+        describe('when seasonId is passed on the response', () => {
+          test('passes seasonId as a number', () => {
+            const seasonId = '123133';
+            const responseData = {
+              1: {
+                teamId: 1
+              }
+            };
+            const response = {
+              metadata: { seasonId }
+            };
+
+            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
+            expect.assertions(1 * 1);
+            _.forEach(returnedTeams, (team) => {
+              expect(team.seasonId).toBe(_.toNumber(seasonId));
+            });
+          });
+        });
+
+        describe('when seasonId is not passed on the response', () => {
+          test('passes seasonId as a number', () => {
+            const seasonId = undefined;
+            const responseData = {
+              1: {
+                teamId: 1
+              }
+            };
+            const response = {
+              metadata: { seasonId }
+            };
+
+            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
+            expect.assertions(1 * 1);
+            _.forEach(returnedTeams, (team) => {
+              expect(team.seasonId).toBeUndefined();
+            });
+          });
+        });
+      });
     });
   });
 

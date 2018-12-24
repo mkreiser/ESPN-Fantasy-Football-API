@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import ApiModel from '../api-model/api-model.js';
+import Team from '../team/team.js';
 
 /**
  * Represents a fantasy football league. Due to ESPN's API routing, most information comes from the
@@ -23,6 +24,7 @@ class League extends ApiModel {
    * @property {number} leagueId
    * @property {string} seasonId The season (year) of the league data.
    * @property {string} name The league's name.
+   * @property {Team[]} teams The league's teams.
    * @property {number} numTeams The number of teams in the league.
    * @property {number} numPlayoffTeams The number of teams that make the playoffs.
    * @property {number} scoringDecimalPlaces The number of decimals used in scoring.
@@ -51,7 +53,19 @@ class League extends ApiModel {
     seasonId: 'metadata.seasonId',
     name: 'leaguesettings.name',
     // divisions: 'divisions' TODO: Division class?
-    // teams: 'teams' TODO: Add support for defining models on map
+    teams: {
+      key: 'leaguesettings.teams',
+      ApiModel: Team,
+      manualParse: (responseData, response) => _.map(responseData, (team) => {
+        const leagueId = _.get(response, 'leaguesettings.id');
+        const seasonId = _.get(response, 'metadata.seasonId');
+
+        return Team.buildFromServer(team, {
+          leagueId: leagueId ? _.toNumber(leagueId) : undefined,
+          seasonId: seasonId ? _.toNumber(seasonId) : undefined
+        });
+      })
+    },
 
     numTeams: 'leaguesettings.size',
     numPlayoffTeams: 'leaguesettings.playoffTeamCount',
