@@ -195,6 +195,10 @@ class ApiModel {
     this._cache = {};
   }
 
+  static get(id) {
+    return _.get(this.cache, id);
+  }
+
   /**
    * Makes a call to the passed route with the passed params. If reload is true, then any matching
    * cached model is ignored and overridden on successful read. If reload is false and a matching

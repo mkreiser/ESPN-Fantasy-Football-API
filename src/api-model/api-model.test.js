@@ -635,6 +635,35 @@ describe('ApiModel', () => {
       });
     });
 
+    describe('get', () => {
+      describe('when there is a model with a matching id', () => {
+        test('returns the model', () => {
+          const id = 12;
+          const model = new TestApiModel({ testId: id });
+          TestApiModel.cache[id] = model;
+
+          const cachedModel = TestApiModel.get(id);
+          expect(cachedModel).toBe(model);
+
+          TestApiModel.clearCache();
+        });
+      });
+
+      describe('when there is not a model with a matching id', () => {
+        test('returns undefined', () => {
+          const id = 12;
+          const model = new TestApiModel({ testId: id + 1 });
+          TestApiModel.cache[id] = undefined;
+          TestApiModel.cache[id + 1] = model;
+
+          const cachedModel = TestApiModel.get(id);
+          expect(cachedModel).toBeUndefined();
+
+          TestApiModel.clearCache();
+        });
+      });
+    });
+
     describe('read', () => {
       let deferred, id, model, params, reload;
 
