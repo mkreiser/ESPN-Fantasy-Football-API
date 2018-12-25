@@ -1,3 +1,5 @@
+import Team from '../team/team.js';
+
 /**
  * Use your editor's collapse functionality to collapse `serverResponse` and make this easier to
  * read/edit.
@@ -15,7 +17,137 @@ const localObject = {
   numTeams: 8,
   playoffMatchupLength: 2,
   scoringDecimalPlaces: 2,
-  seasonId: '2017'
+  seasonId: '2017',
+  teams: [
+    new Team({
+      abbreviation: 'GOAT',
+      divisionStanding: 1,
+      firstName: 'The Boston',
+      lastName: 'TE Party',
+      leagueId: 336358,
+      leagueStanding: 1,
+      losses: 4,
+      pointsAgainst: 1131.4,
+      pointsFor: 1305.78,
+      seasonId: 2017,
+      teamId: 1,
+      ties: 0,
+      waiverRank: 6,
+      wins: 9
+    }),
+    new Team({
+      abbreviation: 'GRON',
+      divisionStanding: 4,
+      firstName: 'Prestige',
+      lastName: 'Worldwide',
+      leagueId: 336358,
+      leagueStanding: 8,
+      losses: 8,
+      pointsAgainst: 1232.94,
+      pointsFor: 1062.82,
+      seasonId: 2017,
+      teamId: 2,
+      ties: 0,
+      waiverRank: 5,
+      wins: 5
+    }),
+    new Team({
+      abbreviation: 'ARCH',
+      divisionStanding: 4,
+      firstName: 'Archie',
+      lastName: 'Cooper',
+      leagueId: 336358,
+      leagueStanding: 7,
+      losses: 8,
+      pointsAgainst: 1280,
+      pointsFor: 1155.34,
+      seasonId: 2017,
+      teamId: 3,
+      ties: 0,
+      waiverRank: 8,
+      wins: 5
+    }),
+    new Team({
+      abbreviation: 'REES',
+      divisionStanding: 3,
+      firstName: 'Feed',
+      lastName: 'Zeeeke ',
+      leagueId: 336358,
+      leagueStanding: 4,
+      losses: 6,
+      pointsAgainst: 1290.12,
+      pointsFor: 1297.26,
+      seasonId: 2017,
+      teamId: 4,
+      ties: 0,
+      waiverRank: 7,
+      wins: 7
+    }),
+    new Team({
+      abbreviation: 'fuck',
+      divisionStanding: 2,
+      firstName: 'fuck fantasy ',
+      lastName: 'football',
+      leagueId: 336358,
+      leagueStanding: 5,
+      losses: 7,
+      pointsAgainst: 1278.42,
+      pointsFor: 1233.26,
+      seasonId: 2017,
+      teamId: 5,
+      ties: 0,
+      waiverRank: 4,
+      wins: 6
+    }),
+    new Team({
+      abbreviation: 'BOIS',
+      divisionStanding: 3,
+      firstName: 'Team',
+      lastName: 'ASS',
+      leagueId: 336358,
+      leagueStanding: 6,
+      losses: 8,
+      pointsAgainst: 1240.04,
+      pointsFor: 1328.1,
+      seasonId: 2017,
+      teamId: 8,
+      ties: 0,
+      waiverRank: 1,
+      wins: 5
+    }),
+    new Team({
+      abbreviation: '��',
+      divisionStanding: 2,
+      firstName: '2 Gurleys',
+      lastName: 'One Cup',
+      leagueId: 336358,
+      leagueStanding: 3,
+      losses: 5,
+      pointsAgainst: 1186.94,
+      pointsFor: 1288.64,
+      seasonId: 2017,
+      teamId: 9,
+      ties: 0,
+      waiverRank: 2,
+      wins: 8
+    }),
+    new Team({
+      abbreviation: 'YOC',
+      divisionStanding: 1,
+      firstName: 'FRICKIN',
+      lastName: 'JOOOOOSH!',
+      leagueId: 336358,
+      leagueStanding: 2,
+      losses: 6,
+      pointsAgainst: 1250.94,
+      pointsFor: 1219.6,
+      seasonId: 2017,
+      teamId: 12,
+      ties: 0,
+      waiverRank: 3,
+      wins: 7
+    })
+  ]
 };
 
 const serverResponse = {
