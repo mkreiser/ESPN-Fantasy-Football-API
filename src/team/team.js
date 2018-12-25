@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import ApiModel from '../api-model/api-model.js';
 
 /**
@@ -71,57 +69,6 @@ class Team extends ApiModel {
   static idName = 'teamId';
 
   static displayName = 'Team';
-
-  /**
-   * Makes a call to the passed route with the passed params. Defers actual GET call to
-   * `static read` Automatically includes the id of the instance in the params. On successful read,
-   * populates the instance with the new response data.
-   * @async
-   * @throws {Error} If route is not passed
-   * @throws {Error} If params.leagueId is not passed
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {Object} options.params  Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
-   * @return {Promise}
-   */
-  static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
-  ) {
-    if (!_.get(params, 'leagueId')) {
-      throw new Error(`${this.displayName}: static read: cannot read without leagueId param`);
-    }
-
-    return super.read({ model, route, params, reload });
-  }
-
-  /**
-   * Makes a call to the passed route with the passed params. Defers actual GET call to
-   * `static read` Automatically includes the id, leagueId, and seasonId of the instance in the
-   * params. On successful read, populates the instance with the new response data.
-   * @async
-   * @throws {Error} If route is not passed
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {Object} options.params  Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
-   * @return {Promise}
-   */
-  read({
-    route = this.constructor.route, params, reload = true
-  } = {
-    route: this.constructor.route, reload: true
-  }) {
-    const paramsWithId = _.assign({}, params, {
-      leagueId: this.leagueId,
-      seasonId: this.seasonId
-    });
-
-    return super.read({
-      route,
-      model: this,
-      params: paramsWithId,
-      reload
-    });
-  }
 }
 
 export default Team;
