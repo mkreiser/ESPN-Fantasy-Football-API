@@ -29,22 +29,18 @@ class ApiModel {
   static idName = 'id';
 
   /**
-   * Returns the passed instance of the ApiModel populated with the passed data, mapping the
-   * attributes defined in the value of responseMap to the matching key.
+   * Helper method for `_populateApiModel` that houses the attribute mapping logic. Should not be
+   * used by other methods.
    * @private
    * @param  {object} options.data
    * @param  {ApiModel} options.model The model to populate. This model will be mutated.
    * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
    *                                            data came locally (typically from another ApiModel).
+   * @param  {string} options.key The key of the responseMap entry being parsed.
+   * @param  {string} options.value The value of the responseMap entry being parsed.
    * @return {ApiModel} The mutated ApiModel model.
    */
-  static _populateApiModel({ data, model, isDataFromServer }) {
-    if (!model) {
-      throw new Error(`${this.displayName}: _populateApiModel: Did not receive model to populate`);
-    } else if (_.isEmpty(data)) {
-      return model;
-    }
-
+  static _processResponseMapItem({ data, model, isDataFromServer, key, value }) {
     /**
      * @typedef {object} ResponseMapValueObject
      *
@@ -57,11 +53,15 @@ class ApiModel {
      * @property {ApiModel} ApiModel The ApiModel to create with the response data.
      * @property {boolean} isArray Whether or not the response data is an array. Useful for
      *                             attributes such as "teams".
+     * @property {boolean} defer Whether or not to wait to parse the entry until a second pass of
+     *                           the map. This is useful for populating items with cached models
+     *                           that are not guaranteed to be parsed/cached during initial parsing.
+     *                           Example: Using Team instances on League.
      * @property {function} manualParse A function to manually apply logic to the response. This
      *                                  function must return its result to be attached to the
      *                                   populated ApiModel. This function should return instances
      *                                   of the ApiModel specified on the same object. The
-     *                                   arguements to this function are: (data at the key),
+     *                                   arguments to this function are: (data at the key),
      *                                   (the whole response), (the model being populated).
      * @example
      * static responseMap = {
@@ -83,38 +83,67 @@ class ApiModel {
      * };
      *
      */
-    _.forEach(this.responseMap, (value, key) => {
-      let item;
+    let item;
 
-      if (!isDataFromServer) {
-        item = _.get(data, key);
-      } else if (_.isString(value)) {
-        item = _.get(data, value);
-      } else if (_.isPlainObject(value)) {
-        if (!(value.key && value.ApiModel)) {
-          throw new Error(
-            `${this.displayName}: _populateApiModel: Invalid responseMap object. Object must ` +
-            'define key and ApiModel. See docs for typedef of ResponseMapValueObject.'
-          );
-        }
-
-        const responseData = _.get(data, value.key);
-        if (_.isFunction(value.manualParse)) {
-          item = value.manualParse(responseData, data, model);
-        } else {
-          const ValueApiModelClass = value.ApiModel;
-
-          const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
-          item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
-        }
-      } else {
+    if (!isDataFromServer) {
+      item = _.get(data, key);
+    } else if (_.isString(value)) {
+      item = _.get(data, value);
+    } else if (_.isPlainObject(value)) {
+      if (!(value.key && value.ApiModel)) {
         throw new Error(
-          `${this.displayName}: _populateApiModel: Did not recognize responseMap value type for ` +
-          `key ${key}`
+          `${this.displayName}: _populateApiModel: Invalid responseMap object. Object must ` +
+          'define key and ApiModel. See docs for typedef of ResponseMapValueObject.'
         );
       }
 
-      _.set(model, key, item);
+      const responseData = _.get(data, value.key);
+      if (_.isFunction(value.manualParse)) {
+        item = value.manualParse(responseData, data, model);
+      } else {
+        const ValueApiModelClass = value.ApiModel;
+
+        const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
+        item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+      }
+    } else {
+      throw new Error(
+        `${this.displayName}: _populateApiModel: Did not recognize responseMap value type for ` +
+        `key ${key}`
+      );
+    }
+
+    _.set(model, key, item);
+  }
+
+  /**
+   * Returns the passed instance of the ApiModel populated with the passed data, mapping the
+   * attributes defined in the value of responseMap to the matching key.
+   * @private
+   * @param  {object} options.data
+   * @param  {ApiModel} options.model The model to populate. This model will be mutated.
+   * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
+   *                                            data came locally (typically from another ApiModel).
+   * @return {ApiModel} The mutated ApiModel model.
+   */
+  static _populateApiModel({ data, model, isDataFromServer }) {
+    if (!model) {
+      throw new Error(`${this.displayName}: _populateApiModel: Did not receive model to populate`);
+    } else if (_.isEmpty(data)) {
+      return model;
+    }
+
+    const deferredMapItems = {};
+    _.forEach(this.responseMap, (value, key) => {
+      if (_.isPlainObject(value) && value.defer) {
+        _.set(deferredMapItems, key, value);
+      } else {
+        this._processResponseMapItem({ data, model, isDataFromServer, key, value });
+      }
+    });
+
+    _.forEach(deferredMapItems, (value, key) => {
+      this._processResponseMapItem({ data, model, isDataFromServer, key, value });
     });
 
     if (isDataFromServer) {

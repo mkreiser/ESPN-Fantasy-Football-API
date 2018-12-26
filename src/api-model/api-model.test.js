@@ -68,6 +68,12 @@ class TestApiModel extends ApiModel {
       key: 'manual',
       ApiModel: MappingTestApiModel,
       manualParse: jest.fn()
+    },
+    someDeferredModel: {
+      key: 'deferred',
+      ApiModel: MappingTestApiModel,
+      defer: true,
+      manualParse: jest.fn()
     }
   };
 
@@ -79,16 +85,6 @@ class TestApiModel extends ApiModel {
 }
 
 describe('ApiModel', () => {
-  let apiModel;
-
-  beforeEach(() => {
-    apiModel = new TestApiModel();
-  });
-
-  afterEach(() => {
-    apiModel = null;
-  });
-
   describe('constructor', () => {
     describe('when options are passed', () => {
       test('calls _populateApiModel to populate instance with local data', () => {
@@ -121,7 +117,7 @@ describe('ApiModel', () => {
 
   describe('class methods', () => {
     describe('_populateApiModel', () => {
-      let data, model;
+      let data, model, isDataFromServer;
 
       beforeEach(() => {
         data = {
@@ -135,7 +131,11 @@ describe('ApiModel', () => {
       });
 
       afterEach(() => {
-        data = model = null;
+        data = model = isDataFromServer = null;
+      });
+
+      const callPopulate = (Klass = TestApiModel) => Klass._populateApiModel({
+        data, model, isDataFromServer
       });
 
       describe('when a model is not passed', () => {
@@ -169,27 +169,30 @@ describe('ApiModel', () => {
         });
 
         describe('when isDataFromServer is true', () => {
-          test('does not map data passed in the form of a local object', () => {
+          beforeEach(() => {
+            isDataFromServer = true;
+          });
+
+          test('does not map keys not defined in responseMap', () => {
+            data = { notInMap: 'some wack stuff' };
+
+            const returnedModel = callPopulate();
+            expect(returnedModel.notInMap).toBeUndefined();
+          });
+
+          test('does not map data passed in the form of local (non-server) data', () => {
             data = { someValue: 'some server data' };
 
-            const returnedModel = TestApiModel._populateApiModel({
-              data,
-              model,
-              isDataFromServer: true
-            });
+            const returnedModel = callPopulate();
             expect(returnedModel.someValue).toBeUndefined();
             expect(returnedModel.some_value).toBeUndefined();
           });
 
           describe('when a value in the static responseMap is a string', () => {
-            test('directly maps the response attribute at that value', () => {
+            test('directly maps the response attribute at that string', () => {
               data = { some_value: 'some server data' };
 
-              const returnedModel = TestApiModel._populateApiModel({
-                data,
-                model,
-                isDataFromServer: true
-              });
+              const returnedModel = callPopulate();
               expect(returnedModel.someValue).toBe(data.some_value);
             });
           });
@@ -197,13 +200,7 @@ describe('ApiModel', () => {
           describe('when a value in the static responseMap is a plain object', () => {
             describe('when the object does not define key', () => {
               test('throws error', () => {
-                expect(
-                  () => KeyErrorTestApiModel._populateApiModel({
-                    data,
-                    model,
-                    isDataFromServer: true
-                  })
-                ).toThrowError(
+                expect(() => callPopulate(KeyErrorTestApiModel)).toThrowError(
                   `${KeyErrorTestApiModel.displayName}: _populateApiModel: Invalid responseMap ` +
                   'object. Object must define key and ApiModel. See docs for typedef of ' +
                   'ResponseMapValueObject.'
@@ -213,13 +210,7 @@ describe('ApiModel', () => {
 
             describe('when the object does not define ApiModel', () => {
               test('throws error', () => {
-                expect(
-                  () => ModelObjectErrorTestApiModel._populateApiModel({
-                    data,
-                    model,
-                    isDataFromServer: true
-                  })
-                ).toThrowError(
+                expect(() => callPopulate(ModelObjectErrorTestApiModel)).toThrowError(
                   `${ModelObjectErrorTestApiModel.displayName}: _populateApiModel: Invalid ` +
                   'responseMap object. Object must define key and ApiModel. See docs for ' +
                   'typedef of ResponseMapValueObject.'
@@ -228,6 +219,29 @@ describe('ApiModel', () => {
             });
 
             describe('when the object defines key and ApiModel', () => {
+              describe('when the object defines defer as true', () => {
+                test('processes deferred entries after all non-deferred entries', () => {
+                  data = {
+                    manual: {
+                      mapping_id: 1,
+                      some_value: 'works recursively too'
+                    },
+                    deferred: {
+                      mapping_id: 4,
+                      some_value: 'works recursively too'
+                    }
+                  };
+
+                  expect.assertions(2);
+                  TestApiModel.responseMap.someManualModel.manualParse.mockImplementation(() => {
+                    expect(TestApiModel.responseMap.someDeferredModel.manualParse).not.toBeCalled();
+                  });
+
+                  callPopulate();
+                  expect(TestApiModel.responseMap.someDeferredModel.manualParse).toBeCalled();
+                });
+              });
+
               describe('when the object defines a manualParse function', () => {
                 test('calls the manualParse function', () => {
                   data = {
@@ -240,9 +254,7 @@ describe('ApiModel', () => {
                     }
                   };
 
-                  TestApiModel._populateApiModel({
-                    data, model, isDataFromServer: true
-                  });
+                  callPopulate();
                   expect(TestApiModel.responseMap.someManualModel.manualParse).toBeCalledWith(
                     data.manual, data, model
                   );
@@ -261,9 +273,7 @@ describe('ApiModel', () => {
                   const returnData = {};
                   TestApiModel.responseMap.someManualModel.manualParse.mockReturnValue(returnData);
 
-                  const returnedModel = TestApiModel._populateApiModel({
-                    data, model, isDataFromServer: true
-                  });
+                  const returnedModel = callPopulate();
                   expect(returnedModel.someManualModel).toBe(returnData);
                 });
               });
@@ -283,11 +293,9 @@ describe('ApiModel', () => {
                       }]
                     };
 
-                    const returnedModel = TestApiModel._populateApiModel({
-                      data, model, isDataFromServer: true
-                    });
+                    const returnedModel = callPopulate();
+                    expect.hasAssertions();
 
-                    expect.assertions(2 * 4);
                     _.forEach(returnedModel.someModels, (populatedModel, index) => {
                       expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
 
@@ -312,9 +320,7 @@ describe('ApiModel', () => {
                       }
                     };
 
-                    const returnedModel = TestApiModel._populateApiModel({
-                      data, model, isDataFromServer: true
-                    });
+                    const returnedModel = callPopulate();
 
                     const populatedModel = returnedModel.someModel;
                     expect(populatedModel).toBeInstanceOf(MappingTestApiModel);
@@ -333,9 +339,7 @@ describe('ApiModel', () => {
           describe('when a value in the static responseMap is not a string or valid object', () => {
             test('throws error', () => {
               expect(
-                () => MapObjectErrorApiModel._populateApiModel({
-                  data, model, isDataFromServer: true
-                })
+                () => callPopulate(MapObjectErrorApiModel)
               ).toThrowError(
                 `${MapObjectErrorApiModel.displayName}: _populateApiModel: Did not recognize ` +
                 'responseMap value type for key invalid'
@@ -346,88 +350,69 @@ describe('ApiModel', () => {
 
         describe('when isDataFromServer is false', () => {
           beforeEach(() => {
-            data = {
-              someValue: 'some value',
-              someNestedData: 'some nested data'
-            };
+            isDataFromServer = false;
           });
+
+          const testMapsDataIgnoringMapValue = (Klass) => {
+            test('maps the data attribute at the map key, ignoring the map value', () => {
+              expect.hasAssertions();
+              const returnedModel = callPopulate(Klass);
+              _.forEach(data, (value, key) => {
+                expect(returnedModel[key]).toBe(data[key]);
+              });
+            });
+          };
 
           test('does not map data passed in the form of a server response', () => {
             data = { some_value: 'some server data' };
 
-            const returnedModel = TestApiModel._populateApiModel({
-              data,
-              model,
-              isDataFromServer: false
-            });
+            const returnedModel = callPopulate();
             expect(returnedModel.someValue).toBeUndefined();
             expect(returnedModel.some_value).toBeUndefined();
           });
 
           describe('when a value in the static responseMap is a string', () => {
-            test('maps the data attribute at the map key, ignoring the map value', () => {
+            beforeEach(() => {
               data = { someValue: 'some server data' };
-
-              const returnedModel = TestApiModel._populateApiModel({
-                data,
-                model,
-                isDataFromServer: false
-              });
-              expect(returnedModel.someValue).toBe(data.someValue);
             });
+
+            testMapsDataIgnoringMapValue();
           });
 
           describe('when a value in the static responseMap is a plain object', () => {
             describe('when the object does not define key', () => {
-              test('maps the data attribute at the map key, ignoring the map value', () => {
+              beforeEach(() => {
                 data = { invalidObjectWithoutKey: 'works' };
-                const returnedModel = KeyErrorTestApiModel._populateApiModel({
-                  data,
-                  model,
-                  isDataFromServer: false
-                });
-
-                expect(returnedModel.invalidObjectWithoutKey).toBe(data.invalidObjectWithoutKey);
               });
+
+              testMapsDataIgnoringMapValue(KeyErrorTestApiModel);
             });
 
             describe('when the object does not define ApiModel', () => {
-              test('maps the data attribute at the map key, ignoring the map value', () => {
+              beforeEach(() => {
                 data = { invalidObjectWithoutApiModel: 'works' };
-                const returnedModel = ModelObjectErrorTestApiModel._populateApiModel({
-                  data,
-                  model,
-                  isDataFromServer: false
-                });
-
-
-                expect(returnedModel.invalidObjectWithoutApiModel).toBe(
-                  data.invalidObjectWithoutApiModel
-                );
               });
+
+              testMapsDataIgnoringMapValue(ModelObjectErrorTestApiModel);
             });
 
             describe('when the object defines key and ApiModel', () => {
               describe('when the object defines a manualParse function', () => {
-                test('maps the data attribute at the map key, ignoring the map value', () => {
+                beforeEach(() => {
                   const someManualModel = new MappingTestApiModel({
                     mapping_id: 1,
                     some_value: 'works recursively too'
                   });
-
                   data = { someManualModel };
-
-                  const returnedModel = TestApiModel._populateApiModel({
-                    data, model, isDataFromServer: false
-                  });
-                  expect(returnedModel.someManualModel).toBe(someManualModel);
                 });
+
+                testMapsDataIgnoringMapValue();
               });
 
               describe('when the object does not define a manualParse function', () => {
                 describe('when the object specifies isArray: true', () => {
-                  test('maps the data attribute at the map key, ignoring the map value', () => {
-                    const array = [
+                  beforeEach(() => {
+                    const someModels = [
                       new MappingTestApiModel({
                         mapping_id: 1,
                         some_value: 'works recursively too'
@@ -439,50 +424,36 @@ describe('ApiModel', () => {
                         }
                       })
                     ];
-                    data = {
-                      someModels: array
-                    };
-
-                    const returnedModel = TestApiModel._populateApiModel({
-                      data, model, isDataFromServer: false
-                    });
-                    expect(returnedModel.someModels).toBe(array);
+                    data = { someModels };
                   });
+
+                  testMapsDataIgnoringMapValue();
                 });
 
                 describe('when the object specifies isArray: false', () => {
-                  test('maps the data to an instance of the ApiModel defined on the object', () => {
-                    data = {
-                      someModel: new MappingTestApiModel({
-                        mapping_id: 1,
-                        some_value: 'works recursively too',
-                        nested: {
-                          item: 'also works recursively'
-                        }
-                      })
-                    };
-
-                    const returnedModel = TestApiModel._populateApiModel({
-                      data, model, isDataFromServer: false
+                  beforeEach(() => {
+                    const someModel = new MappingTestApiModel({
+                      mapping_id: 1,
+                      some_value: 'works recursively too',
+                      nested: {
+                        item: 'also works recursively'
+                      }
                     });
-
-                    expect(returnedModel.someModel).toBe(data.someModel);
+                    data = { someModel };
                   });
+
+                  testMapsDataIgnoringMapValue();
                 });
               });
             });
           });
 
           describe('when a value in the static responseMap is not a string or valid object', () => {
-            test('maps the data to an instance of the ApiModel defined on the object', () => {
+            beforeEach(() => {
               data = { invalid: 'works' };
-
-              const returnedModel = MapObjectErrorApiModel._populateApiModel({
-                data, model, isDataFromServer: false
-              });
-
-              expect(returnedModel.invalid).toBe(data.invalid);
             });
+
+            testMapsDataIgnoringMapValue(MapObjectErrorApiModel);
           });
         });
       });
@@ -1123,6 +1094,16 @@ describe('ApiModel', () => {
   });
 
   describe('instance methods', () => {
+    let apiModel;
+
+    beforeEach(() => {
+      apiModel = new TestApiModel();
+    });
+
+    afterEach(() => {
+      apiModel = null;
+    });
+
     describe('read', () => {
       let deferred;
 
@@ -1201,21 +1182,19 @@ describe('ApiModel', () => {
     describe('getId', () => {
       test('returns the id defined at static idName', () => {
         const id = 'some id';
-        const model = TestApiModel.buildFromLocal();
-        _.set(model, TestApiModel.idName, id);
+        _.set(apiModel, TestApiModel.idName, id);
 
-        expect(model.getId()).toBe(id);
+        expect(apiModel.getId()).toBe(id);
       });
     });
 
     describe('setId', () => {
       test('returns the id defined at static idName', () => {
         const id = 'some id';
-        const model = TestApiModel.buildFromLocal();
-        _.set(model, TestApiModel.idName, null);
+        _.set(apiModel, TestApiModel.idName, null);
 
-        model.setId(id);
-        expect(_.get(model, TestApiModel.idName)).toBe(id);
+        apiModel.setId(id);
+        expect(_.get(apiModel, TestApiModel.idName)).toBe(id);
       });
     });
   });
