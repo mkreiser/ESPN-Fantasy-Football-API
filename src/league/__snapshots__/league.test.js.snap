@@ -415,7 +415,9 @@ League {
       "wins": 7,
     },
   ],
+  "playoffTiebreaker": "Total points for",
   "regularSeasonMatchupLength": 1,
+  "regularSeasonTiebreaker": "None",
   "scoringDecimalPlaces": 2,
   "seasonId": "2017",
   "teams": Array [
@@ -967,7 +969,9 @@ League {
       "wins": 5,
     },
   ],
+  "playoffTiebreaker": "Total points for",
   "regularSeasonMatchupLength": 1,
+  "regularSeasonTiebreaker": "None",
   "scoringDecimalPlaces": 2,
   "seasonId": 2017,
   "teams": Array [

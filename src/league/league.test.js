@@ -42,19 +42,27 @@ describe('League', () => {
   });
 
   describe('responseMap', () => {
+    const testUsesCachedTeamInstances = (method) => {
+      test('maps data to cached Team instances', () => {
+        const ids = [1, 2, 3];
+        jest.spyOn(Team, 'get');
+
+        expect.hasAssertions();
+        _.invoke(League.responseMap, `${method}.manualParse`, ids);
+
+        _.forEach(ids, (id) => expect(Team.get).toBeCalledWith(id));
+
+        Team.get.mockRestore();
+      });
+    };
+
     describe('teams', () => {
       describe('manualParse', () => {
         test('maps teams data to Team instances', () => {
           const responseData = {
-            1: {
-              teamId: 1
-            },
-            2: {
-              teamId: 2
-            },
-            3: {
-              teamId: 3
-            }
+            1: { teamId: 1 },
+            2: { teamId: 2 },
+            3: { teamId: 3 }
           };
 
           const returnedTeams = League.responseMap.teams.manualParse(responseData);
@@ -69,9 +77,7 @@ describe('League', () => {
           test('passes leagueId as a number', () => {
             const leagueId = '123133';
             const responseData = {
-              1: {
-                teamId: 1
-              }
+              1: { teamId: 1 }
             };
             const response = {
               leaguesettings: { id: leagueId }
@@ -89,9 +95,7 @@ describe('League', () => {
           test('passes undefined for leagueId', () => {
             const leagueId = undefined;
             const responseData = {
-              1: {
-                teamId: 1
-              }
+              1: { teamId: 1 }
             };
             const response = {
               leaguesettings: { id: leagueId }
@@ -109,9 +113,7 @@ describe('League', () => {
           test('passes seasonId as a number', () => {
             const seasonId = '123133';
             const responseData = {
-              1: {
-                teamId: 1
-              }
+              1: { teamId: 1 }
             };
             const response = {
               leaguesettings: { season: seasonId }
@@ -129,9 +131,7 @@ describe('League', () => {
           test('passes seasonId as a number', () => {
             const seasonId = undefined;
             const responseData = {
-              1: {
-                teamId: 1
-              }
+              1: { teamId: 1 }
             };
             const response = {
               leaguesettings: { season: seasonId }
@@ -142,6 +142,83 @@ describe('League', () => {
             _.forEach(returnedTeams, (team) => {
               expect(team.seasonId).toBeUndefined();
             });
+          });
+        });
+      });
+    });
+
+    describe('draftOrder', () => {
+      describe('manualParse', () => {
+        testUsesCachedTeamInstances('draftOrder');
+      });
+    });
+
+    describe('playoffSeedOrder', () => {
+      describe('manualParse', () => {
+        testUsesCachedTeamInstances('playoffSeedOrder');
+      });
+    });
+
+    describe('finalRankings', () => {
+      describe('manualParse', () => {
+        testUsesCachedTeamInstances('finalRankings');
+      });
+    });
+
+    describe('regularSeasonTiebreaker', () => {
+      describe('manualParse', () => {
+        describe('when valid enum key is passed', () => {
+          test('switches on numerical enum correctly', () => {
+            const tiebreakers = {
+              0: 'None',
+              1: 'Home team wins',
+              2: 'Most bench points',
+              3: 'Most QB points',
+              4: 'Most RB points'
+            };
+
+            expect.hasAssertions();
+            _.forEach(tiebreakers, (value, key) => {
+              const numKey = _.toNumber(key);
+              const tieString = League.responseMap.regularSeasonTiebreaker.manualParse(numKey);
+              expect(tieString).toBe(value);
+            });
+          });
+        });
+
+        describe('when invalid enum key is passed', () => {
+          test('returns error string', () => {
+            const tieString = League.responseMap.regularSeasonTiebreaker.manualParse(-231);
+            expect(tieString).toBe('ERROR: regularSeasonTiebreaker not recognized');
+          });
+        });
+      });
+    });
+
+    describe('playoffTiebreaker', () => {
+      describe('manualParse', () => {
+        describe('when valid enum key is passed', () => {
+          test('switches on numerical enum correctly', () => {
+            const tiebreakers = {
+              '-1': 'Head to head record',
+              0: 'Total points for',
+              1: 'Intra-division record',
+              2: 'Total points against'
+            };
+
+            expect.hasAssertions();
+            _.forEach(tiebreakers, (value, key) => {
+              const numKey = _.toNumber(key);
+              const tieString = League.responseMap.playoffTiebreaker.manualParse(numKey);
+              expect(tieString).toBe(value);
+            });
+          });
+        });
+
+        describe('when invalid enum key is passed', () => {
+          test('returns error string', () => {
+            const tieString = League.responseMap.playoffTiebreaker.manualParse(-231);
+            expect(tieString).toBe('ERROR: playoffTiebreaker not recognized');
           });
         });
       });

@@ -149,6 +149,8 @@ const localObject = {
   numTeams: 8,
   regularSeasonMatchupLength: 1,
   playoffMatchupLength: 2,
+  playoffTiebreaker: 'Total points for',
+  regularSeasonTiebreaker: 'None',
   scoringDecimalPlaces: 2,
   seasonId: '2017',
   tradeRevisionHours: 48,
