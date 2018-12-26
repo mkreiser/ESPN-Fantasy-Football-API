@@ -46,10 +46,11 @@ class ApiModel {
      *
      * The `responseMap` can have two values: a string or a ResponseMapValueObject. When string, the
      * data found on that response is directly mapped to the ApiModel without mutation. When
-     * ResponseMapValueObject, the data at the `key` will be used to create ApiModel(s) that are
-     * then assigned onto the parent ApiModel as an attribute at the key of the `responseMap`.
-     *
-     * @property {string} key The key on the response data where the data can be found.
+     * ResponseMapValueObject, the data at the `key` will be used to create ApiModel(s) or manually
+     * parsed with a provided `manualParse function`. Either result is attached to the ApiModel
+     * being populated.
+     * @property {string} key The key on the response data where the data can be found. This must be
+     *                        defined.
      * @property {ApiModel} ApiModel The ApiModel to create with the response data.
      * @property {boolean} isArray Whether or not the response data is an array. Useful for
      *                             attributes such as "teams".
@@ -59,10 +60,9 @@ class ApiModel {
      *                           Example: Using Team instances on League.
      * @property {function} manualParse A function to manually apply logic to the response. This
      *                                  function must return its result to be attached to the
-     *                                   populated ApiModel. This function should return instances
-     *                                   of the ApiModel specified on the same object. The
-     *                                   arguments to this function are: (data at the key),
-     *                                   (the whole response), (the model being populated).
+     *                                  populated ApiModel. The arguments to this function are:
+     *                                  (data at the key), (the whole response),
+     *                                  (the model being populated).
      * @example
      * static responseMap = {
      *   teamId: 'teamId',
@@ -90,21 +90,26 @@ class ApiModel {
     } else if (_.isString(value)) {
       item = _.get(data, value);
     } else if (_.isPlainObject(value)) {
-      if (!(value.key && value.ApiModel)) {
+      if (!value.key) {
         throw new Error(
           `${this.displayName}: _populateApiModel: Invalid responseMap object. Object must ` +
-          'define key and ApiModel. See docs for typedef of ResponseMapValueObject.'
+          'define key. See docs for typedef of ResponseMapValueObject.'
         );
       }
 
       const responseData = _.get(data, value.key);
       if (_.isFunction(value.manualParse)) {
         item = value.manualParse(responseData, data, model);
-      } else {
+      } else if (value.ApiModel) {
         const ValueApiModelClass = value.ApiModel;
 
         const buildModel = (passedData) => ValueApiModelClass.buildFromServer(passedData);
         item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+      } else {
+        throw new Error(
+          `${this.displayName}: _populateApiModel: Invalid responseMap object. Object must ` +
+          'define `ApiModel` or `manualParse`. See docs for typedef of ResponseMapValueObject.'
+        );
       }
     } else {
       throw new Error(

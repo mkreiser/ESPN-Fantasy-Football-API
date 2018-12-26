@@ -33,6 +33,19 @@ class League extends ApiModel {
    * @property {number} numTeams The number of teams in the league.
    * @property {number} numPlayoffTeams The number of teams that make the playoffs.
    * @property {number} scoringDecimalPlaces The number of decimals used in scoring.
+   * @property {string} regularSeasonTiebreaker A string representing the regular season tiebreaker
+   *                                            rule. Returned on response as numerical enum:
+   *                                            0: None,
+   *                                            1: Home team wins,
+   *                                            2: Most bench points,
+   *                                            3: Most QB points,
+   *                                            4: Most RB points
+   * @property {string} playoffTiebreaker A string representing the playoff tiebreaker rule.
+   *                                      Returned on response as numerical enum:
+   *                                      -1: Head to head record
+   *                                      0: Total points for
+   *                                      1: Intra-division record
+   *                                      2: Total points against
    * @property {number} numRegularSeasonMatchups The number of regular season match-ups. If the
    *                                             league's regular season match-up length is 1, then
    *                                             this is also the number of weeks in the regular
@@ -65,7 +78,6 @@ class League extends ApiModel {
     divisions: 'leaguesettings.divisions',
     teams: {
       key: 'leaguesettings.teams',
-      ApiModel: Team,
       manualParse: (responseData, response) => _.map(responseData, (team) => {
         const leagueId = _.get(response, 'leaguesettings.id');
         const seasonId = _.get(response, 'leaguesettings.season');
@@ -79,19 +91,16 @@ class League extends ApiModel {
 
     draftOrder: {
       key: 'leaguesettings.draftOrder',
-      ApiModel: Team,
       defer: true,
       manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
-      ApiModel: Team,
       defer: true,
       manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
-      ApiModel: Team,
       defer: true,
       manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
     },
@@ -99,6 +108,31 @@ class League extends ApiModel {
     numTeams: 'leaguesettings.size',
     numPlayoffTeams: 'leaguesettings.playoffTeamCount',
     scoringDecimalPlaces: 'leaguesettings.scoringDecimalPlaces',
+    regularSeasonTiebreaker: {
+      key: 'leaguesettings.tieRule',
+      manualParse: (responseData) => {
+        switch (responseData) {
+          case 0: return 'None';
+          case 1: return 'Home team wins';
+          case 2: return 'Most bench points';
+          case 3: return 'Most QB points';
+          case 4: return 'Most RB points';
+          default: return 'ERROR: regularSeasonTiebreaker not recognized';
+        }
+      }
+    },
+    playoffTiebreaker: {
+      key: 'leaguesettings.playoffTieRuleRawStatId',
+      manualParse: (responseData) => {
+        switch (responseData) {
+          case -1: return 'Head to head record';
+          case 0: return 'Total points for';
+          case 1: return 'Intra-division record';
+          case 2: return 'Total points against';
+          default: return 'ERROR: playoffTiebreaker not recognized';
+        }
+      }
+    },
 
     numRegularSeasonMatchups: 'leaguesettings.regularSeasonMatchupPeriodCount',
     regularSeasonMatchupLength: 'leaguesettings.regularSeasonMatchupLength',
