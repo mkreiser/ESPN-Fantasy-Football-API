@@ -66,6 +66,10 @@ class TestApiModel extends ApiModel {
     },
     someManualModel: {
       key: 'manual',
+      manualParse: jest.fn()
+    },
+    someManualAndApiModel: {
+      key: 'both',
       ApiModel: MappingTestApiModel,
       manualParse: jest.fn()
     },
@@ -202,23 +206,12 @@ describe('ApiModel', () => {
               test('throws error', () => {
                 expect(() => callPopulate(KeyErrorTestApiModel)).toThrowError(
                   `${KeyErrorTestApiModel.displayName}: _populateApiModel: Invalid responseMap ` +
-                  'object. Object must define key and ApiModel. See docs for typedef of ' +
-                  'ResponseMapValueObject.'
+                  'object. Object must define key. See docs for typedef of ResponseMapValueObject.'
                 );
               });
             });
 
-            describe('when the object does not define ApiModel', () => {
-              test('throws error', () => {
-                expect(() => callPopulate(ModelObjectErrorTestApiModel)).toThrowError(
-                  `${ModelObjectErrorTestApiModel.displayName}: _populateApiModel: Invalid ` +
-                  'responseMap object. Object must define key and ApiModel. See docs for ' +
-                  'typedef of ResponseMapValueObject.'
-                );
-              });
-            });
-
-            describe('when the object defines key and ApiModel', () => {
+            describe('when the object defines key', () => {
               describe('when the object defines defer as true', () => {
                 test('processes deferred entries after all non-deferred entries', () => {
                   data = {
@@ -278,7 +271,7 @@ describe('ApiModel', () => {
                 });
               });
 
-              describe('when the object does not define a manualParse function', () => {
+              describe('when the object defines ApiModel', () => {
                 describe('when the object specifies isArray: true', () => {
                   test('maps the data to instances of the ApiModel defined on the object', () => {
                     data = {
@@ -331,6 +324,31 @@ describe('ApiModel', () => {
                       _.get(data.map_model, 'nested.item')
                     );
                   });
+                });
+              });
+
+              describe('when manualParse and ApiModel are defined', () => {
+                test('calls manualParse instead of using ApiModel', () => {
+                  data = { both: 'something' };
+                  jest.spyOn(MappingTestApiModel, 'buildFromServer');
+
+                  callPopulate();
+                  expect(TestApiModel.responseMap.someManualAndApiModel.manualParse).toBeCalledWith(
+                    data.both, data, model
+                  );
+                  expect(MappingTestApiModel.buildFromServer).not.toBeCalledWith(data.both);
+
+                  MappingTestApiModel.buildFromServer.mockRestore();
+                });
+              });
+
+              describe('when the object does not define ApiModel or manualParse', () => {
+                test('throws error', () => {
+                  expect(() => callPopulate(ModelObjectErrorTestApiModel)).toThrowError(
+                    `${ModelObjectErrorTestApiModel.displayName}: _populateApiModel: Invalid ` +
+                    'responseMap object. Object must define `ApiModel` or `manualParse`. See ' +
+                    'docs for typedef of ResponseMapValueObject.'
+                  );
                 });
               });
             });
@@ -388,15 +406,7 @@ describe('ApiModel', () => {
               testMapsDataIgnoringMapValue(KeyErrorTestApiModel);
             });
 
-            describe('when the object does not define ApiModel', () => {
-              beforeEach(() => {
-                data = { invalidObjectWithoutApiModel: 'works' };
-              });
-
-              testMapsDataIgnoringMapValue(ModelObjectErrorTestApiModel);
-            });
-
-            describe('when the object defines key and ApiModel', () => {
+            describe('when the object defines key', () => {
               describe('when the object defines a manualParse function', () => {
                 beforeEach(() => {
                   const someManualModel = new MappingTestApiModel({
@@ -409,7 +419,7 @@ describe('ApiModel', () => {
                 testMapsDataIgnoringMapValue();
               });
 
-              describe('when the object does not define a manualParse function', () => {
+              describe('when the object defines ApiModel', () => {
                 describe('when the object specifies isArray: true', () => {
                   beforeEach(() => {
                     const someModels = [
@@ -444,6 +454,22 @@ describe('ApiModel', () => {
 
                   testMapsDataIgnoringMapValue();
                 });
+              });
+
+              describe('when the object defines manualParse and ApiModel', () => {
+                beforeEach(() => {
+                  data = { someManualAndApiModel: 'something' };
+                });
+
+                testMapsDataIgnoringMapValue();
+              });
+
+              describe('when the object does not define manualParse or ApiModel', () => {
+                beforeEach(() => {
+                  data = { invalidObjectWithoutApiModel: 'works' };
+                });
+
+                testMapsDataIgnoringMapValue(ModelObjectErrorTestApiModel);
               });
             });
           });
