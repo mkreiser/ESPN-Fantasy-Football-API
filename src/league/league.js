@@ -24,7 +24,12 @@ class League extends ApiModel {
    * @property {number} leagueId
    * @property {string} seasonId The season (year) of the league data.
    * @property {string} name The league's name.
+   * @property {object[]} divisions The league's divisions. Each division object contains the id,
+   *                                size, and name of the division.
    * @property {Team[]} teams The league's teams.
+   * @property {Team[]} draftOrder An array of Teams listed in order of their draft pick positions.
+   * @property {Team[]} playoffSeedOrder An array of Teams listed in order of their playoff seeding.
+   * @property {Team[]} finalRankings An array of Teams listed in order of their final rank.
    * @property {number} numTeams The number of teams in the league.
    * @property {number} numPlayoffTeams The number of teams that make the playoffs.
    * @property {number} scoringDecimalPlaces The number of decimals used in scoring.
@@ -32,6 +37,8 @@ class League extends ApiModel {
    *                                             league's regular season match-up length is 1, then
    *                                             this is also the number of weeks in the regular
    *                                             season.
+   * @property {number} regularSeasonMatchupLength The length of each match-up in the regular
+   *                                                season. Usually 1 week.
    * @property {number} playoffMatchupLength The length of each match-up in the playoffs. This is
    *                                         typically 1 (week) or 2 (weeks).
    * @property {number} firstMatchupId The id of the first match-up period. Almost always 1.
@@ -43,6 +50,9 @@ class League extends ApiModel {
    *                                  is 14, and the last week played is 17, then `lastMatchupId` is
    *                                  15.
    * @property {number} lastWeekId The id of the last NFL week played.
+   * @property {boolean} allowsTrades Whether or not trades are allow between teams.
+   * @property {number} tradeRevisionHours The number of hours for a trade to be revised, including
+   *                                       vetoes.
    */
 
   /**
@@ -50,15 +60,15 @@ class League extends ApiModel {
     */
   static responseMap = {
     leagueId: 'leaguesettings.id',
-    seasonId: 'metadata.seasonId',
+    seasonId: 'leaguesettings.season',
     name: 'leaguesettings.name',
-    // divisions: 'divisions' TODO: Division class?
+    divisions: 'leaguesettings.divisions',
     teams: {
       key: 'leaguesettings.teams',
       ApiModel: Team,
       manualParse: (responseData, response) => _.map(responseData, (team) => {
         const leagueId = _.get(response, 'leaguesettings.id');
-        const seasonId = _.get(response, 'metadata.seasonId');
+        const seasonId = _.get(response, 'leaguesettings.season');
 
         return Team.buildFromServer(team, {
           leagueId: leagueId ? _.toNumber(leagueId) : undefined,
@@ -67,16 +77,40 @@ class League extends ApiModel {
       })
     },
 
+    draftOrder: {
+      key: 'leaguesettings.draftOrder',
+      ApiModel: Team,
+      defer: true,
+      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+    },
+    playoffSeedOrder: {
+      key: 'leaguesettings.playoffSeedings',
+      ApiModel: Team,
+      defer: true,
+      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+    },
+    finalRankings: {
+      key: 'leaguesettings.finalCalculatedRanking',
+      ApiModel: Team,
+      defer: true,
+      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+    },
+
     numTeams: 'leaguesettings.size',
     numPlayoffTeams: 'leaguesettings.playoffTeamCount',
     scoringDecimalPlaces: 'leaguesettings.scoringDecimalPlaces',
 
     numRegularSeasonMatchups: 'leaguesettings.regularSeasonMatchupPeriodCount',
+    regularSeasonMatchupLength: 'leaguesettings.regularSeasonMatchupLength',
     playoffMatchupLength: 'leaguesettings.playoffMatchupLength',
+
     firstMatchupId: 'leaguesettings.firstMatchupPeriodId',
     firstWeekId: 'leaguesettings.firstScoringPeriodId',
     lastMatchupId: 'leaguesettings.finalMatchupPeriodId',
-    lastWeekId: 'leaguesettings.finalScoringPeriodId'
+    lastWeekId: 'leaguesettings.finalScoringPeriodId',
+
+    allowsTrades: 'leaguesettings.allowsTrades',
+    tradeRevisionHours: 'leaguesettings.tradeRevisionHours'
   };
 
   static displayName = 'League';

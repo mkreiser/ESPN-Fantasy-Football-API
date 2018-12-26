@@ -114,7 +114,7 @@ describe('League', () => {
               }
             };
             const response = {
-              metadata: { seasonId }
+              leaguesettings: { season: seasonId }
             };
 
             const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
@@ -134,7 +134,7 @@ describe('League', () => {
               }
             };
             const response = {
-              metadata: { seasonId }
+              leaguesettings: { season: seasonId }
             };
 
             const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
