@@ -166,7 +166,109 @@ const localObject = {
     divisionId: 1,
     name: 'Division 2',
     size: 4
-  }]
+  }],
+  lineupPositionLimits: [
+    {
+      limit: 1,
+      position: 'QB'
+    },
+    {
+      limit: 0,
+      position: 'TQB'
+    },
+    {
+      limit: 2,
+      position: 'RB'
+    },
+    {
+      limit: 0,
+      position: 'RB/WR'
+    },
+    {
+      limit: 2,
+      position: 'WR'
+    },
+    {
+      limit: 0,
+      position: 'WR/TE'
+    },
+    {
+      limit: 1,
+      position: 'TE'
+    },
+    {
+      limit: 0,
+      position: 'OP'
+    },
+    {
+      limit: 0,
+      position: 'DT'
+    },
+    {
+      limit: 0,
+      position: 'DE'
+    },
+    {
+      limit: 0,
+      position: 'LB'
+    },
+    {
+      limit: 0,
+      position: 'DL'
+    },
+    {
+      limit: 0,
+      position: 'CB'
+    },
+    {
+      limit: 0,
+      position: 'S'
+    },
+    {
+      limit: 0,
+      position: 'DB'
+    },
+    {
+      limit: 0,
+      position: 'DP'
+    },
+    {
+      limit: 1,
+      position: 'D/ST'
+    },
+    {
+      limit: 1,
+      position: 'K'
+    },
+    {
+      limit: 0,
+      position: 'P'
+    },
+    {
+      limit: 0,
+      position: 'HC'
+    },
+    {
+      limit: 7,
+      position: 'Bench'
+    },
+    {
+      limit: 0,
+      position: 'IR'
+    },
+    {
+      limit: 0,
+      position: 'Unknown?'
+    },
+    {
+      limit: 1,
+      position: 'RB/WR/TE'
+    },
+    {
+      limit: 0,
+      position: 'Unknown?'
+    }
+  ]
 };
 
 const serverResponse = {

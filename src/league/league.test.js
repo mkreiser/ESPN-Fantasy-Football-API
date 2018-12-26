@@ -4,6 +4,8 @@ import ApiModel from '../api-model/api-model.js';
 import Team from '../team/team.js';
 import League from './league.js';
 
+import { slotCategoryIdToPositionMap } from '../constants.js';
+
 import { localObject, serverResponse } from './league.stubs.js';
 
 describe('League', () => {
@@ -142,6 +144,33 @@ describe('League', () => {
             _.forEach(returnedTeams, (team) => {
               expect(team.seasonId).toBeUndefined();
             });
+          });
+        });
+      });
+    });
+
+    describe('positionLimits', () => {
+      describe('manualParse', () => {
+        test('maps to limit and position using slotCategoryIdToPositionMap', () => {
+          const limitData = [{
+            num: 1,
+            slotCategoryId: 0
+          }, {
+            num: 0,
+            slotCategoryId: 1
+          }, {
+            num: 2,
+            slotCategoryId: 2
+          }];
+
+          const returnedLimits = League.responseMap.lineupPositionLimits.manualParse(limitData);
+
+          expect.hasAssertions();
+          _.forEach(limitData, (value, index) => {
+            expect(returnedLimits[index].limit).toBe(limitData[index].num);
+            expect(returnedLimits[index].position).toBe(
+              _.get(slotCategoryIdToPositionMap, limitData[index].slotCategoryId)
+            );
           });
         });
       });

@@ -280,6 +280,108 @@ League {
   "lastMatchupId": 15,
   "lastWeekId": 17,
   "leagueId": 336358,
+  "lineupPositionLimits": Array [
+    Object {
+      "limit": 1,
+      "position": "QB",
+    },
+    Object {
+      "limit": 0,
+      "position": "TQB",
+    },
+    Object {
+      "limit": 2,
+      "position": "RB",
+    },
+    Object {
+      "limit": 0,
+      "position": "RB/WR",
+    },
+    Object {
+      "limit": 2,
+      "position": "WR",
+    },
+    Object {
+      "limit": 0,
+      "position": "WR/TE",
+    },
+    Object {
+      "limit": 1,
+      "position": "TE",
+    },
+    Object {
+      "limit": 0,
+      "position": "OP",
+    },
+    Object {
+      "limit": 0,
+      "position": "DT",
+    },
+    Object {
+      "limit": 0,
+      "position": "DE",
+    },
+    Object {
+      "limit": 0,
+      "position": "LB",
+    },
+    Object {
+      "limit": 0,
+      "position": "DL",
+    },
+    Object {
+      "limit": 0,
+      "position": "CB",
+    },
+    Object {
+      "limit": 0,
+      "position": "S",
+    },
+    Object {
+      "limit": 0,
+      "position": "DB",
+    },
+    Object {
+      "limit": 0,
+      "position": "DP",
+    },
+    Object {
+      "limit": 1,
+      "position": "D/ST",
+    },
+    Object {
+      "limit": 1,
+      "position": "K",
+    },
+    Object {
+      "limit": 0,
+      "position": "P",
+    },
+    Object {
+      "limit": 0,
+      "position": "HC",
+    },
+    Object {
+      "limit": 7,
+      "position": "Bench",
+    },
+    Object {
+      "limit": 0,
+      "position": "IR",
+    },
+    Object {
+      "limit": 0,
+      "position": "Unknown?",
+    },
+    Object {
+      "limit": 1,
+      "position": "RB/WR/TE",
+    },
+    Object {
+      "limit": 0,
+      "position": "Unknown?",
+    },
+  ],
   "name": "The Ocho",
   "numPlayoffTeams": 4,
   "numRegularSeasonMatchups": 13,
@@ -834,6 +936,108 @@ League {
   "lastMatchupId": 15,
   "lastWeekId": 17,
   "leagueId": 336358,
+  "lineupPositionLimits": Array [
+    Object {
+      "limit": 1,
+      "position": "QB",
+    },
+    Object {
+      "limit": 0,
+      "position": "TQB",
+    },
+    Object {
+      "limit": 2,
+      "position": "RB",
+    },
+    Object {
+      "limit": 0,
+      "position": "RB/WR",
+    },
+    Object {
+      "limit": 2,
+      "position": "WR",
+    },
+    Object {
+      "limit": 0,
+      "position": "WR/TE",
+    },
+    Object {
+      "limit": 1,
+      "position": "TE",
+    },
+    Object {
+      "limit": 0,
+      "position": "OP",
+    },
+    Object {
+      "limit": 0,
+      "position": "DT",
+    },
+    Object {
+      "limit": 0,
+      "position": "DE",
+    },
+    Object {
+      "limit": 0,
+      "position": "LB",
+    },
+    Object {
+      "limit": 0,
+      "position": "DL",
+    },
+    Object {
+      "limit": 0,
+      "position": "CB",
+    },
+    Object {
+      "limit": 0,
+      "position": "S",
+    },
+    Object {
+      "limit": 0,
+      "position": "DB",
+    },
+    Object {
+      "limit": 0,
+      "position": "DP",
+    },
+    Object {
+      "limit": 1,
+      "position": "D/ST",
+    },
+    Object {
+      "limit": 1,
+      "position": "K",
+    },
+    Object {
+      "limit": 0,
+      "position": "P",
+    },
+    Object {
+      "limit": 0,
+      "position": "HC",
+    },
+    Object {
+      "limit": 7,
+      "position": "Bench",
+    },
+    Object {
+      "limit": 0,
+      "position": "IR",
+    },
+    Object {
+      "limit": 0,
+      "position": "Unknown?",
+    },
+    Object {
+      "limit": 1,
+      "position": "RB/WR/TE",
+    },
+    Object {
+      "limit": 0,
+      "position": "Unknown?",
+    },
+  ],
   "name": "The Ocho",
   "numPlayoffTeams": 4,
   "numRegularSeasonMatchups": 13,

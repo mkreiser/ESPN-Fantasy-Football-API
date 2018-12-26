@@ -3,6 +3,8 @@ import _ from 'lodash';
 import ApiModel from '../api-model/api-model.js';
 import Team from '../team/team.js';
 
+import { slotCategoryIdToPositionMap } from '../constants.js';
+
 /**
  * Represents a fantasy football league. Due to ESPN's API routing, most information comes from the
  * league request. It's what we got ¯\\\_(ツ)_/¯.
@@ -27,6 +29,9 @@ class League extends ApiModel {
    * @property {object[]} divisions The league's divisions. Each division object contains the id,
    *                                size, and name of the division.
    * @property {Team[]} teams The league's teams.
+   * @property {object[]} lineupPositionLimits An array of objects outlining the maximum amount of
+   *                                           players that can be played in a position in a valid
+   *                                           lineup.
    * @property {Team[]} draftOrder An array of Teams listed in order of their draft pick positions.
    * @property {Team[]} playoffSeedOrder An array of Teams listed in order of their playoff seeding.
    * @property {Team[]} finalRankings An array of Teams listed in order of their final rank.
@@ -86,6 +91,16 @@ class League extends ApiModel {
           leagueId: leagueId ? _.toNumber(leagueId) : undefined,
           seasonId: seasonId ? _.toNumber(seasonId) : undefined
         });
+      })
+    },
+
+    lineupPositionLimits: {
+      key: 'leaguesettings.slotCategoryItems',
+      manualParse: (responseData) => _.map(responseData, (position) => {
+        return {
+          limit: position.num,
+          position: _.get(slotCategoryIdToPositionMap, position.slotCategoryId)
+        };
       })
     },
 
