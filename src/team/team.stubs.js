@@ -5,16 +5,39 @@
 
 const localObject = {
   abbreviation: 'mk',
+  awayLosses: 3,
+  awayTies: 0,
+  awayWinningPercentage: 0,
+  awayWins: 3,
+  division: {
+    divisionId: 0,
+    divisionName: 'Division 1',
+    size: 4
+  },
+  divisionLosses: 3,
   divisionStanding: 2,
+  divisionTies: 0,
+  divisionWinningPercentage: 0.5,
+  divisionWins: 3,
   firstName: '2 Gurleys',
+  homeLosses: 2,
+  homeTies: 0,
+  homeWinningPercentage: 0,
+  homeWins: 5,
   lastName: 'One Cup',
+  leagueId: undefined,
   leagueStanding: 3,
+  logoURL: 'http://i.imgur.com/C17g1Af.gif',
   losses: 5,
   pointsAgainst: 1186.94,
   pointsFor: 1288.64,
+  seasonId: undefined,
+  streakLength: 1,
+  streakType: 'L',
   teamId: 9,
   ties: 0,
   waiverRank: 2,
+  winningPercentage: 0.61538,
   wins: 8
 };
 
