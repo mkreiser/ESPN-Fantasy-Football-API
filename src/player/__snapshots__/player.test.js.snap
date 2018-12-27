@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Player attribute population from local object parses data correctly 1`] = `
+Player {
+  "eligiblePositions": Array [
+    "QB",
+    "Bench",
+  ],
+  "firstName": "Aaron",
+  "isActive": true,
+  "isDroppable": undefined,
+  "isIREligible": false,
+  "jerseyNumber": "12",
+  "lastName": "Rodgers",
+  "percentOwned": 99.11713,
+  "percentOwnedChange": 0.16773,
+  "percentStarted": 68.05881,
+  "playerId": 8439,
+}
+`;
+
+exports[`Player attribute population from server response parses data correctly 1`] = `
+Player {
+  "eligiblePositions": Array [
+    "QB",
+    "Bench",
+  ],
+  "firstName": "Aaron",
+  "isActive": true,
+  "isDroppable": undefined,
+  "isIREligible": false,
+  "jerseyNumber": "12",
+  "lastName": "Rodgers",
+  "percentOwned": 99.11713,
+  "percentOwnedChange": 0.16773,
+  "percentStarted": 68.05881,
+  "playerId": 8439,
+}
+`;
