@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Scoreboard attribute population from local object parses data correctly 1`] = `
+Scoreboard {
+  "dateOfFirstNFLGameInScoringPeriod": "2017-11-10T01:25:00.000Z",
+  "leagueId": undefined,
+  "matchupPeriodId": 10,
+  "nflGamesInProgress": false,
+  "scoringPeriodId": 10,
+  "seasonId": undefined,
+}
+`;
+
+exports[`Scoreboard attribute population from server response parses data correctly 1`] = `
+Scoreboard {
+  "dateOfFirstNFLGameInScoringPeriod": "2017-11-10T01:25:00.000Z",
+  "leagueId": undefined,
+  "matchupPeriodId": 10,
+  "nflGamesInProgress": false,
+  "scoringPeriodId": 10,
+  "seasonId": undefined,
+}
+`;
