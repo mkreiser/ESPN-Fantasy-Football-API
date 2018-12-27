@@ -1,4 +1,5 @@
 import ApiModel from '../api-model/api-model.js';
+import ScoreboardMatchup from '../scoreboard-matchup/scoreboard-matchup.js';
 
 class Scoreboard extends ApiModel {
   constructor(options = {}) {
@@ -47,14 +48,13 @@ class Scoreboard extends ApiModel {
     scoringPeriodId: 'scoreboard.scoringPeriodId',
 
     dateOfFirstNFLGameInScoringPeriod: 'scoreboard.dateFirstProGameOfScoringPeriod',
-    nflGamesInProgress: 'scoreboard.proGamesInProgress'
+    nflGamesInProgress: 'scoreboard.proGamesInProgress',
 
-    // TODO: Build Matchup ApiModel
-    // matchups: {
-    //  key: 'matchups',
-    //  ApiModel: Matchup
-    //  isArray: true
-    // }
+    matchups: {
+      key: 'scoreboard.matchups',
+      ApiModel: ScoreboardMatchup,
+      isArray: true
+    }
   }
 }
 
