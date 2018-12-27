@@ -7,7 +7,8 @@ const localObject = {
   dateOfFirstNFLGameInScoringPeriod: '2017-11-10T01:25:00.000Z',
   matchupPeriodId: 10,
   nflGamesInProgress: false,
-  scoringPeriodId: 10
+  scoringPeriodId: 10,
+  matchups: []
 };
 
 const serverResponse = {
