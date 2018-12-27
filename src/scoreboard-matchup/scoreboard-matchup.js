@@ -3,6 +3,12 @@ import _ from 'lodash';
 import ApiModel from '../api-model/api-model.js';
 import Team from '../team/team.js';
 
+/**
+ * Represents a single matchup on a {@link Scoreboard}. Each team, their score, and the matchup
+ * winner, is populated here. If the matchup represents a bye week (where the matchup is not
+ * actually being contested), the `isByeWeek` prop will be `true`.
+ * @extends ApiModel
+ */
 class ScoreboardMatchup extends ApiModel {
   /**
    * @typedef {object} ScoreboardMatchupModel

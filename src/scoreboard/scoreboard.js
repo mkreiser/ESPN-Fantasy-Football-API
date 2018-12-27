@@ -1,6 +1,11 @@
 import ApiModel from '../api-model/api-model.js';
 import ScoreboardMatchup from '../scoreboard-matchup/scoreboard-matchup.js';
 
+/**
+ * Represents the scoreboard of a League for a given matchup period or a given scoring period. From
+ * here, the score and winner of each matchup can be given.
+ * @extends ApiModel
+ */
 class Scoreboard extends ApiModel {
   constructor(options = {}) {
     super(options);
