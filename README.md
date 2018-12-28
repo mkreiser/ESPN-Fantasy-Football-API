@@ -1,42 +1,83 @@
 # ESPN Fantasy Football API
 [![Build Status](https://travis-ci.org/mkreiser/ESPN-FantasyFootball-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-FantasyFootball-API) [![Maintainability](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-FantasyFootball-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-FantasyFootball-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API/status.svg)](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API?type=dev)
 
-## How to Use
+A Javascript API client for both web and NodeJS that connects to ESPN's fantasy football API. Available as an npm package.
 
-***Node module coming soon™***
+## Features
 
-### Default file
-`dist/index-web.js` - Production file built for web environments
+* Supports leagues, matchups, boxscores, and rosters.
+  * Get matchup details, player performances, league standings, historical data, and more.
+  * Private league support coming soon™.
+* Highly documented.
+* Built for speed and efficiency with caching support.
+* Built for extensibility by using ES6 classes.
 
-### Additional files available in package
-`dist/index-node.js` - Production file built for node environments
+## Documentation Reference
 
-### Additional files available in local builds
-`dist/index-web-dev.js` - Development file built for web environments
+Hosted documentation coming soon™.
 
-`dist/index-node-dev.js` - Development file built for node environments
+## Installation
 
-## Sample Usage
+***npm module coming soon™.***
+
+There are two files exported in the package:
+
+* `dist/index-web.js` - Production file built for web environments
+
+* `dist/index-node.js` - Production file built for node environments
+
+## How to use
+
+### Importing
+
 ```javascript
-// Loads a League in a Node console
-const espn = require('./dist/index-node-dev.js');
-const League = espn.League;
-const l = League.buildFromLocal({ leagueId: 336358, seasonId: 2018 });
-l
-l.read().then(() => console.log(l));
+// Web
+import { League, Team } from 'espn-fantasyfootball-api';
+
+// Node
+import { League, Team } from 'espn-fantasyfootball-api/dist/index-node.js';
+
+// From local build
+import { League, Team } from './dist/index-node.js';
 ```
 
-## Scripts
+### Loading a League
 
-| Script     | Description                                                             | Options |
-|------------|-------------------------------------------------------------------------|---------|
-| build      | Builds the module                                                       |         |
-| build:docs | Builds the docs                                                         |         |
-| clean      | Runs all clean scripts                                                  |         |
-| clean:dist | Removes the dist folder                                                 |         |
-| clean:docs | Removes the docs folder                                                 |         |
-| ci         | Runs continuous integration tasks. Currently runs lint, test, and build |         |
-| lint       | Ensures code style is correct                                           |         |
-| serve:docs | Builds and serves docs. Defaults to port 8080                           |         |
-| test       | Runs the unit tests                                                     |         |
-| test:watch | Runs and live-watches the unit tests                                    |         |
+```javascript
+import { League } from 'espn-fantasyfootball-api';
+const league = new League({ leagueId: 336358, seasonId: 2018 });
+league.read().then(() => console.log(league)); // Prints loaded league
+```
+
+## Built With
+
+[axios](https://github.com/axios/axios) - Promise based HTTP client.
+
+[babel](https://github.com/babel/babel) + [webpack](https://github.com/webpack/webpack) - Compiles and bundles ES6 and next-gen Javascript to browser-compatible Javascript.
+
+[eslint](https://github.com/eslint/eslint) - Fast code linting to maintain good style and code patterns.
+
+[jest](https://github.com/facebook/jest) - Powerful and fast testing platform. 
+
+[jsdoc](https://github.com/jsdoc3/jsdoc) - Generated code documentation.
+
+[lodash](https://github.com/lodash/lodash) - Utility library.
+
+## Contributing
+
+Coming soon™.
+
+## npm scripts
+
+| Script     | Description                                                  |
+| ---------- | ------------------------------------------------------------ |
+| build      | Builds the module                                            |
+| build:docs | Builds the docs                                              |
+| clean      | Runs all clean scripts                                       |
+| clean:dist | Removes the dist folder                                      |
+| clean:docs | Removes the docs folder                                      |
+| ci         | Runs continuous integration tasks. Currently runs lint, test, and build |
+| lint       | Ensures code style is correct                                |
+| serve:docs | Builds and serves docs. Defaults to port 8080                |
+| test       | Runs the unit tests                                          |
+| test:watch | Runs and live-watches the unit tests                         |
