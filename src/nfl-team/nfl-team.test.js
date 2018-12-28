@@ -21,6 +21,16 @@ describe('NFLTeam', () => {
     expect(nflTeam).not.toBeInstanceOf(ApiModel);
   });
 
+  test('seeds NFL teams in cache', () => {
+    expect(NFLTeam.get('-1')).toBeUndefined();
+    _.forEach(nflTeamIdToNFLTeam, (value, key) => {
+      if (key !== '-1') {
+        const cachedTeam = NFLTeam.get(key);
+        expect(cachedTeam).toBeInstanceOf(NFLTeam);
+      }
+    });
+  });
+
   describe('constructor', () => {
     test('sets instance in the cache', () => {
       const id = 123123;
