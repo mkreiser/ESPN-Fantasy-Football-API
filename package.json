@@ -1,6 +1,6 @@
 {
   "name": "espn-fantasyfootball-api",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "dist/index-web.js",
   "files": [
