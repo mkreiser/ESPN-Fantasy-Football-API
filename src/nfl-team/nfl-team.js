@@ -2,6 +2,9 @@ import _ from 'lodash';
 
 import { nflTeamIdToNFLTeam, nflTeamIdToNFLTeamAbbreviation } from '../constants.js';
 
+/**
+ * Represents a NFL team, mapping from an id to name and abbreviation.
+ */
 class NFLTeam {
   constructor(options = {}) {
     this.id = options.id;
@@ -50,5 +53,12 @@ class NFLTeam {
     return _.get(this.cache, id);
   }
 }
+
+// Seed teams in cache.
+_.forEach(nflTeamIdToNFLTeam, (value, key) => {
+  if (key !== '-1') {
+    new NFLTeam({ id: key }); // eslint-disable-line no-new
+  }
+});
 
 export default NFLTeam;
