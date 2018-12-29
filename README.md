@@ -92,3 +92,11 @@ Coming soon™.
 | serve:docs | Builds and serves docs. Defaults to port 8080                |
 | test       | Runs the unit tests                                          |
 | test:watch | Runs and live-watches the unit tests                         |
+
+## Acknowledgements
+
+Thanks to the following projects for their work and documentation of the ESPN API. They served as the inspiration for this project.
+
+[rbarton65/espnff](https://github.com/rbarton65/espnff)
+
+[Possardt/espn-ff-api](https://github.com/Possardt/espn-ff-api)
