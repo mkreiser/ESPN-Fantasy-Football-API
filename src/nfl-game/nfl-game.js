@@ -7,9 +7,9 @@ import NFLTeam from '../nfl-team/nfl-team.js';
  * @extends ApiModel
  */
 class NFLGame extends ApiModel {
-  static idName = 'gameId';
-
   static displayName = 'NFLGame';
+
+  static idName = 'gameId';
 
   /**
    * @typedef {object} NFLGameModel

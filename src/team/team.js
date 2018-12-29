@@ -24,6 +24,10 @@ class Team extends ApiModel {
     this.seasonId = options.seasonId;
   }
 
+  static displayName = 'Team';
+
+  static idName = 'teamId';
+
   /**
    * @typedef {object} TeamModel
    * @property {number} teamId
@@ -123,10 +127,6 @@ class Team extends ApiModel {
     leagueStanding: 'overallStanding',
     divisionStanding: 'divisionStanding'
   };
-
-  static idName = 'teamId';
-
-  static displayName = 'Team';
 }
 
 export default Team;

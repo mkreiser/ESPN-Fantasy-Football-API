@@ -11,9 +11,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * @extends ApiModel
  */
 class Player extends ApiModel {
-  static idName = 'playerId';
-
   static displayName = 'Player';
+
+  static idName = 'playerId';
 
   /**
    * @typedef {object} PlayerModel

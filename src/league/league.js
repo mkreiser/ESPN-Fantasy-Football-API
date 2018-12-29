@@ -11,6 +11,12 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * @extends ApiModel
  */
 class League extends ApiModel {
+  static displayName = 'League';
+
+  static idName = 'leagueId';
+
+  static route = 'leagueSettings';
+
   /**
    * @typedef {object} LeagueModel
    *
@@ -161,12 +167,6 @@ class League extends ApiModel {
     allowsTrades: 'leaguesettings.allowsTrades',
     tradeRevisionHours: 'leaguesettings.tradeRevisionHours'
   };
-
-  static displayName = 'League';
-
-  static idName = 'leagueId';
-
-  static route = 'leagueSettings';
 
   /**
    * Makes a call to the passed route with the passed params. Defers actual GET call to

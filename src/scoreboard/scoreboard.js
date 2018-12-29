@@ -39,6 +39,10 @@ class Scoreboard extends ApiModel {
     this.scoringPeriodId = options.scoringPeriodId;
   }
 
+  static displayName = 'Scoreboard';
+
+  static route = 'scoreboard';
+
   /**
    * @typedef {object} ScoreboardModel
    * @property {number} matchupPeriodId The id of the match-up the scoreboard represents.
