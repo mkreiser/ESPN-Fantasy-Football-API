@@ -87,4 +87,10 @@ describe('NFLGame', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    test('throws error', () => {
+      expect(() => NFLGame.read()).toThrowError(`${NFLGame.displayName}: read: Cannot call read.`);
+    });
+  });
 });

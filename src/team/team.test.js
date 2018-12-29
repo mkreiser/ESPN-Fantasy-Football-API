@@ -68,4 +68,10 @@ describe('Team', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    test('throws error', () => {
+      expect(() => Team.read()).toThrowError(`${Team.displayName}: read: Cannot call read.`);
+    });
+  });
 });

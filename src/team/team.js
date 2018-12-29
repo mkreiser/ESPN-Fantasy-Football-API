@@ -127,6 +127,13 @@ class Team extends ApiModel {
     leagueStanding: 'overallStanding',
     divisionStanding: 'divisionStanding'
   };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve Teams.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
+  }
 }
 
 export default Team;

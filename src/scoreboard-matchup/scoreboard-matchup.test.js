@@ -195,4 +195,12 @@ describe('ScoreboardMatchup', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    test('throws error', () => {
+      expect(() => ScoreboardMatchup.read()).toThrowError(
+        `${ScoreboardMatchup.displayName}: read: Cannot call read.`
+      );
+    });
+  });
 });

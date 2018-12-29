@@ -58,4 +58,10 @@ describe('Player', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    test('throws error', () => {
+      expect(() => Player.read()).toThrowError(`${Player.displayName}: read: Cannot call read.`);
+    });
+  });
 });

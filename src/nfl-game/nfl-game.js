@@ -65,6 +65,13 @@ class NFLGame extends ApiModel {
     quarter: 'period',
     timeLeftInQuarter: 'timeRemainingInPeriod'
   };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve NFLGames.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
+  }
 }
 
 export default NFLGame;

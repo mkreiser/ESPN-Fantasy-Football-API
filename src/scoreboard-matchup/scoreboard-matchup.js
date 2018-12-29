@@ -80,6 +80,13 @@ class ScoreboardMatchup extends ApiModel {
         return response.winner === 'home' ? model.homeTeam : model.awayTeam;
       }
     }
+  };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve ScoreboardMatchups.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
   }
 }
 
