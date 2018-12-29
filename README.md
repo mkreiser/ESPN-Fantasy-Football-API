@@ -57,11 +57,18 @@ league.read().then(() => console.log(league)); // Prints loaded league
 
 [eslint](https://github.com/eslint/eslint) - Fast code linting to maintain good style and code patterns.
 
-[jest](https://github.com/facebook/jest) - Powerful and fast testing platform. 
+[jest](https://github.com/facebook/jest) - Powerful and fast testing platform.
 
 [jsdoc](https://github.com/jsdoc3/jsdoc) - Generated code documentation.
 
 [lodash](https://github.com/lodash/lodash) - Utility library.
+
+## License
+
+This project is licensed under [LGPL-3.0](https://choosealicense.com/licenses/lgpl-3.0/) (see LICENSE for details). Essentially, don't take this project and close source it.
+
+This is my first time writing OSS and picking a license. Feel free to reach out with questions and/or concerns. 
+
 
 ## Contributing
 
