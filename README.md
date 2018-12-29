@@ -1,5 +1,5 @@
 # ESPN Fantasy Football API
-[![Build Status](https://travis-ci.org/mkreiser/ESPN-FantasyFootball-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-FantasyFootball-API) [![Maintainability](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-FantasyFootball-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-FantasyFootball-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API/status.svg)](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-FantasyFootball-API?type=dev)
+[![Build Status](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API) [![Maintainability](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/b8e7a59ae69f5fbfb8e1/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API?type=dev)
 
 A Javascript API client for both web and NodeJS that connects to ESPN's fantasy football API. Available as an npm package.
 
@@ -32,10 +32,10 @@ There are two files exported in the package:
 
 ```javascript
 // Web
-import { League, Team } from 'espn-fantasyfootball-api';
+import { League, Team } from 'espn-fantasy-football-api';
 
 // Node
-import { League, Team } from 'espn-fantasyfootball-api/dist/index-node.js';
+import { League, Team } from 'espn-fantasy-football-api/dist/index-node.js';
 
 // From local build
 import { League, Team } from './dist/index-node.js';
@@ -44,7 +44,7 @@ import { League, Team } from './dist/index-node.js';
 ### Loading a League
 
 ```javascript
-import { League } from 'espn-fantasyfootball-api';
+import { League } from 'espn-fantasy-football-api';
 const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```
@@ -67,7 +67,7 @@ league.read().then(() => console.log(league)); // Prints loaded league
 
 This project is licensed under [LGPL-3.0](https://choosealicense.com/licenses/lgpl-3.0/) (see LICENSE for details). Essentially, don't take this project and close source it.
 
-This is my first time writing OSS and picking a license. Feel free to reach out with questions and/or concerns. 
+This is my first time writing OSS and picking a license. Feel free to reach out with questions and/or concerns.
 
 
 ## Contributing

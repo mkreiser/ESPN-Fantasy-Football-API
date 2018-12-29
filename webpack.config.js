@@ -15,7 +15,7 @@ const baseConfig = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    library: 'espn-fantasyfootball-api',
+    library: 'espn-fantasy-football-api',
     libraryTarget: 'umd'
   },
   target: 'web',

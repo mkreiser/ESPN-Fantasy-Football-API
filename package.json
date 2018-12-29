@@ -1,5 +1,5 @@
 {
-  "name": "espn-fantasyfootball-api",
+  "name": "espn-fantasy-football-api",
   "version": "0.3.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "dist/index-web.js",
@@ -27,12 +27,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mkreiser/ESPN-FantasyFootball-API.git"
+    "url": "git+https://github.com/mkreiser/ESPN-Fantasy-Football-API.git"
   },
   "bugs": {
-    "url": "https://github.com/mkreiser/ESPN-FantasyFootball-API/issues"
+    "url": "https://github.com/mkreiser/ESPN-Fantasy-Football-API/issues"
   },
-  "homepage": "https://github.com/mkreiser/ESPN-FantasyFootball-API#readme",
+  "homepage": "https://github.com/mkreiser/ESPN-Fantasy-Football-API#readme",
   "keywords": [
     "ESPN",
     "fantasy football",
