@@ -24,6 +24,10 @@ class Team extends ApiModel {
     this.seasonId = options.seasonId;
   }
 
+  static displayName = 'Team';
+
+  static idName = 'teamId';
+
   /**
    * @typedef {object} TeamModel
    * @property {number} teamId
@@ -124,9 +128,12 @@ class Team extends ApiModel {
     divisionStanding: 'divisionStanding'
   };
 
-  static idName = 'teamId';
-
-  static displayName = 'Team';
+  /**
+   * @throws Always, as there is no top level route to retrieve Teams.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
+  }
 }
 
 export default Team;

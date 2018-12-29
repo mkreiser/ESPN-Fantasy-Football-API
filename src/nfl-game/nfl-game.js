@@ -7,9 +7,9 @@ import NFLTeam from '../nfl-team/nfl-team.js';
  * @extends ApiModel
  */
 class NFLGame extends ApiModel {
-  static idName = 'gameId';
-
   static displayName = 'NFLGame';
+
+  static idName = 'gameId';
 
   /**
    * @typedef {object} NFLGameModel
@@ -65,6 +65,13 @@ class NFLGame extends ApiModel {
     quarter: 'period',
     timeLeftInQuarter: 'timeRemainingInPeriod'
   };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve NFLGames.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
+  }
 }
 
 export default NFLGame;

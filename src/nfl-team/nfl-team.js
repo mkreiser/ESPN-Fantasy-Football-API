@@ -3,9 +3,14 @@ import _ from 'lodash';
 import { nflTeamIdToNFLTeam, nflTeamIdToNFLTeamAbbreviation } from '../constants.js';
 
 /**
- * Represents a NFL team, mapping from an id to name and abbreviation.
+ * Represents a NFL team, mapping from an id to name and abbreviation. Does NOT extend
+ * {@link ApiModel}.
  */
 class NFLTeam {
+  /**
+   * @param {object} options
+   * @param {number} options.id
+   */
   constructor(options = {}) {
     this.id = options.id;
 
@@ -45,9 +50,9 @@ class NFLTeam {
   }
 
   /**
-   * Returns a cached NFLTeam.
-   * @param  {number} id Id of the cached NFLTeam to find.
-   * @return {NFLTeam|undefined} The cached team if found. Otherwise, undefined.
+   * Returns a cached NFLTeam matching the passed id if it exists. Otherwise, undefined.
+   * @param  {number} id
+   * @return {NFLTeam|undefined}
    */
   static get(id) {
     return _.get(this.cache, id);

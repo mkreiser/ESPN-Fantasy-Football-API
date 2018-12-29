@@ -6,6 +6,11 @@ import _ from 'lodash';
  * @class
  */
 class ApiModel {
+  /**
+   * @param {object} options Properties to be assigned to the ApiModel. Must match the keys of the
+   *                         ApiModel's `responseMap` or valid options defined by the subclass's
+   *                         `constructor`.
+   */
   constructor(options = {}) {
     this.constructor._populateApiModel({
       data: options,
@@ -229,6 +234,11 @@ class ApiModel {
     this._cache = {};
   }
 
+  /**
+   * Returns a cached model matching the passed id if it exists. Otherwise, undefined.
+   * @param  {number} id
+   * @return {ApiModel|undefined}
+   */
   static get(id) {
     return _.get(this.cache, id);
   }
@@ -301,7 +311,7 @@ class ApiModel {
   }
 
   /**
-   * Gets the instance's id, using `static idName` to set the correct attribute.
+   * Gets the instance's id, using `static idName` to get the correct attribute.
    * @return {number}
    */
   getId() {

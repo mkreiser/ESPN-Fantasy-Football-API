@@ -10,6 +10,10 @@ import Team from '../team/team.js';
  * @extends ApiModel
  */
 class ScoreboardMatchup extends ApiModel {
+  static displayName = 'ScoreboardMatchup';
+
+  static idName = 'leagueId';
+
   /**
    * @typedef {object} ScoreboardMatchupModel
    * @property {Team} homeTeam An instance of the home team. Uses a cached instance if possible.
@@ -19,6 +23,10 @@ class ScoreboardMatchup extends ApiModel {
    * @property {boolean} isByeWeek Whether or not the matchup is in a bye week.
    * @property {Team} wunner The Team instance of the winning team.
    */
+
+  /**
+    * @type {ScoreboardMatchupModel}
+    */
   static responseMap = {
     homeTeam: {
       key: 'teams',
@@ -72,6 +80,13 @@ class ScoreboardMatchup extends ApiModel {
         return response.winner === 'home' ? model.homeTeam : model.awayTeam;
       }
     }
+  };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve ScoreboardMatchups.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
   }
 }
 

@@ -11,9 +11,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * @extends ApiModel
  */
 class Player extends ApiModel {
-  static idName = 'playerId';
-
   static displayName = 'Player';
+
+  static idName = 'playerId';
 
   /**
    * @typedef {object} PlayerModel
@@ -34,6 +34,10 @@ class Player extends ApiModel {
    * @property {string[]} eligiblePositions A list of the eligible position slots the player may be
    *                                        played in.
    */
+
+  /**
+    * @type {PlayerModel}
+    */
   static responseMap = {
     playerId: 'playerId',
 
@@ -56,6 +60,13 @@ class Player extends ApiModel {
       )
     }
   };
+
+  /**
+   * @throws Always, as there is no top level route to retrieve Players.
+   */
+  static read() {
+    throw new Error(`${this.displayName}: read: Cannot call read.`);
+  }
 }
 
 export default Player;
