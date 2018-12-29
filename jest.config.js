@@ -8,6 +8,7 @@ module.exports = {
     '!**/node_modules/**'
   ],
   coverageDirectory: 'coverage',
+  restoreMocks: true,
   transform: {
     '^.+\\.js$': 'babel-jest'
   }
