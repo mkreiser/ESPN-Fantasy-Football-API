@@ -48,6 +48,10 @@ class Scoreboard extends ApiModel {
    *                                                      in the scoring period begins.
    * @property {boolean} nflGamesInProgress Whether or not there are any NFL games being played.
    */
+
+  /**
+    * @type {ScoreboardModel}
+    */
   static responseMap = {
     matchupPeriodId: 'scoreboard.matchupPeriodId',
     scoringPeriodId: 'scoreboard.scoringPeriodId',

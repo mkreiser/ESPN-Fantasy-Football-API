@@ -19,6 +19,10 @@ class ScoreboardMatchup extends ApiModel {
    * @property {boolean} isByeWeek Whether or not the matchup is in a bye week.
    * @property {Team} wunner The Team instance of the winning team.
    */
+
+  /**
+    * @type {ScoreboardMatchupModel}
+    */
   static responseMap = {
     homeTeam: {
       key: 'teams',

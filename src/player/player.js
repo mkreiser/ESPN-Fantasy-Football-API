@@ -34,6 +34,10 @@ class Player extends ApiModel {
    * @property {string[]} eligiblePositions A list of the eligible position slots the player may be
    *                                        played in.
    */
+
+  /**
+    * @type {PlayerModel}
+    */
   static responseMap = {
     playerId: 'playerId',
 

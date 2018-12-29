@@ -1,6 +1,6 @@
 /**
  * Maps `slotCategoryId`'s numerical enum to readable positions.
- * @type {Object}
+ * @type {object}
  */
 const slotCategoryIdToPositionMap = {
   0: 'QB',
@@ -32,7 +32,7 @@ const slotCategoryIdToPositionMap = {
 
 /**
  * Maps `proTeam` numerical enum to readable team names.
- * @type {Object}
+ * @type {object}
  */
 const nflTeamIdToNFLTeam = {
   [-1]: 'Bye',
@@ -72,7 +72,7 @@ const nflTeamIdToNFLTeam = {
 
 /**
  * Maps `proTeam` numerical enum to readable team name abbreviations.
- * @type {Object}
+ * @type {object}
  */
 const nflTeamIdToNFLTeamAbbreviation = {
   [-1]: 'Bye',
