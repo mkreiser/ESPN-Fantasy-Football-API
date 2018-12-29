@@ -3,6 +3,7 @@ import axios from 'axios';
 import ApiModel from './src/api-model/api-model.js';
 
 import League from './src/league/league.js';
+import NFLGame from './src/nfl-game/nfl-game.js';
 import NFLTeam from './src/nfl-team/nfl-team.js';
 import Player from './src/player/player.js';
 import Scoreboard from './src/scoreboard/scoreboard.js';
@@ -21,6 +22,7 @@ export {
   ApiModel,
 
   League,
+  NFLGame,
   NFLTeam,
   Player,
   Scoreboard,
