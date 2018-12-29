@@ -1,0 +1,45 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`NFLGame attribute population from local object parses data correctly 1`] = `
+NFLGame {
+  "awayTeam": NFLTeam {
+    "abbreviation": "DET",
+    "id": "8",
+    "name": "Detroit Lions",
+  },
+  "awayTeamScore": 0,
+  "gameDate": "2018-12-30T18:00:00.000Z",
+  "gameId": 381230009,
+  "gameStatus": "Game has not started",
+  "homeTeam": NFLTeam {
+    "abbreviation": "GB",
+    "id": "9",
+    "name": "Green Bay Packers",
+  },
+  "homeTeamScore": 0,
+  "quarter": 0,
+  "timeLeftInQuarter": "0:00",
+}
+`;
+
+exports[`NFLGame attribute population from server response parses data correctly 1`] = `
+NFLGame {
+  "awayTeam": NFLTeam {
+    "abbreviation": "DET",
+    "id": "8",
+    "name": "Detroit Lions",
+  },
+  "awayTeamScore": 0,
+  "gameDate": "2018-12-30T18:00:00.000Z",
+  "gameId": 381230009,
+  "gameStatus": "Game has not started",
+  "homeTeam": NFLTeam {
+    "abbreviation": "GB",
+    "id": "9",
+    "name": "Green Bay Packers",
+  },
+  "homeTeamScore": 0,
+  "quarter": 0,
+  "timeLeftInQuarter": "0:00",
+}
+`;
