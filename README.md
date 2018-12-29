@@ -76,7 +76,7 @@ This is my first time writing OSS and picking a license. Feel free to reach out 
 
 ## Contributing
 
-Coming soon™.
+See [CONTRIBUTING.MD](https://github.com/mkreiser/ESPN-Fantasy-Football-API/blob/master/CONTRIBUTING.md)
 
 ## npm scripts
 
