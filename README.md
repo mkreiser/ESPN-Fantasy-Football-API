@@ -63,6 +63,10 @@ league.read().then(() => console.log(league)); // Prints loaded league
 
 [lodash](https://github.com/lodash/lodash) - Utility library.
 
+## Versioning
+
+This project uses [Semantic Versioning](https://semver.org/).
+
 ## License
 
 This project is licensed under [LGPL-3.0](https://choosealicense.com/licenses/lgpl-3.0/) (see LICENSE for details). Essentially, don't take this project and close source it.
