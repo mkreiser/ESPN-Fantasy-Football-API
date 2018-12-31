@@ -69,7 +69,7 @@ This project uses [Semantic Versioning](https://semver.org/).
 
 ## License
 
-This project is licensed under [LGPL-3.0](https://choosealicense.com/licenses/lgpl-3.0/) (see LICENSE for details). Essentially, don't take this project and close source it.
+This project is licensed under [GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/) (see LICENSE for details). Essentially, don't take this project and close source it.
 
 This is my first time writing OSS and picking a license. Feel free to reach out with questions and/or concerns.
 
