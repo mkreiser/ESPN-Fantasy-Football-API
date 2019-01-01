@@ -192,6 +192,16 @@ describe('ApiModel', () => {
             expect(returnedModel.some_value).toBeUndefined();
           });
 
+          describe('when a value in the static responseMap is undefined on the passed data', () => {
+            test('does not set property', () => {
+              data = { some_value: 'some server data' };
+
+              const returnedModel = callPopulate();
+              expect(returnedModel.testId).toBeUndefined();
+              expect(returnedModel.someNestedData).toBeUndefined();
+            });
+          });
+
           describe('when a value in the static responseMap is a string', () => {
             test('directly maps the response attribute at that string', () => {
               data = { some_value: 'some server data' };
