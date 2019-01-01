@@ -14,7 +14,7 @@ A Javascript API client for both web and NodeJS that connects to ESPN's fantasy 
 
 ## Documentation Reference
 
-Hosted documentation coming soon™.
+Hosted documentation available at http://espn-fantasy-football-api.s3-website.us-east-2.amazonaws.com/.
 
 ## Installation
 
