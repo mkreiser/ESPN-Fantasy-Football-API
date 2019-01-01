@@ -4,7 +4,6 @@ import ApiModel from './src/api-model/api-model.js';
 
 import League from './src/league/league.js';
 import NFLGame from './src/nfl-game/nfl-game.js';
-import NFLTeam from './src/nfl-team/nfl-team.js';
 import Player from './src/player/player.js';
 import Scoreboard from './src/scoreboard/scoreboard.js';
 import ScoreboardMatchup from './src/scoreboard-matchup/scoreboard-matchup.js';
@@ -23,7 +22,6 @@ export {
 
   League,
   NFLGame,
-  NFLTeam,
   Player,
   Scoreboard,
   ScoreboardMatchup,

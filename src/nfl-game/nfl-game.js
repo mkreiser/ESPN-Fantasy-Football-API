@@ -1,5 +1,8 @@
+import _ from 'lodash';
+
 import ApiModel from '../api-model/api-model.js';
-import NFLTeam from '../nfl-team/nfl-team.js';
+
+import nflTeams from '../nfl-teams/nfl-teams.js';
 
 /**
  * Represents a NFL game. All NFL games for a given week can be found in a boxscore. Additionally,
@@ -53,11 +56,11 @@ class NFLGame extends ApiModel {
 
     homeTeam: {
       key: 'homeProTeamId',
-      manualParse: (responseData) => NFLTeam.get(responseData)
+      manualParse: (responseData) => _.get(nflTeams, responseData)
     },
     awayTeam: {
       key: 'awayProTeamId',
-      manualParse: (responseData) => NFLTeam.get(responseData)
+      manualParse: (responseData) => _.get(nflTeams, responseData)
     },
     homeTeamScore: 'homeScore',
     awayTeamScore: 'awayScore',

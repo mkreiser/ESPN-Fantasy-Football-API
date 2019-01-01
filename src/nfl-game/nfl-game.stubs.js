@@ -1,4 +1,6 @@
-import NFLTeam from '../nfl-team/nfl-team.js';
+import _ from 'lodash';
+
+import nflTeams from '../nfl-teams/nfl-teams.js';
 
 /**
  * Use your editor's collapse functionality to collapse `serverResponse` and make this easier to
@@ -6,20 +8,12 @@ import NFLTeam from '../nfl-team/nfl-team.js';
  */
 
 const localObject = {
-  awayTeam: new NFLTeam({
-    abbreviation: 'DET',
-    id: '8',
-    name: 'Detroit Lions'
-  }),
+  awayTeam: _.get(nflTeams, 8),
   awayTeamScore: 0,
   gameDate: '2018-12-30T18:00:00.000Z',
   gameId: 381230009,
   gameStatus: 'Game has not started',
-  homeTeam: new NFLTeam({
-    abbreviation: 'GB',
-    id: '9',
-    name: 'Green Bay Packers'
-  }),
+  homeTeam: _.get(nflTeams, 9),
   homeTeamScore: 0,
   quarter: 0,
   timeLeftInQuarter: '0:00'
