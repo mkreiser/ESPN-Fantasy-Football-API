@@ -17,7 +17,7 @@ class BoxscorePlayerPointStats extends ApiModel {
    *
    * Defensive yards allowed and points allowed are inclusive and only scored when their condition
    * is met. For example, if a DST allowed 360 yards, then `defensive350To399YardsAllowed` will be
-   * scored and the other defensive yard stats will not be populated (values will be `undefined`).
+   * scored and the other defensive yard stats will not be populated.
    *
    * @property {number} passingYards Points scored for passing yards (typically a QB stat).
    * @property {number} passingTouchdowns Points scored for passing TDs (typically a QB stat).

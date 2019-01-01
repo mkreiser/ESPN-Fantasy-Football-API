@@ -123,7 +123,9 @@ class ApiModel {
       );
     }
 
-    _.set(model, key, item);
+    if (!_.isUndefined(item)) {
+      _.set(model, key, item);
+    }
   }
 
   /**
