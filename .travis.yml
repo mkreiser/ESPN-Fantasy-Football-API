@@ -12,3 +12,13 @@ before_script:
 script: npm run ci
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+deploy:
+  provider: s3
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
+  bucket: "espn-fantasy-football-api"
+  skip_cleanup: true
+  region: us-east-2
+  local_dir: docs
+  on:
+    branch: master
