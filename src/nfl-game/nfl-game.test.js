@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import ApiModel from '../api-model/api-model.js';
-import NFLTeam from '../nfl-team/nfl-team.js';
+import nflTeams from '../nfl-teams/nfl-teams.js';
 
 import NFLGame from './nfl-game.js';
 
@@ -75,7 +75,7 @@ describe('NFLGame', () => {
       test('maps to an NFLTeam', () => {
         const id = 10;
         const team = NFLGame.responseMap.homeTeam.manualParse(id);
-        expect(team).toBeInstanceOf(NFLTeam);
+        expect(team).toBe(_.get(nflTeams, id));
       });
     });
 
@@ -83,7 +83,7 @@ describe('NFLGame', () => {
       test('maps to an NFLTeam', () => {
         const id = 10;
         const team = NFLGame.responseMap.awayTeam.manualParse(id);
-        expect(team).toBeInstanceOf(NFLTeam);
+        expect(team).toBe(_.get(nflTeams, id));
       });
     });
   });
