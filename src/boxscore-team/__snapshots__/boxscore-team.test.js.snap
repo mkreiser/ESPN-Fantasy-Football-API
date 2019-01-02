@@ -623,13 +623,9 @@ BoxscoreTeam {
     },
     BoxscorePlayer {
       "position": "Bench",
-      "projectedStats": BoxscorePlayerPointStats {},
-      "stats": BoxscorePlayerPointStats {},
     },
     BoxscorePlayer {
       "position": "Bench",
-      "projectedStats": BoxscorePlayerPointStats {},
-      "stats": BoxscorePlayerPointStats {},
     },
   ],
   "team": Team {

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import Player from './player.js';
 
 import { localObject, serverResponse } from './player.stubs.js';
@@ -18,8 +18,8 @@ describe('Player', () => {
     player = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(player).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(player).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -34,7 +34,7 @@ describe('Player', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      player = Player.buildFromLocal(localObject);
+      player = new Player(localObject);
     });
 
     test('parses data correctly', () => {
@@ -56,12 +56,6 @@ describe('Player', () => {
           });
         });
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => Player.read()).toThrowError(`${Player.displayName}: read: Cannot call read.`);
     });
   });
 });

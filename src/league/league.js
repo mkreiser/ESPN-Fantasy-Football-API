@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseAPIObject from '../base-api-object/base-api-object.js';
 import Team from '../team/team.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
@@ -8,9 +8,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
 /**
  * Represents a fantasy football league. Due to ESPN's API routing, most information comes from the
  * league request. It's what we got ¯\\\_(ツ)_/¯.
- * @extends ApiModel
+ * @extends BaseAPIObject
  */
-class League extends ApiModel {
+class League extends BaseAPIObject {
   static displayName = 'League';
 
   static idName = 'leagueId';

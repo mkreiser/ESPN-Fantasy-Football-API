@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import nflTeams from '../nfl-teams/nfl-teams.js';
 
 import NFLGame from './nfl-game.js';
@@ -18,8 +18,8 @@ describe('NFLGame', () => {
     nflGame = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(nflGame).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(nflGame).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -34,7 +34,7 @@ describe('NFLGame', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      nflGame = NFLGame.buildFromLocal(localObject);
+      nflGame = new NFLGame(localObject);
     });
 
     test('parses data correctly', () => {
@@ -85,12 +85,6 @@ describe('NFLGame', () => {
         const team = NFLGame.responseMap.awayTeam.manualParse(id);
         expect(team).toBe(_.get(nflTeams, id));
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => NFLGame.read()).toThrowError(`${NFLGame.displayName}: read: Cannot call read.`);
     });
   });
 });

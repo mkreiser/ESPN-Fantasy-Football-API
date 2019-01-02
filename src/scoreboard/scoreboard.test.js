@@ -1,4 +1,4 @@
-import ApiModel from '../api-model/api-model.js';
+import BaseAPIObject from '../base-api-object/base-api-object.js';
 import Scoreboard from './scoreboard.js';
 
 import { localObject, serverResponse } from './scoreboard.stubs.js';
@@ -14,8 +14,8 @@ describe('Scoreboard', () => {
     scoreboard = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(scoreboard).toBeInstanceOf(ApiModel);
+  test('extends BaseAPIObject', () => {
+    expect(scoreboard).toBeInstanceOf(BaseAPIObject);
   });
 
   describe('attribute population from server response', () => {
@@ -30,7 +30,7 @@ describe('Scoreboard', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      scoreboard = Scoreboard.buildFromLocal(localObject);
+      scoreboard = new Scoreboard(localObject);
     });
 
     test('parses data correctly', () => {

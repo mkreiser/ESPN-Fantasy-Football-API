@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import Team from '../team/team.js';
 import ScoreboardMatchup from './scoreboard-matchup.js';
 
@@ -17,8 +17,8 @@ describe('ScoreboardMatchup', () => {
     matchup = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(matchup).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(matchup).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -33,7 +33,7 @@ describe('ScoreboardMatchup', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      matchup = ScoreboardMatchup.buildFromLocal(localObject);
+      matchup = new ScoreboardMatchup(localObject);
     });
 
     test('parses data correctly', () => {
@@ -193,14 +193,6 @@ describe('ScoreboardMatchup', () => {
           expect(returnedWinner).toBeUndefined();
         });
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => ScoreboardMatchup.read()).toThrowError(
-        `${ScoreboardMatchup.displayName}: read: Cannot call read.`
-      );
     });
   });
 });

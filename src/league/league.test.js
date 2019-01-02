@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseAPIObject from '../base-api-object/base-api-object.js';
 import Team from '../team/team.js';
 import League from './league.js';
 
@@ -19,8 +19,8 @@ describe('League', () => {
     league = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(league).toBeInstanceOf(ApiModel);
+  test('extends BaseAPIObject', () => {
+    expect(league).toBeInstanceOf(BaseAPIObject);
   });
 
   describe('attribute population from server response', () => {
@@ -35,7 +35,7 @@ describe('League', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      league = League.buildFromLocal(localObject);
+      league = new League(localObject);
     });
 
     test('parses data correctly', () => {
@@ -261,11 +261,11 @@ describe('League', () => {
         league.seasonId = seasonId;
 
         // Super lazy way to test
-        jest.spyOn(ApiModel.prototype, 'read').mockImplementation();
+        jest.spyOn(BaseAPIObject.prototype, 'read').mockImplementation();
 
         league.read({ params: { some: 'params' } });
 
-        expect(ApiModel.prototype.read).toBeCalledWith({
+        expect(BaseAPIObject.prototype.read).toBeCalledWith({
           params: {
             seasonId,
             some: 'params'
@@ -275,7 +275,7 @@ describe('League', () => {
           reload: true
         });
 
-        ApiModel.prototype.read.mockRestore();
+        BaseAPIObject.prototype.read.mockRestore();
       });
     });
 
@@ -285,18 +285,18 @@ describe('League', () => {
         league.seasonId = seasonId;
 
         // Super lazy way to test
-        jest.spyOn(ApiModel.prototype, 'read').mockImplementation();
+        jest.spyOn(BaseAPIObject.prototype, 'read').mockImplementation();
 
         league.read();
 
-        expect(ApiModel.prototype.read).toBeCalledWith({
+        expect(BaseAPIObject.prototype.read).toBeCalledWith({
           params: { seasonId },
           model: league,
           route: League.route,
           reload: true
         });
 
-        ApiModel.prototype.read.mockRestore();
+        BaseAPIObject.prototype.read.mockRestore();
       });
     });
   });

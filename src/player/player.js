@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseCachableObject from '../base-cachable-object/base-cachable-object.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
@@ -8,9 +8,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * Represents an NFL player that can be rostered on a fantasy football team. There is currently not
  * a discovered route to directly get player information. However, player information can be
  * retrieved from a boxscore and a team roster.
- * @extends ApiModel
+ * @extends BaseCachableObject
  */
-class Player extends ApiModel {
+class Player extends BaseCachableObject {
   static displayName = 'Player';
 
   static idName = 'playerId';
@@ -60,13 +60,6 @@ class Player extends ApiModel {
       )
     }
   };
-
-  /**
-   * @throws Always, as there is no top level route to retrieve Players.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default Player;

@@ -1,15 +1,16 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
+
 import Team from '../team/team.js';
 
 /**
  * Represents a single matchup on a {@link Scoreboard}. Each team, their score, and the matchup
  * winner, is populated here. If the matchup represents a bye week (where the matchup is not
  * actually being contested), the `isByeWeek` prop will be `true`.
- * @extends ApiModel
+ * @extends BaseObject
  */
-class ScoreboardMatchup extends ApiModel {
+class ScoreboardMatchup extends BaseObject {
   static displayName = 'ScoreboardMatchup';
 
   static idName = 'leagueId';
@@ -81,13 +82,6 @@ class ScoreboardMatchup extends ApiModel {
       }
     }
   };
-
-  /**
-   * @throws Always, as there is no top level route to retrieve ScoreboardMatchups.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default ScoreboardMatchup;

@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 
 import BoxscorePlayer from '../boxscore-player/boxscore-player.js';
 import Team from '../team/team.js';
@@ -9,9 +9,9 @@ import Team from '../team/team.js';
  * Represents a team in a boxscore. Data must be manually passed on the `teamBoxscore` and
  * `matchupScore`. This is an organizational class and not a class found on the API responses.
  * Therefore, there is no id for this class.
- * @extends ApiModel
+ * @extends BaseObject
  */
-class BoxscoreTeam extends ApiModel {
+class BoxscoreTeam extends BaseObject {
   static displayName = 'BoxscoreTeam';
 
   /**
@@ -58,18 +58,10 @@ class BoxscoreTeam extends ApiModel {
 
     players: {
       key: 'teamBoxscore.slots',
-      ApiModel: BoxscorePlayer,
+      BaseObject: BoxscorePlayer,
       isArray: true
     }
   };
-
-  /**
-   * @throws Always, as BoxscoreTeam is an organizational class created by this project and does not
-   *         exist on the ESPN API.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default BoxscoreTeam;

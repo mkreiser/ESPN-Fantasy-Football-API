@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import Team from './team.js';
 
 import { localObject, serverResponse } from './team.stubs.js';
@@ -16,8 +16,8 @@ describe('Team', () => {
     team = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(team).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(team).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -32,7 +32,7 @@ describe('Team', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      team = Team.buildFromLocal(localObject);
+      team = new Team(localObject);
     });
 
     test('parses data correctly', () => {
@@ -66,12 +66,6 @@ describe('Team', () => {
           });
         });
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => Team.read()).toThrowError(`${Team.displayName}: read: Cannot call read.`);
     });
   });
 });

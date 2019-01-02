@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseAPIObject from '../base-api-object/base-api-object.js';
 
 import BoxscoreTeam from '../boxscore-team/boxscore-team.js';
 import NFLGame from '../nfl-game/nfl-game.js';
@@ -10,9 +10,9 @@ import NFLGame from '../nfl-game/nfl-game.js';
  * `teamId`, and at least one of `matchupPeriodId` and `scoringPeriodId`.
  *
  * Only introduced in 2017 and valid for all matchups in 2017 or after.
- * @extends ApiModel
+ * @extends BaseAPIObject
  */
-class Boxscore extends ApiModel {
+class Boxscore extends BaseAPIObject {
   constructor(options = {}) {
     super(options);
 
