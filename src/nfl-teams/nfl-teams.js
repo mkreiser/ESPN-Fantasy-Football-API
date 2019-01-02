@@ -3,8 +3,7 @@ import _ from 'lodash';
 import { nflTeamIdToNFLTeam, nflTeamIdToNFLTeamAbbreviation } from '../constants.js';
 
 /**
- * Represents a NFL team, mapping from an id to name and abbreviation. Does NOT extend
- * {@link ApiModel}.
+ * Represents a NFL team, mapping from an id to name and abbreviation.
  */
 class NFLTeam {
   constructor(options) {

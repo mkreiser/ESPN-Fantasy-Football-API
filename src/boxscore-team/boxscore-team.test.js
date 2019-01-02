@@ -1,4 +1,4 @@
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import Team from '../team/team.js';
 
 import BoxscoreTeam from './boxscore-team.js';
@@ -16,8 +16,8 @@ describe('BoxscoreTeam', () => {
     boxscoreTeam = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(boxscoreTeam).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(boxscoreTeam).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -32,7 +32,7 @@ describe('BoxscoreTeam', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      boxscoreTeam = BoxscoreTeam.buildFromLocal(localObject);
+      boxscoreTeam = new BoxscoreTeam(localObject);
     });
 
     test('parses data correctly', () => {
@@ -95,14 +95,6 @@ describe('BoxscoreTeam', () => {
           });
         });
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => BoxscoreTeam.read()).toThrowError(
-        `${BoxscoreTeam.displayName}: read: Cannot call read.`
-      );
     });
   });
 });

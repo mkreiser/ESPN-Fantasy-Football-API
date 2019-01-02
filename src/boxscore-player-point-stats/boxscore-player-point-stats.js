@@ -1,4 +1,4 @@
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 
 /**
  * Represents the points scored for each stat for a player on a team in a boxscore. This is an
@@ -7,9 +7,9 @@ import ApiModel from '../api-model/api-model.js';
  *
  * The stat map is not comprehensive, but should cover normal standard and PPR scoring rules. The
  * largest missing piece is IDP scoring.
- * @extends ApiModel
+ * @extends BaseObject
  */
-class BoxscorePlayerPointStats extends ApiModel {
+class BoxscorePlayerPointStats extends BaseObject {
   static displayName = 'BoxscorePlayerPointStats';
 
   /**
@@ -154,14 +154,6 @@ class BoxscorePlayerPointStats extends ApiModel {
     defensive500To549YardsAllowed: '135',
     defensiveOver550YardsAllowed: '136'
   };
-
-  /**
-   * @throws Always, as BoxscorePlayerPointStats is an organizational class created by this project
-   *         and does not exist on the ESPN API.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default BoxscorePlayerPointStats;

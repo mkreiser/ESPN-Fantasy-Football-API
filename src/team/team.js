@@ -1,12 +1,12 @@
-import ApiModel from '../api-model/api-model.js';
+import BaseCachableObject from '../base-cachable-object/base-cachable-object.js';
 
 /**
  * Represents a fantasy football team in a League. To get team information, a request must be made
  * to the `leagueSettings` route. There is not a generic team route on the ESPN API. Teams should
  * be populate when you get a League, so additional request should be unnecessary.
- * @extends ApiModel
+ * @extends BaseCachableObject
  */
-class Team extends ApiModel {
+class Team extends BaseCachableObject {
   constructor(options = {}) {
     super(options);
 
@@ -127,13 +127,6 @@ class Team extends ApiModel {
     leagueStanding: 'overallStanding',
     divisionStanding: 'divisionStanding'
   };
-
-  /**
-   * @throws Always, as there is no top level route to retrieve Teams.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default Team;

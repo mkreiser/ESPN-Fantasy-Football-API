@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseAPIObject from '../base-api-object/base-api-object.js';
 import BoxscoreTeam from '../boxscore-team/boxscore-team.js';
 import NFLGame from '../nfl-game/nfl-game.js';
 
@@ -19,8 +19,8 @@ describe('Boxscore', () => {
     boxscore = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(boxscore).toBeInstanceOf(ApiModel);
+  test('extends BaseAPIObject', () => {
+    expect(boxscore).toBeInstanceOf(BaseAPIObject);
   });
 
   describe('attribute population from server response', () => {
@@ -35,7 +35,7 @@ describe('Boxscore', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      boxscore = Boxscore.buildFromLocal(localObject);
+      boxscore = new Boxscore(localObject);
     });
 
     test('parses data correctly', () => {

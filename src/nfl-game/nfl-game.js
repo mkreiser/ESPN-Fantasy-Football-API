@@ -1,15 +1,15 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 
 import nflTeams from '../nfl-teams/nfl-teams.js';
 
 /**
  * Represents a NFL game. All NFL games for a given week can be found in a boxscore. Additionally,
  * a roster will have all games relevant to the players on the roster.
- * @extends ApiModel
+ * @extends BaseObject
  */
-class NFLGame extends ApiModel {
+class NFLGame extends BaseObject {
   static displayName = 'NFLGame';
 
   static idName = 'gameId';
@@ -68,13 +68,6 @@ class NFLGame extends ApiModel {
     quarter: 'period',
     timeLeftInQuarter: 'timeRemainingInPeriod'
   };
-
-  /**
-   * @throws Always, as there is no top level route to retrieve NFLGames.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default NFLGame;

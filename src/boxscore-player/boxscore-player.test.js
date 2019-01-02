@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 import Player from '../player/player.js';
 
 import BoxscorePlayer from './boxscore-player.js';
@@ -20,8 +20,8 @@ describe('BoxscorePlayer', () => {
     boxscorePlayer = null;
   });
 
-  test('extends ApiModel', () => {
-    expect(boxscorePlayer).toBeInstanceOf(ApiModel);
+  test('extends BaseObject', () => {
+    expect(boxscorePlayer).toBeInstanceOf(BaseObject);
   });
 
   describe('attribute population from server response', () => {
@@ -36,7 +36,7 @@ describe('BoxscorePlayer', () => {
 
   describe('attribute population from local object', () => {
     beforeEach(() => {
-      boxscorePlayer = BoxscorePlayer.buildFromLocal(localObject);
+      boxscorePlayer = new BoxscorePlayer(localObject);
     });
 
     test('parses data correctly', () => {
@@ -123,14 +123,6 @@ describe('BoxscorePlayer', () => {
           });
         });
       });
-    });
-  });
-
-  describe('class methods', () => {
-    test('throws error', () => {
-      expect(() => BoxscorePlayer.read()).toThrowError(
-        `${BoxscorePlayer.displayName}: read: Cannot call read.`
-      );
     });
   });
 });

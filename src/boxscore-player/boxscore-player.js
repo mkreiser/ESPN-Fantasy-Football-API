@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import ApiModel from '../api-model/api-model.js';
+import BaseObject from '../base-object/base-object.js';
 
 import BoxscorePlayerPointStats
   from '../boxscore-player-point-stats/boxscore-player-point-stats.js';
@@ -12,9 +12,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * Represents a player on a team in a boxscore. Summarizes the player's stats and status. This is an
  * organizational class and not a class found on the API responses. Therefore, there is no id for
  * this class.
- * @extends ApiModel
+ * @extends BaseObject
  */
-class BoxscorePlayer extends ApiModel {
+class BoxscorePlayer extends BaseObject {
   static displayName = 'BoxscorePlayer';
 
   /**
@@ -71,21 +71,13 @@ class BoxscorePlayer extends ApiModel {
 
     stats: {
       key: 'currentPeriodRealStats.appliedStats',
-      ApiModel: BoxscorePlayerPointStats
+      BaseObject: BoxscorePlayerPointStats
     },
     projectedStats: {
       key: 'currentPeriodProjectedStats.appliedStats',
-      ApiModel: BoxscorePlayerPointStats
+      BaseObject: BoxscorePlayerPointStats
     }
   };
-
-  /**
-   * @throws Always, as BoxscorePlayer is an organizational class created by this project and does
-   *         not exist on the ESPN API.
-   */
-  static read() {
-    throw new Error(`${this.displayName}: read: Cannot call read.`);
-  }
 }
 
 export default BoxscorePlayer;
