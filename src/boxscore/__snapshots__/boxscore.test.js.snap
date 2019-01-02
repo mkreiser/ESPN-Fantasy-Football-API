@@ -97,7 +97,6 @@ Boxscore {
           "rushingTouchdowns": 1.14,
           "rushingYards": 0.99,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -128,7 +127,6 @@ Boxscore {
           "rushingTouchdowns": 4.58,
           "rushingYards": 7.55,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -159,7 +157,6 @@ Boxscore {
           "rushingTouchdowns": 4.14,
           "rushingYards": 5.04,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -190,7 +187,6 @@ Boxscore {
           "rushingTouchdowns": 0.09,
           "rushingYards": 0.44,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -219,7 +215,6 @@ Boxscore {
           "receivingTouchdowns": 2.7,
           "receivingYards": 8.67,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -250,7 +245,6 @@ Boxscore {
           "rushingTouchdowns": 0.06,
           "rushingYards": 0.09,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -281,7 +275,6 @@ Boxscore {
           "rushingTouchdowns": 4,
           "rushingYards": 6.29,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -314,7 +307,6 @@ Boxscore {
           "kickoffReturnTouchdown": 0.07,
           "puntReturnTouchdown": 0.19,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -343,7 +335,6 @@ Boxscore {
           "missedExtraPoints": -0.09,
           "missedFieldGoals": -0.37,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -375,7 +366,6 @@ Boxscore {
           "rushingTouchdowns": 2.98,
           "rushingYards": 4.23,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -406,7 +396,6 @@ Boxscore {
           "rushingTouchdowns": 2.09,
           "rushingYards": 6.31,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -437,7 +426,6 @@ Boxscore {
           "rushingTouchdowns": 0.93,
           "rushingYards": 0.17,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -468,7 +456,6 @@ Boxscore {
           "rushingTouchdowns": 0.23,
           "rushingYards": 0.42,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -490,8 +477,6 @@ Boxscore {
         },
         "position": "Bench",
         "projectedPoints": 0,
-        "projectedStats": BoxscorePlayerPointStats {},
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -519,7 +504,6 @@ Boxscore {
           "receivingTouchdowns": 2.2,
           "receivingYards": 5.73,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -550,7 +534,6 @@ Boxscore {
           "rushingTouchdowns": 1.54,
           "rushingYards": 2.41,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
     ],
     "team": Team {
@@ -608,7 +591,6 @@ Boxscore {
           "rushingTouchdowns": 0.67,
           "rushingYards": 1.73,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -639,7 +621,6 @@ Boxscore {
           "rushingTouchdowns": 2.5,
           "rushingYards": 3.87,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -670,7 +651,6 @@ Boxscore {
           "rushingTouchdowns": 2.1,
           "rushingYards": 5.03,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -701,7 +681,6 @@ Boxscore {
           "rushingTouchdowns": 0.03,
           "rushingYards": 0.13,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -729,7 +708,6 @@ Boxscore {
           "receivingTouchdowns": 4.01,
           "receivingYards": 8.44,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -757,7 +735,6 @@ Boxscore {
           "receivingTouchdowns": 1.42,
           "receivingYards": 3.84,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -790,7 +767,6 @@ Boxscore {
           "rushingTouchdowns": 0.69,
           "rushingYards": 2.53,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -822,7 +798,6 @@ Boxscore {
           "kickoffReturnTouchdown": 0.06,
           "puntReturnTouchdown": 0.16,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -851,7 +826,6 @@ Boxscore {
           "missedExtraPoints": -0.14,
           "missedFieldGoals": -0.25,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -882,7 +856,6 @@ Boxscore {
           "rushingTouchdowns": 1.75,
           "rushingYards": 5.35,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -910,7 +883,6 @@ Boxscore {
           "receivingTouchdowns": 2.06,
           "receivingYards": 5.68,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -938,7 +910,6 @@ Boxscore {
           "receivingTouchdowns": 2.03,
           "receivingYards": 3.89,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -970,7 +941,6 @@ Boxscore {
           "rushingTouchdowns": 0.07,
           "rushingYards": 0.25,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "isLocked": false,
@@ -1001,17 +971,12 @@ Boxscore {
           "rushingTouchdowns": 2.43,
           "rushingYards": 6.14,
         },
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "position": "Bench",
-        "projectedStats": BoxscorePlayerPointStats {},
-        "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
         "position": "Bench",
-        "projectedStats": BoxscorePlayerPointStats {},
-        "stats": BoxscorePlayerPointStats {},
       },
     ],
     "team": Team {
