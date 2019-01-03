@@ -5,24 +5,30 @@ import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.
 
 /**
  * The base class for all project objects that can communicate with the ESPN API. Provides `read`
- * capability and caching functionality.
+ * functionality.
  * @extends BaseCacheableObject
  */
 class BaseAPIObject extends BaseCacheableObject {
   static displayName = 'BaseAPIObject';
 
   /**
-   * Makes a call to the passed route with the passed params. If reload is true, then any matching
-   * cached model is ignored and overridden on successful read. If reload is false and a matching
-   * model is found in the cache, the cached model is returned in an immediately resolving promise.
-   * If reload is false but no cached model is found, the request will be made to load the model for
-   * the first time.
+   * Makes a call to the passed route with the passed params.
+   *
+   * If reload is true, then any matching cached model is ignored and overridden on successful read.
+   * If reload is false and a matching model is found in the cache, the cached model is returned in
+   * an immediately resolving promise. If reload is false but no cached model is found, the request
+   * will be made to load the model for the first time.
+   *
+   * Populated models are cached on succesful reads.
+   *
+   * Consumers of this project are responsible for catching errors.
+   *
    * @async
-   * @throws {Error} If route is not passed
+   * @throws {Error} If route is not defined
    * @param  {BaseAPIObject} options.model The model to populate rather than creating a new
    *                                       instance.
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {Object} options.params  Params to pass on the GET call.
+   * @param  {string} options.route The route on the API to call.
+   * @param  {object} options.params Params to pass on the GET call.
    * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
@@ -48,13 +54,14 @@ class BaseAPIObject extends BaseCacheableObject {
   }
 
   /**
-   * Makes a call to the passed route with the passed params. Defers actual GET call to
-   * `static read` Automatically includes the id of the instance in the params. On successful read,
-   * populates the instance with the new response data.
+   * Makes a call to the passed route with the passed params. Automatically includes the id of the
+   * instance in the params. Defers actual GET call and data population to `static read`.
+   *
    * @async
-   * @throws {Error} If route is not passed
+   * @throws {Error} If route is not defined.
+   * @throws {Error} If id is not defined on the instance.
    * @param  {string} options.route   The route on the API to call.
-   * @param  {Object} options.params  Params to pass on the GET call.
+   * @param  {object} options.params  Params to pass on the GET call.
    * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
