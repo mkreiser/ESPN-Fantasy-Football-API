@@ -1,12 +1,12 @@
-import BaseCachableObject from '../base-cachable-object/base-cachable-object.js';
+import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
 
 /**
  * Represents a fantasy football team in a League. To get team information, a request must be made
  * to the `leagueSettings` route. There is not a generic team route on the ESPN API. Teams should
  * be populate when you get a League, so additional request should be unnecessary.
- * @extends BaseCachableObject
+ * @extends BaseCacheableObject
  */
-class Team extends BaseCachableObject {
+class Team extends BaseCacheableObject {
   constructor(options = {}) {
     super(options);
 
