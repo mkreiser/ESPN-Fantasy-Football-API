@@ -17,8 +17,8 @@ import BaseObject from '../base-object/base-object.js';
  *
  * @extends BaseObject
  */
-class BaseCachableObject extends BaseObject {
-  static displayName = 'BaseCachableObject';
+class BaseCacheableObject extends BaseObject {
+  static displayName = 'BaseCacheableObject';
 
   /**
    * Denotes which attribute the identifier of the model is defined on. In this project, this is
@@ -49,11 +49,11 @@ class BaseCachableObject extends BaseObject {
   }
 
   /**
-   * Returns all cached models of an BaseCachableObject. If no cache exists, a cache object is
+   * Returns all cached models of an BaseCacheableObject. If no cache exists, a cache object is
    * created. This implementation ensures each class has a unique cache of only instances of the
-   * BaseCachableObject that does not overlap with other BaseCachableObject classes. The keys of the
-   * cache should use the caching id implemented in `getCacheId`.
-   * @return {object.<string, BaseCachableObject>} The cache of BaseAPIObjects.
+   * BaseCacheableObject that does not overlap with other BaseCacheableObject classes. The keys of
+   * the cache should use the caching id implemented in `getCacheId`.
+   * @return {object.<string, BaseCacheableObject>} The cache of BaseAPIObjects.
    */
   static get cache() {
     if (!this._cache) {
@@ -65,7 +65,7 @@ class BaseCachableObject extends BaseObject {
 
   /**
    * Sets the cache object.
-   * @param {object.<string, BaseCachableObject>} cache
+   * @param {object.<string, BaseCacheableObject>} cache
    */
   static set cache(cache) {
     this._cache = cache;
@@ -82,7 +82,7 @@ class BaseCachableObject extends BaseObject {
    * Returns a cached model matching the passed caching id if it exists. Otherwise, returns
    * undefined.
    * @param  {number} id This id must match the form of the caching id provided by `getCacheId`.
-   * @return {BaseCachableObject|undefined}
+   * @return {BaseCacheableObject|undefined}
    */
   static get(id) {
     return _.get(this.cache, id);
@@ -125,4 +125,4 @@ class BaseCachableObject extends BaseObject {
   }
 }
 
-export default BaseCachableObject;
+export default BaseCacheableObject;

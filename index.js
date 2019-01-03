@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 import BaseObject from './src/base-object/base-object.js';
-import BaseCachableObject from './src/base-cachable-object/base-cachable-object.js';
+import BaseCacheableObject from './src/base-cacheable-object/base-cacheable-object.js';
 import BaseAPIObject from './src/base-api-object/base-api-object.js';
 
 import Boxscore from './src/boxscore/boxscore.js';
@@ -28,7 +28,7 @@ axios.defaults.baseURL = 'http://games.espn.com/ffl/api/v2/';
 
 export {
   BaseObject,
-  BaseCachableObject,
+  BaseCacheableObject,
   BaseAPIObject,
 
   Boxscore,

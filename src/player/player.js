@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import BaseCachableObject from '../base-cachable-object/base-cachable-object.js';
+import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
@@ -8,9 +8,9 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * Represents an NFL player that can be rostered on a fantasy football team. There is currently not
  * a discovered route to directly get player information. However, player information can be
  * retrieved from a boxscore and a team roster.
- * @extends BaseCachableObject
+ * @extends BaseCacheableObject
  */
-class Player extends BaseCachableObject {
+class Player extends BaseCacheableObject {
   static displayName = 'Player';
 
   static idName = 'playerId';

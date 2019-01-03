@@ -1,14 +1,14 @@
 import axios from 'axios';
 import _ from 'lodash';
 
-import BaseCachableObject from '../base-cachable-object/base-cachable-object.js';
+import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
 
 /**
  * The base class for all project objects that can communicate with the ESPN API. Provides `read`
  * capability and caching functionality.
- * @extends BaseCachableObject
+ * @extends BaseCacheableObject
  */
-class BaseAPIObject extends BaseCachableObject {
+class BaseAPIObject extends BaseCacheableObject {
   static displayName = 'BaseAPIObject';
 
   /**
