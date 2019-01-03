@@ -168,13 +168,6 @@ describe('BaseObject', () => {
       });
 
       describe('responseMap mapping', () => {
-        test('does not map keys not defined in responseMap', () => {
-          data = { notInMap: 'some wack stuff' };
-
-          const returnedModel = callPopulate();
-          expect(returnedModel.notInMap).toBeUndefined();
-        });
-
         describe('when isDataFromServer is true', () => {
           beforeEach(() => {
             isDataFromServer = true;
@@ -195,26 +188,36 @@ describe('BaseObject', () => {
             expect(returnedModel.some_value).toBeUndefined();
           });
 
-          describe('when a value in the static responseMap is undefined on the passed data', () => {
-            test('does not set property', () => {
-              const returnedModel = callPopulate();
-              expect(returnedModel.testId).not.toBeUndefined();
-              expect(returnedModel.someValue).not.toBeUndefined();
-              expect(returnedModel.someNestedData).not.toBeUndefined();
-
-              expect(returnedModel.someModels).toBeUndefined();
-              expect(returnedModel.someManualModel).toBeUndefined();
-              expect(returnedModel.someManualAndBaseObject).toBeUndefined();
-              expect(returnedModel.someDeferredModel).toBeUndefined();
-            });
-          });
-
           describe('when a value in the static responseMap is a string', () => {
-            test('directly maps the response attribute at that string', () => {
-              data = { some_value: 'some server data' };
+            const testMapsDataToStringKey = ({ value, valueString }) => {
+              describe(`when the passed data at the key is ${valueString}`, () => {
+                test(`assigns ${valueString} to the model at the correct key`, () => {
+                  data = { some_value: value };
 
-              const returnedModel = callPopulate();
-              expect(returnedModel.someValue).toBe(data.some_value);
+                  const returnedModel = callPopulate();
+                  expect(returnedModel.someValue).toBe(value);
+                });
+              });
+            };
+
+            testMapsDataToStringKey({ value: undefined, valueString: 'undefined' });
+            testMapsDataToStringKey({ value: null, valueString: 'null' });
+            testMapsDataToStringKey({ value: '', valueString: 'empty string' });
+            testMapsDataToStringKey({ value: 0, valueString: 'zero' });
+            testMapsDataToStringKey({ value: 123, valueString: 'positive number' });
+            testMapsDataToStringKey({ value: -123, valueString: 'negative number' });
+            testMapsDataToStringKey({ value: true, valueString: 'true' });
+            testMapsDataToStringKey({ value: false, valueString: 'false' });
+            testMapsDataToStringKey({ value: [], valueString: 'empty array' });
+            testMapsDataToStringKey({ value: [1, 2, 3], valueString: 'populated array' });
+            testMapsDataToStringKey({ value: {}, valueString: 'empty object' });
+            testMapsDataToStringKey({
+              value: new TestBaseObject(),
+              valueString: 'empty BaseObject'
+            });
+            testMapsDataToStringKey({
+              value: new TestBaseObject({ testId: 1, someValue: 'value' }),
+              valueString: 'populated BaseObject'
             });
           });
 
@@ -255,7 +258,7 @@ describe('BaseObject', () => {
               });
 
               describe('when the object defines a manualParse function', () => {
-                test('calls the manualParse function', () => {
+                beforeEach(() => {
                   data = {
                     manual: {
                       mapping_id: 1,
@@ -265,89 +268,144 @@ describe('BaseObject', () => {
                       }
                     }
                   };
+                });
 
+                const testMapsData = ({ value, valueString }) => {
+                  describe(`when the manualParse returns ${valueString}`, () => {
+                    test(`assigns ${valueString} to the model at the correct key`, () => {
+                      TestBaseObject.responseMap.someManualModel.manualParse.mockReturnValue(value);
+
+                      const returnedModel = callPopulate();
+                      expect(returnedModel.someManualModel).toBe(value);
+                    });
+                  });
+                };
+
+                test('calls the manualParse function', () => {
                   callPopulate();
                   expect(TestBaseObject.responseMap.someManualModel.manualParse).toBeCalledWith(
                     data.manual, data, model
                   );
                 });
 
-                test('uses the return of the manualParse function', () => {
-                  data = {
-                    manual: {
-                      mapping_id: 1,
-                      some_value: 'works recursively too',
-                      nested: {
-                        item: 'also works recursively'
-                      }
-                    }
-                  };
-                  const parseData = {};
-                  TestBaseObject.responseMap.someManualModel.manualParse.mockReturnValue(parseData);
-
-                  const returnedModel = callPopulate();
-                  expect(returnedModel.someManualModel).toBe(parseData);
+                testMapsData({ value: undefined, valueString: 'undefined' });
+                testMapsData({ value: null, valueString: 'null' });
+                testMapsData({ value: '', valueString: 'empty string' });
+                testMapsData({ value: 0, valueString: 'zero' });
+                testMapsData({ value: 123, valueString: 'positive number' });
+                testMapsData({ value: -123, valueString: 'negative number' });
+                testMapsData({ value: true, valueString: 'true' });
+                testMapsData({ value: false, valueString: 'false' });
+                testMapsData({ value: [], valueString: 'empty array' });
+                testMapsData({ value: [1, 2, 3], valueString: 'populated array' });
+                testMapsData({ value: {}, valueString: 'empty object' });
+                testMapsData({ value: new TestBaseObject(), valueString: 'empty BaseObject' });
+                testMapsData({
+                  value: new TestBaseObject({ testId: 1, someValue: 'value' }),
+                  valueString: 'populated BaseObject'
                 });
               });
 
               describe('when the object defines BaseObject', () => {
                 describe('when the object specifies isArray: true', () => {
-                  test('maps the data to instances of the BaseObject defined on the object', () => {
-                    data = {
-                      map_models: [{
-                        mapping_id: 1,
-                        some_value: 'works recursively too'
-                      }, {
-                        mapping_id: 2,
-                        nested: {
-                          item: 'also works recursively'
-                        }
-                      }]
-                    };
+                  const testAssignsEmptyArray = ({ value, valueString }) => {
+                    describe(`when the passed data at the key is ${valueString}`, () => {
+                      test(`assigns ${valueString} to the model at the correct key`, () => {
+                        data = { map_models: value };
 
-                    const returnedModel = callPopulate();
-                    expect.hasAssertions();
+                        const returnedModel = callPopulate();
+                        expect(returnedModel.someModels).toEqual([]);
+                      });
+                    });
+                  };
 
-                    _.forEach(returnedModel.someModels, (populatedModel, index) => {
-                      expect(populatedModel).toBeInstanceOf(MappingTestBaseObject);
+                  testAssignsEmptyArray({ value: undefined, valueString: 'undefined' });
+                  testAssignsEmptyArray({ value: null, valueString: 'null' });
+                  testAssignsEmptyArray({ value: [], valueString: 'emptyArray' });
 
-                      expect(populatedModel.mappingId).toBe(data.map_models[index].mapping_id);
-                      expect(populatedModel.someValue).toBe(data.map_models[index].some_value);
-                      expect(populatedModel.someNestedData).toBe(
-                        _.get(data.map_models[index], 'nested.item')
-                      );
+                  describe('when the passed data at the key is a populated array', () => {
+                    test('maps the data to instances of the specified BaseObject', () => {
+                      data = {
+                        map_models: [{
+                          mapping_id: 1,
+                          some_value: 'works recursively too'
+                        }, {
+                          mapping_id: 2,
+                          nested: {
+                            item: 'also works recursively'
+                          }
+                        }]
+                      };
+
+                      const returnedModel = callPopulate();
+
+                      expect.hasAssertions();
+                      _.forEach(returnedModel.someModels, (populatedModel, index) => {
+                        expect(populatedModel).toBeInstanceOf(MappingTestBaseObject);
+
+                        expect(populatedModel.mappingId).toBe(data.map_models[index].mapping_id);
+                        expect(populatedModel.someValue).toBe(data.map_models[index].some_value);
+                        expect(populatedModel.someNestedData).toBe(
+                          _.get(data.map_models[index], 'nested.item')
+                        );
+                      });
                     });
                   });
                 });
 
                 describe('when the object specifies isArray: false', () => {
-                  test('maps the data to an instance of the specified BaseObject', () => {
-                    data = {
-                      map_model: {
-                        mapping_id: 1,
-                        some_value: 'works recursively too',
-                        nested: {
-                          item: 'also works recursively'
+                  const testAssignsEmptyObject = ({ value, valueString }) => {
+                    describe(`when the passed data at the key is ${valueString}`, () => {
+                      test(
+                        'assigns an empty instance of the specified BaseObject to the model',
+                        () => {
+                          data = { map_model: value };
+
+                          const returnedModel = callPopulate();
+
+                          const emptyObject = returnedModel.someModel;
+                          expect(emptyObject).toBeInstanceOf(MappingTestBaseObject);
+                          _.forEach(MappingTestBaseObject.responseMap, (v, key) => {
+                            expect(_.get(emptyObject, key)).toBeUndefined();
+                          });
                         }
-                      }
-                    };
+                      );
+                    });
+                  };
 
-                    const returnedModel = callPopulate();
+                  testAssignsEmptyObject({ value: undefined, valueString: 'undefined' });
+                  testAssignsEmptyObject({ value: null, valueString: 'null' });
+                  testAssignsEmptyObject({ value: {}, valueString: 'empty object' });
 
-                    const populatedModel = returnedModel.someModel;
-                    expect(populatedModel).toBeInstanceOf(MappingTestBaseObject);
+                  describe('when the passed data at the key is a populated object', () => {
+                    test('maps the data to an instance of the specified BaseObject', () => {
+                      data = {
+                        map_model: {
+                          mapping_id: 1,
+                          some_value: 'works recursively too',
+                          nested: {
+                            item: 'also works recursively'
+                          }
+                        }
+                      };
 
-                    expect(populatedModel.mappingId).toBe(data.map_model.mapping_id);
-                    expect(populatedModel.someValue).toBe(data.map_model.some_value);
-                    expect(populatedModel.someNestedData).toBe(
-                      _.get(data.map_model, 'nested.item')
-                    );
+                      const returnedModel = callPopulate();
+
+                      const populatedModel = returnedModel.someModel;
+                      expect(populatedModel).toBeInstanceOf(MappingTestBaseObject);
+
+                      expect(populatedModel.mappingId).toBe(data.map_model.mapping_id);
+                      expect(populatedModel.someValue).toBe(data.map_model.some_value);
+                      expect(populatedModel.someNestedData).toBe(
+                        _.get(data.map_model, 'nested.item')
+                      );
+                    });
                   });
                 });
               });
 
               describe('when manualParse and BaseObject are defined', () => {
-                test('calls manualParse instead of using BaseObject', () => {
+                test('calls manualParse instead of using BaseObject logic', () => {
                   data = { both: 'something' };
                   jest.spyOn(MappingTestBaseObject, 'buildFromServer');
 
@@ -526,9 +584,12 @@ describe('BaseObject', () => {
         });
       });
 
-      test('returns an instance of the class', () => {
-        const model = TestBaseObject.buildFromServer();
+      test('returns a new, populated instance of the class', () => {
+        const data = { some_value: 'data' };
+        const model = TestBaseObject.buildFromServer(data);
+
         expect(model).toBeInstanceOf(TestBaseObject);
+        expect(model.someValue).toBe(data.some_value);
       });
     });
   });

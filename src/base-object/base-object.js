@@ -7,7 +7,7 @@ import _ from 'lodash';
 class BaseObject {
   /**
    * @param {object} options Properties to be assigned to the BaseObject. Must match the keys of the
-   *                         BaseObject's `responseMap` or valid options defined by the subclass's
+   *                         BaseObject's `responseMap` or valid options defined by the class's
    *                         `constructor`.
    */
   constructor(options = {}) {
@@ -21,15 +21,15 @@ class BaseObject {
   }
 
   /**
-   * The class name. Minification will break `this.constructor.name`, so this allows for verbose
-   * printing even in minified code.
+   * The class name. Minification will break `this.constructor.name`; this allows for readable
+   * logging even in minified code.
    * @type {String}
    */
   static displayName = 'BaseObject';
 
   /**
-   * Helper method for `_populateObject` that houses the attribute mapping logic. Should not be used
-   * by other methods.
+   * Helper method for `_populateObject` that houses the attribute mapping logic. Should never be
+   * used by other methods. See {@link ResponseMapValueObject} for `responseMap` documentation.
    * @private
    * @param  {object} options.data
    * @param  {BaseObject} options.model The model to populate. This model will be mutated.
@@ -79,7 +79,6 @@ class BaseObject {
      *     manualParse: (keyData, allData, populatingModel) => Team.buildFromServer(keyData)
      *   }
      * };
-     *
      */
     let item;
 
@@ -100,15 +99,9 @@ class BaseObject {
         item = value.manualParse(responseData, data, model);
       } else if (value.BaseObject) {
         const ValueBaseObjectClass = value.BaseObject;
-
         const buildModel = (passedData) => ValueBaseObjectClass.buildFromServer(passedData);
-        const builtItem = (
-          value.isArray ? _.map(responseData, buildModel) : buildModel(responseData)
-        );
 
-        if (builtItem && !_.isEmpty(builtItem)) {
-          item = builtItem;
-        }
+        item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
       } else {
         throw new Error(
           `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
@@ -131,7 +124,7 @@ class BaseObject {
    * Returns the passed instance of the BaseObject populated with the passed data, mapping the
    * attributes defined in the value of responseMap to the matching key.
    * @private
-   * @param  {object} options.data
+   * @param  {object} options.data The data to map onto the passed model.
    * @param  {BaseObject} options.model The model to populate. This model will be mutated.
    * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
    *                                            data came locally.
@@ -157,17 +150,13 @@ class BaseObject {
       this._processResponseMapItem({ data, model, isDataFromServer, key, value });
     });
 
-    // if (isDataFromServer) {
-    //   this.cache[model.getId()] = model;
-    // }
-
     return model;
   }
 
   /**
    * Returns a new instance of the BaseObject populated with the passed data that came from ESPN,
    * mapping the attributes defined in the value of responseMap to the matching key. Use this method
-   * when constructing BaseObjects with responses.
+   * when constructing BaseObjects with server responses.
    * @param  {object} data Data originating from the server.
    * @param  {object} constructorParams Params to be passed to the instance's constructor. Useful
    *                                    for passing parent data, such as `leagueId`.
