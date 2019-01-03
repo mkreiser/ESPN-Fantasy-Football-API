@@ -168,17 +168,6 @@ class League extends BaseAPIObject {
     tradeRevisionHours: 'leaguesettings.tradeRevisionHours'
   };
 
-  /**
-   * Makes a call to the passed route with the passed params. Defers actual GET call to
-   * `static read` Automatically includes the id, and seasonId of the instance in the params. On
-   * successful read, populates the instance with the new response data.
-   * @async
-   * @throws {Error} If route is not passed
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {Object} options.params  Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
-   * @return {Promise}
-   */
   read({
     route = this.constructor.route, params, reload = true
   } = {
