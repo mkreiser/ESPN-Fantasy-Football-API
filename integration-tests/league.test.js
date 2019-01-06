@@ -30,6 +30,16 @@ describe('League functionality', () => {
     expect(leagueModel).toMatchSnapshot();
   });
 
+  test('cannot load League without leagueId', async () => {
+    expect.hasAssertions();
+
+    try {
+      await League.read({ params: { seasonId } });
+    } catch (error) {
+      expect(error.message).toBe('League: static read: cannot read without leagueId');
+    }
+  });
+
   test('can load League without seasonId', async () => {
     const leagueModel = await League.read({ params: { leagueId } });
 

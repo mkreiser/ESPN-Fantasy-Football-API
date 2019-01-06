@@ -333,6 +333,42 @@ describe('League', () => {
         });
       });
     });
+
+    describe('read', () => {
+      describe('when nothing is passed to read', () => {
+        test('throws error', () => {
+          expect(() => League.read()).toThrowError(
+            `${League.displayName}: static read: cannot read without leagueId`
+          );
+        });
+      });
+
+      describe('when params are passed to read', () => {
+        describe('when leagueId is passed on params', () => {
+          test('defers to super.read', () => {
+            jest.spyOn(BaseAPIObject, 'read').mockImplementation();
+
+            const model = new League();
+            const route = 'some route';
+            const params = { leagueId: 1231232 };
+            const reload = false;
+
+            League.read({ model, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
+
+            BaseAPIObject.read.mockRestore();
+          });
+        });
+
+        describe('when leagueId is not passed on params', () => {
+          test('throws error', () => {
+            expect(() => League.read({ params: {} })).toThrowError(
+              `${League.displayName}: static read: cannot read without leagueId`
+            );
+          });
+        });
+      });
+    });
   });
 
   describe('instance methods', () => {

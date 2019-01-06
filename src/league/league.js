@@ -196,6 +196,16 @@ class League extends BaseAPIObject {
       undefined;
   }
 
+  static read(
+    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+  ) {
+    if (!_.get(params, 'leagueId')) {
+      throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
+    }
+
+    return super.read({ model, route, params, reload });
+  }
+
   read({
     route = this.constructor.route, params, reload = true
   } = {
