@@ -22,8 +22,9 @@
     "ci": "npm run clean && npm run lint && npm run test && npm run build && npm run build:docs",
     "lint": "eslint index.js src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
-    "test": "jest --maxWorkers=2",
-    "test:watch": "jest --watch --maxWorkers=2"
+    "test": "npm run test:unit && npm run test:integration",
+    "test:integration": "jest integration-tests/ --maxWorkers=2 --coverage=false",
+    "test:unit": "jest src/ --maxWorkers=2"
   },
   "repository": {
     "type": "git",
