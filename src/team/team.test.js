@@ -68,4 +68,134 @@ describe('Team', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    describe('getCacheId', () => {
+      let leagueId, seasonId, teamId;
+
+      afterEach(() => {
+        leagueId = seasonId = teamId = null;
+      });
+
+      const testReturnsUndefined = () => {
+        test('returns undefined', () => {
+          const params = { leagueId, seasonId, teamId };
+          expect(Team.getCacheId(params)).toBeUndefined();
+        });
+      };
+
+      describe('when called with no params', () => {
+        test('returns undefined', () => {
+          expect(Team.getCacheId()).toBeUndefined();
+        });
+      });
+
+      describe('when leagueId is defined', () => {
+        beforeEach(() => {
+          leagueId = 132123;
+        });
+
+        describe('when seasonId is defined', () => {
+          beforeEach(() => {
+            seasonId = 2017;
+          });
+
+          describe('when teamId is defined', () => {
+            beforeEach(() => {
+              teamId = 4;
+            });
+
+            test('returns a valid caching id', () => {
+              const params = { leagueId, seasonId, teamId };
+
+              const returnedCachingId = Team.getCacheId(params);
+              expect(returnedCachingId).toBe(
+                `${teamId}-${leagueId}-${seasonId}`
+              );
+            });
+          });
+
+          describe('when teamId is undefined', () => {
+            beforeEach(() => {
+              teamId = undefined;
+            });
+
+            testReturnsUndefined();
+          });
+        });
+
+        describe('when seasonId is undefined', () => {
+          beforeEach(() => {
+            seasonId = undefined;
+          });
+
+          describe('when teamId is defined', () => {
+            beforeEach(() => {
+              teamId = 4;
+            });
+
+            testReturnsUndefined();
+          });
+
+          describe('when teamId is undefined', () => {
+            beforeEach(() => {
+              teamId = undefined;
+            });
+
+            testReturnsUndefined();
+          });
+        });
+      });
+
+      describe('when leagueId is undefined', () => {
+        beforeEach(() => {
+          leagueId = undefined;
+        });
+
+        describe('when seasonId is defined', () => {
+          beforeEach(() => {
+            seasonId = 2017;
+          });
+
+          describe('when teamId is defined', () => {
+            beforeEach(() => {
+              teamId = 4;
+            });
+
+            testReturnsUndefined();
+          });
+
+          describe('when teamId is undefined', () => {
+            beforeEach(() => {
+              teamId = undefined;
+            });
+
+            testReturnsUndefined();
+          });
+        });
+
+        describe('when seasonId is undefined', () => {
+          beforeEach(() => {
+            seasonId = undefined;
+          });
+
+          describe('when teamId is defined', () => {
+            beforeEach(() => {
+              teamId = 4;
+            });
+
+            testReturnsUndefined();
+          });
+
+          describe('when teamId is undefined', () => {
+            beforeEach(() => {
+              teamId = undefined;
+            });
+
+            testReturnsUndefined();
+          });
+        });
+      });
+    });
+  });
 });

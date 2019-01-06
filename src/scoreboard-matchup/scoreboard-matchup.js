@@ -11,6 +11,22 @@ import Team from '../team/team.js';
  * @extends BaseObject
  */
 class ScoreboardMatchup extends BaseObject {
+  constructor(options = {}) {
+    super(options);
+
+    /**
+     * Id of the League to which the parent scoreboard belongs.
+     * @type {number}
+     */
+    this.leagueId = options.leagueId;
+
+    /**
+     * Id of the season (i.e. the year) to which the parent scoreboard belongs.
+     * @type {number}
+     */
+    this.seasonId = options.seasonId;
+  }
+
   static displayName = 'ScoreboardMatchup';
 
   static idName = 'leagueId';
@@ -31,25 +47,35 @@ class ScoreboardMatchup extends BaseObject {
   static responseMap = {
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData) => {
+      manualParse: (responseData, response, model) => {
         const homeTeamData = _.find(responseData, { home: true });
         if (!homeTeamData) {
           return undefined;
         }
 
-        const cachedTeam = Team.get(homeTeamData.teamId);
+        const cachingId = Team.getCacheId({
+          leagueId: model.leagueId,
+          seasonId: model.seasonId,
+          teamId: homeTeamData.teamId
+        });
+        const cachedTeam = Team.get(cachingId);
         return cachedTeam || Team.buildFromServer(homeTeamData.team);
       }
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData) => {
+      manualParse: (responseData, response, model) => {
         const awayTeamData = _.find(responseData, { home: false });
         if (!awayTeamData) {
           return undefined;
         }
 
-        const cachedTeam = Team.get(awayTeamData.teamId);
+        const cachingId = Team.getCacheId({
+          leagueId: model.leagueId,
+          seasonId: model.seasonId,
+          teamId: awayTeamData.teamId
+        });
+        const cachedTeam = Team.get(cachingId);
         return cachedTeam || Team.buildFromServer(awayTeamData.team);
       }
     },

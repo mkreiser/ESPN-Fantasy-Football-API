@@ -293,7 +293,14 @@ describe('BaseCacheableObject', () => {
     });
 
     describe('getCacheId', () => {
-      test('returns the result of getId', () => {
+      test('calls static getCacheId with the instance', () => {
+        jest.spyOn(TestBaseCacheableObject, 'getCacheId');
+
+        baseCachableObject.getCacheId();
+        expect(TestBaseCacheableObject.getCacheId).toBeCalledWith(baseCachableObject);
+      });
+
+      test('returns the result of static getCacheId', () => {
         const id = 'some id';
         _.set(baseCachableObject, TestBaseCacheableObject.idName, id);
 

@@ -92,6 +92,8 @@ Scoreboard {
       },
       "homeTeamScore": 56.64,
       "isByeWeek": false,
+      "leagueId": undefined,
+      "seasonId": undefined,
       "winner": Team {
         "abbreviation": "GOAT",
         "awayLosses": 1,
@@ -202,6 +204,8 @@ Scoreboard {
       },
       "homeTeamScore": 99.76,
       "isByeWeek": false,
+      "leagueId": undefined,
+      "seasonId": undefined,
       "winner": Team {
         "abbreviation": "fuck",
         "awayLosses": 2,
@@ -312,6 +316,8 @@ Scoreboard {
       },
       "homeTeamScore": 95.66,
       "isByeWeek": false,
+      "leagueId": undefined,
+      "seasonId": undefined,
       "winner": Team {
         "abbreviation": "REES",
         "awayLosses": 2,
@@ -422,6 +428,8 @@ Scoreboard {
       },
       "homeTeamScore": 53.68,
       "isByeWeek": false,
+      "leagueId": undefined,
+      "seasonId": undefined,
       "winner": Team {
         "abbreviation": "��",
         "awayLosses": 3,

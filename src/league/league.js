@@ -113,17 +113,47 @@ class League extends BaseAPIObject {
     draftOrder: {
       key: 'leaguesettings.draftOrder',
       defer: true,
-      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+      manualParse: (responseData, response, model) => {
+        return _.map(responseData, (teamId) => {
+          const cachingId = Team.getCacheId({
+            leagueId: model.leagueId,
+            seasonId: model.seasonId,
+            teamId
+          });
+
+          return Team.get(cachingId);
+        });
+      }
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
-      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+      manualParse: (responseData, response, model) => {
+        return _.map(responseData, (teamId) => {
+          const cachingId = Team.getCacheId({
+            leagueId: model.leagueId,
+            seasonId: model.seasonId,
+            teamId
+          });
+
+          return Team.get(cachingId);
+        });
+      }
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
-      manualParse: (responseData) => _.map(responseData, (id) => Team.get(id))
+      manualParse: (responseData, response, model) => {
+        return _.map(responseData, (teamId) => {
+          const cachingId = Team.getCacheId({
+            leagueId: model.leagueId,
+            seasonId: model.seasonId,
+            teamId
+          });
+
+          return Team.get(cachingId);
+        });
+      }
     },
 
     numTeams: 'leaguesettings.size',
@@ -167,6 +197,12 @@ class League extends BaseAPIObject {
     allowsTrades: 'leaguesettings.allowsTrades',
     tradeRevisionHours: 'leaguesettings.tradeRevisionHours'
   };
+
+  static getCacheId(params = {}) {
+    return (params.leagueId && params.seasonId) ?
+      `${params.leagueId}-${params.seasonId}` :
+      undefined;
+  }
 
   read({
     route = this.constructor.route, params, reload = true
