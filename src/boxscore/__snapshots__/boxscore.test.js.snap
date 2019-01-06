@@ -587,6 +587,7 @@ Boxscore {
     "matchupScore": 106.78,
     "players": Array [
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -618,6 +619,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -649,6 +651,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -680,6 +683,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -711,6 +715,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -739,6 +744,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -767,6 +773,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -800,6 +807,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -832,6 +840,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -861,6 +870,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -892,6 +902,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -920,6 +931,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -948,6 +960,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [
@@ -980,6 +993,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
       BoxscorePlayer {
+        "isKeeper": false,
         "isLocked": false,
         "player": Player {
           "eligiblePositions": Array [

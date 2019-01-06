@@ -39,6 +39,7 @@ BoxscorePlayer {
 
 exports[`BoxscorePlayer attribute population from server response parses data correctly 1`] = `
 BoxscorePlayer {
+  "isKeeper": false,
   "isLocked": true,
   "player": Player {
     "eligiblePositions": Array [

@@ -1,20 +1,15 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-object/base-object.js';
+import SlottedPlayer from '../slotted-player/slotted-player.js';
 
 import BoxscorePlayerPointStats
   from '../boxscore-player-point-stats/boxscore-player-point-stats.js';
-import Player from '../player/player.js';
-
-import { slotCategoryIdToPositionMap } from '../constants.js';
 
 /**
- * Represents a player on a team in a boxscore. Summarizes the player's stats and status. This is an
- * organizational class and not a class found on the API responses. Therefore, there is no id for
- * this class.
- * @extends BaseObject
+ * Represents a player on a team in a boxscore. Summarizes the player's stats and status.
+ * @extends SlottedPlayer
  */
-class BoxscorePlayer extends BaseObject {
+class BoxscorePlayer extends SlottedPlayer {
   static displayName = 'BoxscorePlayer';
 
   /**
@@ -39,33 +34,7 @@ class BoxscorePlayer extends BaseObject {
   /**
     * @type {BoxscorePlayerModel}
     */
-  static responseMap = {
-    player: {
-      key: 'player',
-      manualParse: (responseData) => {
-        if (_.isEmpty(responseData)) {
-          return undefined;
-        }
-
-        return Player.get(responseData.playerId) || Player.buildFromServer(responseData);
-      }
-    },
-
-    position: {
-      key: 'slotCategoryId',
-      manualParse: (responseData) => _.get(slotCategoryIdToPositionMap, responseData)
-    },
-    isLocked: {
-      key: 'lockStatus',
-      manualParse: (responseData) => {
-        switch (responseData) {
-          case 0: return false;
-          case 4: return true;
-          default: return undefined;
-        }
-      }
-    },
-
+  static responseMap = _.assign({}, SlottedPlayer.responseMap, {
     totalPoints: 'currentPeriodRealStats.appliedStatTotal',
     projectedPoints: 'currentPeriodProjectedStats.appliedStatTotal',
 
@@ -77,7 +46,7 @@ class BoxscorePlayer extends BaseObject {
       key: 'currentPeriodProjectedStats.appliedStats',
       BaseObject: BoxscorePlayerPointStats
     }
-  };
+  });
 }
 
 export default BoxscorePlayer;
