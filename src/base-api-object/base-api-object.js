@@ -55,11 +55,10 @@ class BaseAPIObject extends BaseCacheableObject {
 
   /**
    * Makes a call to the passed route with the passed params. Automatically includes the id of the
-   * instance in the params. Defers actual GET call and data population to `static read`.
+   * instance in the params. Defers actual GET call and data population to `static read`. Defers
+   * error handling of proper parameters (i.e. necessary `id`s)  to `static read` implementations.
    *
    * @async
-   * @throws {Error} If route is not defined.
-   * @throws {Error} If id is not defined on the instance.
    * @param  {string} options.route   The route on the API to call.
    * @param  {object} options.params  Params to pass on the GET call.
    * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
@@ -70,14 +69,13 @@ class BaseAPIObject extends BaseCacheableObject {
   } = {
     route: this.constructor.route, reload: true
   }) {
-    const id = this.getId();
-    if (!id) {
-      throw new Error(
-        `${this.constructor.displayName}: static read: cannot read on instance without an id`
-      );
-    }
+    // This implementation does not set key if value is `undefined`, `NaN`, or `Infinity`. ESPN API
+    // will throw an error if an `undefined` value is passed on `params`.
+    const idParams = _.pickBy({
+      [this.constructor.idName]: this.getId()
+    }, (value) => _.isFinite(value));
+    const paramsWithId = _.assign({}, params, idParams);
 
-    const paramsWithId = _.assign({}, params, { [this.constructor.idName]: id });
     return this.constructor.read({
       route,
       model: this,
