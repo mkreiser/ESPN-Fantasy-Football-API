@@ -143,6 +143,7 @@ BoxscoreTeam {
   "matchupScore": 234,
   "players": Array [
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -177,6 +178,7 @@ BoxscoreTeam {
       "totalPoints": 1.04,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -212,6 +214,7 @@ BoxscoreTeam {
       "totalPoints": 4.3,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -248,6 +251,7 @@ BoxscoreTeam {
       "totalPoints": 11.4,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -283,6 +287,7 @@ BoxscoreTeam {
       "totalPoints": 19.8,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -315,6 +320,7 @@ BoxscoreTeam {
       "totalPoints": 9.7,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -346,6 +352,7 @@ BoxscoreTeam {
       "totalPoints": 4.2,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -384,6 +391,7 @@ BoxscoreTeam {
       "totalPoints": 9.2,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -421,6 +429,7 @@ BoxscoreTeam {
       "totalPoints": 9,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -453,6 +462,7 @@ BoxscoreTeam {
       "totalPoints": 2,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -489,6 +499,7 @@ BoxscoreTeam {
       "totalPoints": 23.4,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -521,6 +532,7 @@ BoxscoreTeam {
       "totalPoints": 11.9,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -552,6 +564,7 @@ BoxscoreTeam {
       "totalPoints": 1.9,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
@@ -588,6 +601,7 @@ BoxscoreTeam {
       "totalPoints": 9.2,
     },
     BoxscorePlayer {
+      "isKeeper": false,
       "isLocked": true,
       "player": Player {
         "eligiblePositions": Array [
