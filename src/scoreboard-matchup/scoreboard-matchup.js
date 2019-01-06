@@ -47,52 +47,28 @@ class ScoreboardMatchup extends BaseObject {
   static responseMap = {
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => {
-        const homeTeamData = _.find(responseData, { home: true });
-        if (!homeTeamData) {
-          return undefined;
-        }
-
-        const cachingId = Team.getCacheId({
-          leagueId: model.leagueId,
-          seasonId: model.seasonId,
-          teamId: homeTeamData.teamId
-        });
-        const cachedTeam = Team.get(cachingId);
-        return cachedTeam || Team.buildFromServer(homeTeamData.team);
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeam({
+        isHome: true, responseData, model
+      })
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => {
-        const awayTeamData = _.find(responseData, { home: false });
-        if (!awayTeamData) {
-          return undefined;
-        }
-
-        const cachingId = Team.getCacheId({
-          leagueId: model.leagueId,
-          seasonId: model.seasonId,
-          teamId: awayTeamData.teamId
-        });
-        const cachedTeam = Team.get(cachingId);
-        return cachedTeam || Team.buildFromServer(awayTeamData.team);
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeam({
+        isHome: false, responseData, model
+      })
     },
 
     homeTeamScore: {
       key: 'teams',
-      manualParse: (responseData) => {
-        const homeTeamData = _.find(responseData, { home: true });
-        return _.get(homeTeamData, 'score');
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeamScore({
+        isHome: true, responseData
+      })
     },
     awayTeamScore: {
       key: 'teams',
-      manualParse: (responseData) => {
-        const awayTeamData = _.find(responseData, { home: false });
-        return _.get(awayTeamData, 'score');
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeamScore({
+        isHome: false, responseData
+      })
     },
 
     isByeWeek: 'bye',
@@ -108,6 +84,34 @@ class ScoreboardMatchup extends BaseObject {
       }
     }
   };
+
+  /**
+   * Helper for team parsing.
+   * @private
+   */
+  static _parseTeam({ isHome, responseData, model }) {
+    const teamData = _.find(responseData, { home: isHome });
+    if (!teamData) {
+      return undefined;
+    }
+
+    const cachingId = Team.getCacheId({
+      leagueId: model.leagueId,
+      seasonId: model.seasonId,
+      teamId: teamData.teamId
+    });
+
+    return Team.get(cachingId) || Team.buildFromServer(teamData.team);
+  }
+
+  /**
+   * Helper for team score parsing.
+   * @private
+   */
+  static _parseTeamScore({ isHome, responseData }) {
+    const teamData = _.find(responseData, { home: isHome });
+    return _.get(teamData, 'score');
+  }
 }
 
 export default ScoreboardMatchup;

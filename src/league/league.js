@@ -113,47 +113,23 @@ class League extends BaseAPIObject {
     draftOrder: {
       key: 'leaguesettings.draftOrder',
       defer: true,
-      manualParse: (responseData, response, model) => {
-        return _.map(responseData, (teamId) => {
-          const cachingId = Team.getCacheId({
-            leagueId: model.leagueId,
-            seasonId: model.seasonId,
-            teamId
-          });
-
-          return Team.get(cachingId);
-        });
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
+        responseData, model
+      })
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
-      manualParse: (responseData, response, model) => {
-        return _.map(responseData, (teamId) => {
-          const cachingId = Team.getCacheId({
-            leagueId: model.leagueId,
-            seasonId: model.seasonId,
-            teamId
-          });
-
-          return Team.get(cachingId);
-        });
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
+        responseData, model
+      })
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
-      manualParse: (responseData, response, model) => {
-        return _.map(responseData, (teamId) => {
-          const cachingId = Team.getCacheId({
-            leagueId: model.leagueId,
-            seasonId: model.seasonId,
-            teamId
-          });
-
-          return Team.get(cachingId);
-        });
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
+        responseData, model
+      })
     },
 
     numTeams: 'leaguesettings.size',
@@ -197,6 +173,22 @@ class League extends BaseAPIObject {
     allowsTrades: 'leaguesettings.allowsTrades',
     tradeRevisionHours: 'leaguesettings.tradeRevisionHours'
   };
+
+  /**
+   * Helper for deferred items in the `responseMap` that use cached Team instances.
+   * @private
+   */
+  static _parseUsingCachedTeam({ responseData, model }) {
+    return _.map(responseData, (teamId) => {
+      const cachingId = Team.getCacheId({
+        leagueId: model.leagueId,
+        seasonId: model.seasonId,
+        teamId
+      });
+
+      return Team.get(cachingId);
+    });
+  }
 
   static getCacheId(params = {}) {
     return (params.leagueId && params.seasonId) ?
