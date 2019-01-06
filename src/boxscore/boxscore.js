@@ -85,39 +85,36 @@ class Boxscore extends BaseAPIObject {
 
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => {
-        const scheduleItems = _.get(response, 'boxscore.scheduleItems');
-        const matchups = _.get(_.first(scheduleItems), 'matchups');
-        const matchup = _.first(matchups);
-        const matchupScore = _.sum(_.get(matchup, 'homeTeamScores'));
-
-        const teamId = _.get(matchup, 'homeTeamId');
-        const teamBoxscore = _.find(_.get(response, 'boxscore.teams'), { teamId });
-
-        return BoxscoreTeam.buildFromServer(
-          { matchupScore, teamBoxscore },
-          { leagueId: model.leagueId, seasonId: model.seasonId }
-        );
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeam({
+        teamPrefix: 'home', response, model
+      })
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => {
-        const scheduleItems = _.get(response, 'boxscore.scheduleItems');
-        const matchups = _.get(_.first(scheduleItems), 'matchups');
-        const matchup = _.first(matchups);
-        const matchupScore = _.sum(_.get(matchup, 'awayTeamScores'));
-
-        const teamId = _.get(matchup, 'awayTeamId');
-        const teamBoxscore = _.find(_.get(response, 'boxscore.teams'), { teamId });
-
-        return BoxscoreTeam.buildFromServer(
-          { matchupScore, teamBoxscore },
-          { leagueId: model.leagueId, seasonId: model.seasonId }
-        );
-      }
+      manualParse: (responseData, response, model) => model.constructor._parseTeam({
+        teamPrefix: 'away', response, model
+      })
     }
   };
+
+  /**
+   * Helper for team parsing.
+   * @private
+   */
+  static _parseTeam({ teamPrefix, response, model }) {
+    const scheduleItems = _.get(response, 'boxscore.scheduleItems');
+    const matchups = _.get(_.first(scheduleItems), 'matchups');
+    const matchup = _.first(matchups);
+    const matchupScore = _.sum(_.get(matchup, `${teamPrefix}TeamScores`));
+
+    const teamId = _.get(matchup, `${teamPrefix}TeamId`);
+    const teamBoxscore = _.find(_.get(response, 'boxscore.teams'), { teamId });
+
+    return BoxscoreTeam.buildFromServer(
+      { matchupScore, teamBoxscore },
+      { leagueId: model.leagueId, seasonId: model.seasonId }
+    );
+  }
 
   static getCacheId() {
     return undefined;
