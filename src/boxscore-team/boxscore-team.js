@@ -6,12 +6,27 @@ import BoxscorePlayer from '../boxscore-player/boxscore-player.js';
 import Team from '../team/team.js';
 
 /**
- * Represents a team in a boxscore. Data must be manually passed on the `teamBoxscore` and
- * `matchupScore`. This is an organizational class and not a class found on the API responses.
- * Therefore, there is no id for this class.
+ * Represents a team in a boxscore. Data must be manually passed on `teamBoxscore` and
+ * `matchupScore` attributes.
  * @extends BaseObject
  */
 class BoxscoreTeam extends BaseObject {
+  constructor(options = {}) {
+    super(options);
+
+    /**
+     * Id of the league to which the parent boxscore belongs. Used for grabbing cached Teams.
+     * @type {number}
+     */
+    this.leagueId = options.leagueId;
+
+    /**
+     * Id of the season to which the parent boxscore belongs. Used for grabbing cached Teams.
+     * @type {number}
+     */
+    this.seasonId = options.seasonId;
+  }
+
   static displayName = 'BoxscoreTeam';
 
   /**
@@ -41,12 +56,21 @@ class BoxscoreTeam extends BaseObject {
   static responseMap = {
     team: {
       key: 'teamBoxscore',
-      manualParse: (responseData) => {
+      manualParse: (responseData, response, model) => {
         if (_.isEmpty(responseData)) {
           return undefined;
         }
 
-        return Team.get(responseData.teamId) || Team.buildFromServer(responseData.team);
+        const cachingId = Team.getCacheId({
+          leagueId: model.leagueId,
+          seasonId: model.seasonId,
+          teamId: responseData.teamId
+        });
+
+        return Team.get(cachingId) || Team.buildFromServer(
+          responseData.team,
+          { leagueId: model.leagueId, seasonId: model.seasonId }
+        );
       }
     },
 

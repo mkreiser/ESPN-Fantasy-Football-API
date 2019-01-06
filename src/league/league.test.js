@@ -46,13 +46,22 @@ describe('League', () => {
   describe('responseMap', () => {
     const testUsesCachedTeamInstances = (method) => {
       test('maps data to cached Team instances', () => {
-        const ids = [1, 2, 3];
         jest.spyOn(Team, 'get');
 
-        expect.hasAssertions();
-        _.invoke(League.responseMap, `${method}.manualParse`, ids);
+        const ids = [1, 2, 3];
+        const model = new League({ leagueId: 242343, seasonId: 2015 });
 
-        _.forEach(ids, (id) => expect(Team.get).toBeCalledWith(id));
+        expect.hasAssertions();
+        _.invoke(League.responseMap, `${method}.manualParse`, ids, undefined, model);
+
+        _.forEach(ids, (id) => {
+          const cachingId = Team.getCacheId({
+            leagueId: model.leagueId,
+            seasonId: model.seasonId,
+            teamId: id
+          });
+          expect(Team.get).toBeCalledWith(cachingId);
+        });
 
         Team.get.mockRestore();
       });
@@ -249,6 +258,78 @@ describe('League', () => {
             const tieString = League.responseMap.playoffTiebreaker.manualParse(-231);
             expect(tieString).toBe('ERROR: playoffTiebreaker not recognized');
           });
+        });
+      });
+    });
+  });
+
+  describe('class methods', () => {
+    describe('getCacheId', () => {
+      let leagueId, seasonId;
+
+      afterEach(() => {
+        leagueId = seasonId = null;
+      });
+
+      const testReturnsUndefined = () => {
+        test('returns undefined', () => {
+          const params = { leagueId, seasonId };
+          expect(League.getCacheId(params)).toBeUndefined();
+        });
+      };
+
+      describe('when called with no params', () => {
+        test('returns undefined', () => {
+          expect(League.getCacheId()).toBeUndefined();
+        });
+      });
+
+      describe('when leagueId is defined', () => {
+        beforeEach(() => {
+          leagueId = 132123;
+        });
+
+        describe('when seasonId is defined', () => {
+          beforeEach(() => {
+            seasonId = 2017;
+          });
+
+          test('returns a valid caching id', () => {
+            const params = { leagueId, seasonId };
+
+            const returnedCachingId = League.getCacheId(params);
+            expect(returnedCachingId).toBe(`${leagueId}-${seasonId}`);
+          });
+        });
+
+        describe('when seasonId is undefined', () => {
+          beforeEach(() => {
+            seasonId = undefined;
+          });
+
+          testReturnsUndefined();
+        });
+      });
+
+      describe('when leagueId is undefined', () => {
+        beforeEach(() => {
+          leagueId = undefined;
+        });
+
+        describe('when seasonId is defined', () => {
+          beforeEach(() => {
+            seasonId = 2017;
+          });
+
+          testReturnsUndefined();
+        });
+
+        describe('when seasonId is undefined', () => {
+          beforeEach(() => {
+            seasonId = undefined;
+          });
+
+          testReturnsUndefined();
         });
       });
     });

@@ -9,6 +9,8 @@ import NFLGame from '../nfl-game/nfl-game.js';
  * Represents the boxscore of a matchup between two teams. Requires `leagueId`, `seasonId`,
  * `teamId`, and at least one of `matchupPeriodId` and `scoringPeriodId`.
  *
+ * Boxscore does not cache.
+ *
  * Only introduced in 2017 and valid for all matchups in 2017 or after.
  * @extends BaseAPIObject
  */
@@ -83,7 +85,7 @@ class Boxscore extends BaseAPIObject {
 
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response) => {
+      manualParse: (responseData, response, model) => {
         const scheduleItems = _.get(response, 'boxscore.scheduleItems');
         const matchups = _.get(_.first(scheduleItems), 'matchups');
         const matchup = _.first(matchups);
@@ -92,12 +94,15 @@ class Boxscore extends BaseAPIObject {
         const teamId = _.get(matchup, 'homeTeamId');
         const teamBoxscore = _.find(_.get(response, 'boxscore.teams'), { teamId });
 
-        return BoxscoreTeam.buildFromServer({ matchupScore, teamBoxscore }, { isHome: true });
+        return BoxscoreTeam.buildFromServer(
+          { matchupScore, teamBoxscore },
+          { leagueId: model.leagueId, seasonId: model.seasonId }
+        );
       }
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response) => {
+      manualParse: (responseData, response, model) => {
         const scheduleItems = _.get(response, 'boxscore.scheduleItems');
         const matchups = _.get(_.first(scheduleItems), 'matchups');
         const matchup = _.first(matchups);
@@ -106,10 +111,17 @@ class Boxscore extends BaseAPIObject {
         const teamId = _.get(matchup, 'awayTeamId');
         const teamBoxscore = _.find(_.get(response, 'boxscore.teams'), { teamId });
 
-        return BoxscoreTeam.buildFromServer({ matchupScore, teamBoxscore }, { isHome: false });
+        return BoxscoreTeam.buildFromServer(
+          { matchupScore, teamBoxscore },
+          { leagueId: model.leagueId, seasonId: model.seasonId }
+        );
       }
     }
   };
+
+  static getCacheId() {
+    return undefined;
+  }
 }
 
 export default Boxscore;

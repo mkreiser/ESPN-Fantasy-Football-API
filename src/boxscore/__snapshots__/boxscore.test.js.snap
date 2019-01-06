@@ -3,8 +3,10 @@
 exports[`Boxscore attribute population from local object parses data correctly 1`] = `
 Boxscore {
   "awayTeam": BoxscoreTeam {
+    "leagueId": undefined,
     "matchupScore": 113.94,
     "players": Array [],
+    "seasonId": undefined,
     "team": Team {
       "abbreviation": "GRON",
       "division": Object {
@@ -29,8 +31,10 @@ Boxscore {
     "weekScore": 0,
   },
   "homeTeam": BoxscoreTeam {
+    "leagueId": undefined,
     "matchupScore": 113.94,
     "players": Array [],
+    "seasonId": undefined,
     "team": Team {
       "abbreviation": "GRON",
       "division": Object {
@@ -66,6 +70,7 @@ Boxscore {
 exports[`Boxscore attribute population from server response parses data correctly 1`] = `
 Boxscore {
   "awayTeam": BoxscoreTeam {
+    "leagueId": undefined,
     "matchupScore": 113.94,
     "players": Array [
       BoxscorePlayer {
@@ -553,6 +558,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
     ],
+    "seasonId": undefined,
     "team": Team {
       "abbreviation": "GRON",
       "division": Object {
@@ -577,6 +583,7 @@ Boxscore {
     "weekScore": 0,
   },
   "homeTeam": BoxscoreTeam {
+    "leagueId": undefined,
     "matchupScore": 106.78,
     "players": Array [
       BoxscorePlayer {
@@ -1014,6 +1021,7 @@ Boxscore {
         "stats": BoxscorePlayerPointStats {},
       },
     ],
+    "seasonId": undefined,
     "team": Team {
       "abbreviation": "NUTS",
       "division": Object {

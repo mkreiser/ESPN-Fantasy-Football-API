@@ -440,15 +440,6 @@ const localObject = {
 };
 
 const serverResponse = {
-  metadata: {
-    dateModifiedUser: '2018-11-30T13:41:03.350Z',
-    serverDate: '2018-12-02T00:38:38.327Z',
-    defaults: {},
-    seasonId: '2017',
-    leagueId: '336358',
-    dateModifiedLeague: '2018-04-13T08:33:20.250Z',
-    status: 'offseason'
-  },
   leaguesettings: {
     finalRegularSeasonMatchupPeriodId: 13,
     seasonAcquisitionLimit: -1,

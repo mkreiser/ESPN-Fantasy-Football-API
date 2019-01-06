@@ -127,6 +127,12 @@ class Team extends BaseCacheableObject {
     leagueStanding: 'overallStanding',
     divisionStanding: 'divisionStanding'
   };
+
+  static getCacheId(params = {}) {
+    return (params.teamId && params.leagueId && params.seasonId) ?
+      `${params.teamId}-${params.leagueId}-${params.seasonId}` :
+      undefined;
+  }
 }
 
 export default Team;

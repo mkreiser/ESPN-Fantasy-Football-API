@@ -39,9 +39,9 @@ class BaseAPIObject extends BaseCacheableObject {
       throw new Error(`${this.displayName}: static read: cannot read without route`);
     }
 
-    const id = _.invoke(model, 'getCacheId') || this.getCacheId(params);
-    if (id && !reload && _.get(this.cache, id)) {
-      return Promise.resolve(_.get(this.cache, id));
+    const cachingId = _.invoke(model, 'getCacheId') || this.getCacheId(params);
+    if (cachingId && !reload && _.get(this.cache, cachingId)) {
+      return Promise.resolve(_.get(this.cache, cachingId));
     }
 
     return axios.get(route, { params }).then((response) => {

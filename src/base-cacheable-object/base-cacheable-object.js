@@ -121,7 +121,7 @@ class BaseCacheableObject extends BaseObject {
    * @return {string}
    */
   getCacheId() {
-    return this.getId();
+    return this.constructor.getCacheId(this);
   }
 }
 

@@ -10,7 +10,10 @@ describe('ScoreboardMatchup', () => {
   let matchup;
 
   beforeEach(() => {
-    matchup = new ScoreboardMatchup();
+    matchup = new ScoreboardMatchup({
+      leagueId: 513422,
+      seasonId: 2015
+    });
   });
 
   afterEach(() => {
@@ -41,6 +44,33 @@ describe('ScoreboardMatchup', () => {
     });
   });
 
+  describe('constructor', () => {
+    describe('when options are not passed', () => {
+      const testPropIsUndefined = (prop) => {
+        test(`${prop} is undefined`, () => {
+          const newInstance = new ScoreboardMatchup();
+          expect(_.get(newInstance, prop)).toBeUndefined();
+        });
+      };
+
+      testPropIsUndefined('leagueId');
+      testPropIsUndefined('seasonId');
+    });
+
+    describe('when options are passed', () => {
+      const testPropIsSetFromOptions = (prop) => {
+        test(`${prop} is set from options`, () => {
+          const value = 25;
+          const newInstance = new ScoreboardMatchup({ [prop]: value });
+          expect(_.get(newInstance, prop)).toBe(value);
+        });
+      };
+
+      testPropIsSetFromOptions('leagueId');
+      testPropIsSetFromOptions('seasonId');
+    });
+  });
+
   describe('responseMap', () => {
     const testTeamBehavior = ({ isTeamHome }) => {
       const teamPrefix = isTeamHome ? 'home' : 'away';
@@ -49,7 +79,11 @@ describe('ScoreboardMatchup', () => {
         test('returns undefined', () => {
           const data = [];
           const returnedTeam = _.invoke(
-            ScoreboardMatchup.responseMap, `${teamPrefix}Team.manualParse`, data
+            ScoreboardMatchup.responseMap,
+            `${teamPrefix}Team.manualParse`,
+            data,
+            undefined,
+            matchup
           );
           expect(returnedTeam).toBeUndefined();
         });
@@ -64,10 +98,17 @@ describe('ScoreboardMatchup', () => {
               team: { teamId },
               home: isTeamHome
             }];
-            const cachedTeam = Team.buildFromServer({ teamId });
+            const cachedTeam = Team.buildFromServer(
+              { teamId },
+              { leagueId: matchup.leagueId, seasonId: matchup.seasonId }
+            );
 
             const returnedTeam = _.invoke(
-              ScoreboardMatchup.responseMap, `${teamPrefix}Team.manualParse`, data
+              ScoreboardMatchup.responseMap,
+              `${teamPrefix}Team.manualParse`,
+              data,
+              undefined,
+              matchup
             );
             expect(returnedTeam).toBe(cachedTeam);
 
@@ -86,7 +127,11 @@ describe('ScoreboardMatchup', () => {
             jest.spyOn(Team, 'buildFromServer');
 
             const returnedTeam = _.invoke(
-              ScoreboardMatchup.responseMap, `${teamPrefix}Team.manualParse`, data
+              ScoreboardMatchup.responseMap,
+              `${teamPrefix}Team.manualParse`,
+              data,
+              undefined,
+              matchup
             );
             expect(returnedTeam).toBeInstanceOf(Team);
             expect(returnedTeam.teamId).toBe(teamId);
@@ -121,7 +166,11 @@ describe('ScoreboardMatchup', () => {
             home: isTeamHome
           }];
           const returnedScore = _.invoke(
-            ScoreboardMatchup.responseMap, `${teamPrefix}TeamScore.manualParse`, data
+            ScoreboardMatchup.responseMap,
+            `${teamPrefix}TeamScore.manualParse`,
+            data,
+            undefined,
+            matchup
           );
           expect(returnedScore).toBe(score);
         });
@@ -131,7 +180,11 @@ describe('ScoreboardMatchup', () => {
         test('returns undefined', () => {
           const data = [];
           const returnedScore = _.invoke(
-            ScoreboardMatchup.responseMap, `${teamPrefix}TeamScore.manualParse`, data
+            ScoreboardMatchup.responseMap,
+            `${teamPrefix}TeamScore.manualParse`,
+            data,
+            undefined,
+            matchup
           );
           expect(returnedScore).toBeUndefined();
         });

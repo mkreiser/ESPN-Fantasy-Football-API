@@ -75,6 +75,8 @@ ScoreboardMatchup {
   },
   "homeTeamScore": 56.64,
   "isByeWeek": false,
+  "leagueId": undefined,
+  "seasonId": undefined,
   "winner": Team {
     "abbreviation": "GOAT",
     "awayLosses": 1,
@@ -188,6 +190,8 @@ ScoreboardMatchup {
   },
   "homeTeamScore": 56.64,
   "isByeWeek": false,
+  "leagueId": undefined,
+  "seasonId": undefined,
   "winner": Team {
     "abbreviation": "GOAT",
     "awayLosses": 1,

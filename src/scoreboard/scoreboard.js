@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import BaseAPIObject from '../base-api-object/base-api-object.js';
 
 import ScoreboardMatchup from '../scoreboard-matchup/scoreboard-matchup.js';
@@ -5,6 +7,9 @@ import ScoreboardMatchup from '../scoreboard-matchup/scoreboard-matchup.js';
 /**
  * Represents the scoreboard of a League for a given matchup period or a given scoring period. From
  * here, the score and winner of each matchup can be given.
+ *
+ * Scoreboard does not cache.
+ *
  * @extends BaseAPIObject
  */
 class Scoreboard extends BaseAPIObject {
@@ -66,8 +71,12 @@ class Scoreboard extends BaseAPIObject {
 
     matchups: {
       key: 'scoreboard.matchups',
-      BaseObject: ScoreboardMatchup,
-      isArray: true
+      manualParse: (responseData, response, model) => _.map(responseData, (matchup) => {
+        return ScoreboardMatchup.buildFromServer(
+          matchup,
+          { leagueId: model.leagueId, seasonId: model.seasonId }
+        );
+      })
     }
   }
 }

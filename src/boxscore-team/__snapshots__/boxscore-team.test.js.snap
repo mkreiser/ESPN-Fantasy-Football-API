@@ -2,6 +2,7 @@
 
 exports[`BoxscoreTeam attribute population from local object parses data correctly 1`] = `
 BoxscoreTeam {
+  "leagueId": undefined,
   "matchupScore": 204,
   "players": Array [
     BoxscorePlayer {
@@ -110,6 +111,7 @@ BoxscoreTeam {
       "totalPoints": 11.4,
     },
   ],
+  "seasonId": undefined,
   "team": Team {
     "abbreviation": "NUTS",
     "division": Object {
@@ -137,6 +139,7 @@ BoxscoreTeam {
 
 exports[`BoxscoreTeam attribute population from server response parses data correctly 1`] = `
 BoxscoreTeam {
+  "leagueId": undefined,
   "matchupScore": 234,
   "players": Array [
     BoxscorePlayer {
@@ -632,6 +635,7 @@ BoxscoreTeam {
       "stats": BoxscorePlayerPointStats {},
     },
   ],
+  "seasonId": undefined,
   "team": Team {
     "abbreviation": "NUTS",
     "division": Object {

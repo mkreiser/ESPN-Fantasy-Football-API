@@ -12,7 +12,13 @@ describe('Boxscore', () => {
   let boxscore;
 
   beforeEach(() => {
-    boxscore = new Boxscore();
+    boxscore = new Boxscore({
+      leagueId: 234123,
+      seasonId: 2014,
+      teamId: 3,
+      matchupPeriodId: 11,
+      scoringPeriodId: 11
+    });
   });
 
   afterEach(() => {
@@ -100,8 +106,14 @@ describe('Boxscore', () => {
     const testTeamBehavior = ({ prefix }) => {
       describe('when no response is passed', () => {
         test('returns a sparse BoxscoreTeam', () => {
-          const returnedTeam = _.invoke(Boxscore.responseMap, `${prefix}Team.manualParse`);
-          expect(returnedTeam).toEqual(BoxscoreTeam.buildFromServer({ matchupScore: 0 }));
+          const expectedTeam = BoxscoreTeam.buildFromServer(
+            { matchupScore: 0 },
+            { leagueId: boxscore.leagueId, seasonId: boxscore.seasonId }
+          );
+          const returnedTeam = _.invoke(
+            Boxscore.responseMap, `${prefix}Team.manualParse`, undefined, undefined, boxscore
+          );
+          expect(returnedTeam).toEqual(expectedTeam);
         });
       });
 
@@ -124,12 +136,12 @@ describe('Boxscore', () => {
           };
 
           const returnedTeam = _.invoke(
-            Boxscore.responseMap, `${prefix}Team.manualParse`, undefined, response
+            Boxscore.responseMap, `${prefix}Team.manualParse`, undefined, response, boxscore
           );
-          const expectedTeam = BoxscoreTeam.buildFromServer({
-            matchupScore: _.sum(scores),
-            teamBoxscore: team
-          });
+          const expectedTeam = BoxscoreTeam.buildFromServer(
+            { matchupScore: _.sum(scores), teamBoxscore: team },
+            { leagueId: boxscore.leagueId, seasonId: boxscore.seasonId }
+          );
           expect(returnedTeam).toEqual(expectedTeam);
         });
       });
@@ -144,6 +156,14 @@ describe('Boxscore', () => {
     describe('awayTeam', () => {
       describe('manualParse', () => {
         testTeamBehavior({ prefix: 'away' });
+      });
+    });
+  });
+
+  describe('class methods', () => {
+    describe('getCacheId', () => {
+      test('returns undefined', () => {
+        expect(Boxscore.getCacheId()).toBeUndefined();
       });
     });
   });
