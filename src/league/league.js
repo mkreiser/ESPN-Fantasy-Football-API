@@ -209,14 +209,14 @@ class League extends BaseAPIObject {
   } = {
     route: this.constructor.route, reload: true
   }) {
-    const paramsWithId = _.assign({}, params, {
-      seasonId: this.seasonId
-    });
+    // `leagueId` is handled by super.read
+    const idParams = _.pickBy({ seasonId: this.seasonId }, (value) => _.isFinite(value));
+    const paramsWithIds = _.assign({}, params, idParams);
 
     return super.read({
       route,
       model: this,
-      params: paramsWithId,
+      params: paramsWithIds,
       reload
     });
   }

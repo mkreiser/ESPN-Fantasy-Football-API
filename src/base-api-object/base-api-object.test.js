@@ -547,18 +547,42 @@ describe('BaseAPIObject', () => {
         deferred = null;
       });
 
-      describe('when no parameters are passed', () => {
-        test('throws error via static read', () => {
-          expect(() => baseAPIObject.read()).toThrowError(
-            `${TestBaseAPIObject.displayName}: static read: cannot read on instance without an id`
-          );
+      describe('when no params are passed to the method', () => {
+        test('calls static read with idName merged into params', () => {
+          jest.spyOn(TestBaseAPIObject, 'read');
+
+          const id = 1232;
+          baseAPIObject.testId = id;
+
+          const expectedParams = _.assign({}, { testId: id });
+
+          baseAPIObject.read();
+          expect(TestBaseAPIObject.read).toBeCalledWith({
+            route: TestBaseAPIObject.route,
+            model: baseAPIObject,
+            params: expectedParams,
+            reload: true
+          });
+        });
+
+        test('returns result of static read', async () => {
+          const route = 'some-route';
+          const params = { some: 'params' };
+          baseAPIObject.testId = 42;
+
+          deferred.resolve({});
+
+          expect.assertions(1);
+          const returnedResult = await baseAPIObject.read({ route, params });
+          expect(returnedResult).toBeInstanceOf(TestBaseAPIObject);
         });
       });
 
       describe('when route is not passed', () => {
         test('calls static read with idName merged into params', () => {
           jest.spyOn(TestBaseAPIObject, 'read');
-          const id = 'id';
+
+          const id = 1232;
           baseAPIObject.testId = id;
 
           const params = { some: 'params' };
@@ -588,7 +612,7 @@ describe('BaseAPIObject', () => {
 
       test('calls static read with idName merged into params', () => {
         jest.spyOn(TestBaseAPIObject, 'read');
-        const id = 'id';
+        const id = 1232;
         baseAPIObject.testId = id;
 
         const params = { some: 'params' };

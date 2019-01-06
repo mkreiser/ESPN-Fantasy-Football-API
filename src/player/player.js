@@ -8,6 +8,7 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * Represents an NFL player that can be rostered on a fantasy football team. There is currently not
  * a discovered route to directly get player information. However, player information can be
  * retrieved from a boxscore and a team roster.
+ *
  * @extends BaseCacheableObject
  */
 class Player extends BaseCacheableObject {
