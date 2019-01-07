@@ -119,6 +119,47 @@ class Boxscore extends BaseAPIObject {
   static getCacheId() {
     return undefined;
   }
+
+  static read(
+    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+  ) {
+    if (!_.get(params, 'leagueId')) {
+      throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
+    } else if (!_.get(params, 'seasonId')) {
+      throw new Error(`${this.displayName}: static read: cannot read without seasonId`);
+    } else if (!_.get(params, 'teamId')) {
+      throw new Error(`${this.displayName}: static read: cannot read without teamId`);
+    } else if (!(_.get(params, 'matchupPeriodId') || _.get(params, 'scoringPeriodId'))) {
+      throw new Error(
+        `${this.displayName}: static read: cannot read without one of matchupPeriodId or ` +
+        'scoringPeriodId'
+      );
+    }
+
+    return super.read({ model, route, params, reload });
+  }
+
+  read({
+    route = this.constructor.route, params, reload = true
+  } = {
+    route: this.constructor.route, reload: true
+  }) {
+    const idParams = _.pickBy({
+      leagueId: this.leagueId,
+      seasonId: this.seasonId,
+      teamId: this.teamId,
+      matchupPeriodId: this.matchupPeriodId,
+      scoringPeriodId: this.scoringPeriodId
+    }, (value) => _.isFinite(value));
+
+    const paramsWithIds = _.assign({}, params, idParams);
+
+    return super.read({
+      route,
+      params: paramsWithIds,
+      reload
+    });
+  }
 }
 
 export default Boxscore;
