@@ -49,7 +49,7 @@ class BaseAPIObject extends BaseCacheableObject {
         data: response.data,
         model,
         isDataFromServer: true
-      }) : this.buildFromServer(response.data);
+      }) : this.buildFromServer(response.data, params);
     });
   }
 
