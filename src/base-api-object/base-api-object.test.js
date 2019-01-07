@@ -176,7 +176,7 @@ describe('BaseAPIObject', () => {
             deferred.resolve(response);
 
             await TestBaseAPIObject.read({ params, reload });
-            expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data);
+            expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data, params);
           });
 
           test('returns built model for chaining', async () => {
