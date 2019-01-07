@@ -80,21 +80,20 @@ See [CONTRIBUTING.MD](https://github.com/mkreiser/ESPN-Fantasy-Football-API/blob
 
 ## npm scripts
 
-| Script                 | Description                                                  |
-| ---------------------- | ------------------------------------------------------------ |
-| build                  | Builds the module.                                           |
-| build:docs             | Builds the docs.                                             |
-| clean                  | Runs all clean scripts.                                      |
-| clean:dist             | Removes the dist folder.                                     |
-| clean:docs             | Removes the docs folder.                                     |
-| ci                     | Runs continuous integration tasks. Currently runs lint, unit and integration tests, and build. |
-| lint                   | Ensures code style is correct.                               |
-| serve:docs             | Builds and serves docs. Defaults to port 8080.               |
-| test                   | Runs the unit tests then the integration tests.              |
-| test:integration       | Runs the integration tests.                                  |
-| test:integration:watch | Runs the integration tests, keeps the test runner alive, and watches for changes. |
-| test:unit              | Runs the unit tests.                                         |
-| test:unit:watch        | Runs the unit tests, keeps the test runner alive, and watches for changes. |
+| Script           | Description                                                  |
+| ---------------- | ------------------------------------------------------------ |
+| build            | Builds the module.                                           |
+| build:docs       | Builds the docs.                                             |
+| clean            | Runs all clean scripts.                                      |
+| clean:dist       | Removes the dist folder.                                     |
+| clean:docs       | Removes the docs folder.                                     |
+| ci               | Runs continuous integration tasks. Currently runs lint, unit and integration tests, and build. |
+| lint             | Ensures code style is correct.                               |
+| serve:docs       | Builds and serves docs. Defaults to port 8080.               |
+| test             | Starts a jest test runner with access to all tests. Pass `--watch` to keep jest alive and watching for changes. Pass a string as a file inclusion pattern. |
+| test:all         | Runs the unit tests then the integration tests.              |
+| test:integration | Runs the integration tests.                                  |
+| test:unit        | Runs the unit tests.                                         |
 
 ## Acknowledgements
 

@@ -166,5 +166,426 @@ describe('Boxscore', () => {
         expect(Boxscore.getCacheId()).toBeUndefined();
       });
     });
+
+    describe('read', () => {
+      describe('when nothing is passed to read', () => {
+        test('throws error', () => {
+          expect(() => Boxscore.read()).toThrowError(
+            'Boxscore: static read: cannot read without leagueId'
+          );
+        });
+      });
+
+      describe('when params are passed to read', () => {
+        const testDefersRead = ({ params }) => {
+          test('defers to super.read', () => {
+            jest.spyOn(BaseAPIObject, 'read').mockImplementation();
+
+            const model = new Boxscore();
+            const route = 'some route';
+            const reload = false;
+
+            Boxscore.read({ model, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
+
+            BaseAPIObject.read.mockRestore();
+          });
+        };
+
+        const testThrowsError = ({ params, errorMessage }) => {
+          test('throws error', () => {
+            expect(() => Boxscore.read({ params })).toThrowError(errorMessage);
+          });
+        };
+
+        describe('when leagueId is passed on params', () => {
+          describe('when seasonId is passed on params', () => {
+            describe('when teamId is passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testDefersRead({
+                    params: {
+                      leagueId: 232131,
+                      seasonId: 2017,
+                      teamId: 9,
+                      matchupPeriodId: 11,
+                      scoringPeriodId: 11
+                    }
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testDefersRead({
+                    params: { leagueId: 232131, seasonId: 2017, teamId: 9, matchupPeriodId: 11 }
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testDefersRead({
+                    params: { leagueId: 232131, seasonId: 2017, teamId: 9, scoringPeriodId: 11 }
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, seasonId: 2017, teamId: 9 },
+                    errorMessage: 'Boxscore: static read: cannot read without one of ' +
+                      'matchupPeriodId or scoringPeriodId'
+                  });
+                });
+              });
+            });
+
+            describe('when teamId is not passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: {
+                      leagueId: 232131, seasonId: 2017, matchupPeriodId: 11, scoringPeriodId: 11
+                    },
+                    errorMessage: 'Boxscore: static read: cannot read without teamId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, seasonId: 2017, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without teamId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, seasonId: 2017, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without teamId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, seasonId: 2017 },
+                    errorMessage: 'Boxscore: static read: cannot read without teamId'
+                  });
+                });
+              });
+            });
+          });
+
+          describe('when seasonId is not passed on params', () => {
+            describe('when teamId is passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: {
+                      leagueId: 232131, teamId: 9, matchupPeriodId: 11, scoringPeriodId: 11
+                    },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, teamId: 9, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, teamId: 9, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, teamId: 9 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+              });
+            });
+
+            describe('when teamId is not passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, matchupPeriodId: 11, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { leagueId: 232131 },
+                    errorMessage: 'Boxscore: static read: cannot read without seasonId'
+                  });
+                });
+              });
+            });
+          });
+        });
+
+        describe('when leagueId is not passed on params', () => {
+          describe('when seasonId is passed on params', () => {
+            describe('when teamId is passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, teamId: 9, matchupPeriodId: 11, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, teamId: 9, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, teamId: 9, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, teamId: 9 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+            });
+
+            describe('when teamId is not passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, matchupPeriodId: 11, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { seasonId: 2017 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+            });
+          });
+
+          describe('when seasonId is not passed on params', () => {
+            describe('when teamId is passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { teamId: 9, matchupPeriodId: 11, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { teamId: 9, matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { teamId: 9, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { teamId: 9 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+            });
+
+            describe('when teamId is not passed on params', () => {
+              describe('when matchupPeriodId is passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { matchupPeriodId: 11, scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: { matchupPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+
+              describe('when matchupPeriodId is not passed on params', () => {
+                describe('when scoringPeriodId is passed on params', () => {
+                  testThrowsError({
+                    params: { scoringPeriodId: 11 },
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+
+                describe('when scoringPeriodId is not passed on params', () => {
+                  testThrowsError({
+                    params: {},
+                    errorMessage: 'Boxscore: static read: cannot read without leagueId'
+                  });
+                });
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+
+  describe('instance methods', () => {
+    describe('read', () => {
+      beforeEach(() => {
+        jest.spyOn(BaseAPIObject.prototype, 'read').mockImplementation();
+      });
+
+      afterEach(() => {
+        BaseAPIObject.prototype.read.mockRestore();
+      });
+
+      describe('when params are passed to the method', () => {
+        describe('when id params are defined on the instance', () => {
+          test('calls super.read with only defined id params', () => {
+            const instance = new Boxscore({
+              leagueId: 4213,
+              seasonId: 2018,
+              teamId: 4,
+              matchupPeriodId: 12,
+              scoringPeriodId: 12
+            });
+            const params = { some: 'params' };
+            const reload = false;
+
+            instance.read({ params, reload });
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: _.assign({}, params, {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                teamId: instance.teamId,
+                matchupPeriodId: instance.matchupPeriodId,
+                scoringPeriodId: instance.scoringPeriodId
+              }),
+              route: Boxscore.route,
+              reload
+            });
+          });
+        });
+
+        describe('when id params are undefined on the instance', () => {
+          test('calls super.read with only defined id params', () => {
+            const instance = new Boxscore();
+            const params = { some: 'params' };
+            const route = 'some route';
+
+            instance.read({ params, route });
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params,
+              route,
+              reload: true
+            });
+          });
+        });
+      });
+
+      describe('when no params are passed to the method', () => {
+        describe('when id params are defined on the instance', () => {
+          test('calls super.read with only defined id params', () => {
+            const instance = new Boxscore({
+              leagueId: 4213,
+              seasonId: 2018,
+              teamId: 4,
+              matchupPeriodId: 12,
+              scoringPeriodId: 12
+            });
+
+            instance.read();
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                teamId: instance.teamId,
+                matchupPeriodId: instance.matchupPeriodId,
+                scoringPeriodId: instance.scoringPeriodId
+              },
+              route: Boxscore.route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when id params are undefined on the instance', () => {
+          test('calls super.read with only defined id params', () => {
+            const instance = new Boxscore();
+
+            instance.read();
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: {},
+              route: Boxscore.route,
+              reload: true
+            });
+          });
+        });
+      });
+    });
   });
 });
