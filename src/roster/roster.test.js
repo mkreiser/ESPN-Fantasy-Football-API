@@ -507,6 +507,23 @@ describe('Roster', () => {
       });
 
       describe('when params are passed to read', () => {
+        const testDefersRead = ({ params, expectedParams }) => {
+          test('defers to super.read', () => {
+            jest.spyOn(BaseAPIObject, 'read').mockImplementation();
+
+            const model = new Roster();
+            const route = 'some route';
+            const reload = false;
+
+            Roster.read({ model, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({
+              model, route, params: expectedParams, reload
+            });
+
+            BaseAPIObject.read.mockRestore();
+          });
+        };
+
         const testThrowsError = ({ params, errorMessage }) => {
           test('throws error', () => {
             expect(() => Roster.read({ params })).toThrowError(errorMessage);
@@ -515,42 +532,71 @@ describe('Roster', () => {
 
         describe('when leagueId is passed on params', () => {
           describe('when seasonId is passed on params', () => {
-            describe('when teamId is passed on params', () => {
-              test('defers to super.read', () => {
-                jest.spyOn(BaseAPIObject, 'read').mockImplementation();
+            describe('when teamIds is passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                const params = { leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9 };
+                testDefersRead({
+                  params,
+                  expectedParams: params
+                });
+              });
 
-                const model = new Roster();
-                const route = 'some route';
-                const params = { leagueId: 1231232, seasonId: 2017, teamId: 4 };
-                const reload = false;
-
-                Roster.read({ model, route, params, reload });
-                expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
-
-                BaseAPIObject.read.mockRestore();
+              describe('when teamId is not passed on params', () => {
+                const params = { leagueId: 3213, seasonId: 2017, teamIds: 9 };
+                testDefersRead({
+                  params,
+                  expectedParams: params
+                });
               });
             });
 
-            describe('when teamId is not passed on params', () => {
-              testThrowsError({
-                params: { leagueId: 1231232, seasonId: 2017 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without teamId`
+            describe('when teamIds is not passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testDefersRead({
+                  params: { leagueId: 3213, seasonId: 2017, teamId: 9 },
+                  expectedParams: { leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9 }
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { leagueId: 1231232, seasonId: 2017 },
+                  errorMessage: 'Roster: static read: cannot read without teamId'
+                });
               });
             });
           });
 
           describe('when seasonId is not passed on params', () => {
-            describe('when teamId is passed on params', () => {
-              testThrowsError({
-                params: { leagueId: 1231232, teamId: 2 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without seasonId`
+            describe('when teamIds is passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { leagueId: 1231232, teamId: 9, teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without seasonId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { leagueId: 1231232, teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without seasonId'
+                });
               });
             });
 
-            describe('when teamId is not passed on params', () => {
-              testThrowsError({
-                params: { leagueId: 1231232 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without seasonId`
+            describe('when teamIds is not passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { leagueId: 1231232, teamId: 9 },
+                  errorMessage: 'Roster: static read: cannot read without seasonId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { leagueId: 1231232 },
+                  errorMessage: 'Roster: static read: cannot read without seasonId'
+                });
               });
             });
           });
@@ -558,33 +604,69 @@ describe('Roster', () => {
 
         describe('when leagueId is not passed on params', () => {
           describe('when seasonId is passed on params', () => {
-            describe('when teamId is passed on params', () => {
-              testThrowsError({
-                params: { seasonId: 2017, teamId: 2 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without leagueId`
+            describe('when teamIds is passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { seasonId: 2017, teamId: 9, teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { seasonId: 2017, teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
               });
             });
 
-            describe('when teamId is not passed on params', () => {
-              testThrowsError({
-                params: { seasonId: 2017 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without leagueId`
+            describe('when teamIds is not passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { seasonId: 2017, teamId: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { seasonId: 2017 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
               });
             });
           });
 
           describe('when seasonId is not passed on params', () => {
-            describe('when teamId is passed on params', () => {
-              testThrowsError({
-                params: { teamId: 2 },
-                errorMessage: `${Roster.displayName}: static read: cannot read without leagueId`
+            describe('when teamIds is passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { teamId: 9, teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: { teamIds: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
               });
             });
 
-            describe('when teamId is not passed on params', () => {
-              testThrowsError({
-                params: {},
-                errorMessage: `${Roster.displayName}: static read: cannot read without leagueId`
+            describe('when teamIds is not passed on params', () => {
+              describe('when teamId is passed on params', () => {
+                testThrowsError({
+                  params: { teamId: 9 },
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
+              });
+
+              describe('when teamId is not passed on params', () => {
+                testThrowsError({
+                  params: {},
+                  errorMessage: 'Roster: static read: cannot read without leagueId'
+                });
               });
             });
           });
@@ -623,7 +705,6 @@ describe('Roster', () => {
                 teamIds: instance.teamId,
                 scoringPeriodId: instance.scoringPeriodId
               }),
-              model: instance,
               route: Roster.route,
               reload
             });
@@ -639,7 +720,6 @@ describe('Roster', () => {
             instance.read({ params, route });
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params,
-              model: instance,
               route,
               reload: true
             });
@@ -665,7 +745,6 @@ describe('Roster', () => {
                 teamIds: instance.teamId,
                 scoringPeriodId: instance.scoringPeriodId
               },
-              model: instance,
               route: Roster.route,
               reload: true
             });
@@ -679,7 +758,6 @@ describe('Roster', () => {
             instance.read();
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params: {},
-              model: instance,
               route: Roster.route,
               reload: true
             });

@@ -6,6 +6,7 @@ import SlottedPlayer from '../slotted-player/slotted-player.js';
 import Team from '../team/team.js';
 
 /**
+ * Represents a roster of players on a fantasy football team.
  *
  * Roster DOES NOT have an `id`. Rather, the nessecary identifers are gathered via a combination of
  * id parameters.
@@ -45,16 +46,17 @@ class Roster extends BaseAPIObject {
 
   static displayName = 'Roster';
 
-  static route = 'rosterinfo';
+  static route = 'rosterInfo';
 
   /**
-   * @typedef {object} RosterModel
+   * @typedef {object} RosterObject
    *
-   * @property {number} teamId
+   * @property {Team} team The team to which the roster belongs to.
+   * @property {SlottedPlayer[]} team The players in their slots on the roster.
    */
 
   /**
-    * @type {RosterModel}
+    * @type {RosterObject}
     */
   static responseMap = {
     team: {
@@ -97,11 +99,16 @@ class Roster extends BaseAPIObject {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
     } else if (!_.get(params, 'seasonId')) {
       throw new Error(`${this.displayName}: static read: cannot read without seasonId`);
-    } else if (!_.get(params, 'teamId')) {
+    } else if (!_.get(params, 'teamId') && !_.get(params, 'teamIds')) {
       throw new Error(`${this.displayName}: static read: cannot read without teamId`);
     }
 
-    return super.read({ model, route, params, reload });
+    const cleanParams = _.clone(params);
+    if (!cleanParams.teamIds) {
+      cleanParams.teamIds = cleanParams.teamId;
+    }
+
+    return super.read({ model, route, params: cleanParams, reload });
   }
 
   read({
@@ -120,7 +127,6 @@ class Roster extends BaseAPIObject {
 
     return super.read({
       route,
-      model: this,
       params: paramsWithIds,
       reload
     });

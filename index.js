@@ -5,10 +5,10 @@ import BoxscorePlayer from './src/boxscore-player/boxscore-player.js';
 import BoxscorePlayerPointStats
   from './src/boxscore-player-point-stats/boxscore-player-point-stats.js';
 import BoxscoreTeam from './src/boxscore-team/boxscore-team.js';
-
 import League from './src/league/league.js';
 import NFLGame from './src/nfl-game/nfl-game.js';
 import Player from './src/player/player.js';
+import Roster from './src/roster/roster.js';
 import Scoreboard from './src/scoreboard/scoreboard.js';
 import ScoreboardMatchup from './src/scoreboard-matchup/scoreboard-matchup.js';
 import Team from './src/team/team.js';
@@ -30,6 +30,7 @@ export {
   League,
   NFLGame,
   Player,
+  Roster,
   Scoreboard,
   ScoreboardMatchup,
   Team,
