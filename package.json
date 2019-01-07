@@ -19,14 +19,13 @@
     "clean": "npm run clean:dist && npm run clean:docs",
     "clean:dist": "rm -rf dist",
     "clean:docs": "rm -rf docs",
-    "ci": "npm run clean && npm run lint && npm run test && npm run build && npm run build:docs",
+    "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
     "lint": "eslint index.js src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
-    "test": "npm run test:unit && npm run test:integration",
+    "test": "jest",
+    "test:all": "npm run test:unit && npm run test:integration",
     "test:integration": "jest integration-tests/ --maxWorkers=2 --coverage=false",
-    "test:integration:watch": "jest integration-tests/ --maxWorkers=2 --coverage=false --watch",
-    "test:unit": "jest src/ --maxWorkers=2",
-    "test:unit:watch": "jest src/ --maxWorkers=2 --watch"
+    "test:unit": "jest src/ --maxWorkers=2"
   },
   "repository": {
     "type": "git",
