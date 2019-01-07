@@ -3,7 +3,7 @@
 exports[`Scoreboard functionality can load Scoreboard with matchupPeriodId from class 1`] = `
 Scoreboard {
   "dateOfFirstNFLGameInScoringPeriod": "2017-11-17T01:25:00.000Z",
-  "leagueId": undefined,
+  "leagueId": 336358,
   "matchupPeriodId": 11,
   "matchups": Array [
     ScoreboardMatchup {
@@ -80,8 +80,8 @@ Scoreboard {
       },
       "homeTeamScore": 127.8,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "GOAT",
         "awayLosses": 1,
@@ -192,8 +192,8 @@ Scoreboard {
       },
       "homeTeamScore": 111.18,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "GRON",
         "awayLosses": 2,
@@ -304,8 +304,8 @@ Scoreboard {
       },
       "homeTeamScore": 92.9,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "REES",
         "awayLosses": 2,
@@ -416,8 +416,8 @@ Scoreboard {
       },
       "homeTeamScore": 97.6,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "fuck",
         "awayLosses": 2,
@@ -457,7 +457,7 @@ Scoreboard {
   ],
   "nflGamesInProgress": false,
   "scoringPeriodId": 11,
-  "seasonId": undefined,
+  "seasonId": 2017,
 }
 `;
 
@@ -925,7 +925,7 @@ Scoreboard {
 exports[`Scoreboard functionality can load Scoreboard with scoringPeriodId from class 1`] = `
 Scoreboard {
   "dateOfFirstNFLGameInScoringPeriod": "2017-11-17T01:25:00.000Z",
-  "leagueId": undefined,
+  "leagueId": 336358,
   "matchupPeriodId": 11,
   "matchups": Array [
     ScoreboardMatchup {
@@ -1002,8 +1002,8 @@ Scoreboard {
       },
       "homeTeamScore": 127.8,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "GOAT",
         "awayLosses": 1,
@@ -1114,8 +1114,8 @@ Scoreboard {
       },
       "homeTeamScore": 111.18,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "GRON",
         "awayLosses": 2,
@@ -1226,8 +1226,8 @@ Scoreboard {
       },
       "homeTeamScore": 92.9,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "REES",
         "awayLosses": 2,
@@ -1338,8 +1338,8 @@ Scoreboard {
       },
       "homeTeamScore": 97.6,
       "isByeWeek": false,
-      "leagueId": undefined,
-      "seasonId": undefined,
+      "leagueId": 336358,
+      "seasonId": 2017,
       "winner": Team {
         "abbreviation": "fuck",
         "awayLosses": 2,
@@ -1379,7 +1379,7 @@ Scoreboard {
   ],
   "nflGamesInProgress": false,
   "scoringPeriodId": 11,
-  "seasonId": undefined,
+  "seasonId": 2017,
 }
 `;
 
