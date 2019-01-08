@@ -60,7 +60,7 @@ class Boxscore extends BaseAPIObject {
   static route = 'boxscore';
 
   /**
-   * @typedef {object} BoxscoreModel
+   * @typedef {object} BoxscoreObject
    *
    * @property {number} matchupPeriodId
    * @property {number} scoringPeriodId
@@ -72,7 +72,7 @@ class Boxscore extends BaseAPIObject {
    */
 
   /**
-    * @type {BoxscoreModel}
+    * @type {BoxscoreObject}
     */
   static responseMap = {
     matchupPeriodId: 'boxscore.matchupPeriodId',
@@ -85,14 +85,14 @@ class Boxscore extends BaseAPIObject {
 
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeam({
-        teamPrefix: 'home', response, model
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
+        teamPrefix: 'home', response, instance
       })
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeam({
-        teamPrefix: 'away', response, model
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
+        teamPrefix: 'away', response, instance
       })
     }
   };
@@ -101,7 +101,7 @@ class Boxscore extends BaseAPIObject {
    * Helper for team parsing.
    * @private
    */
-  static _parseTeam({ teamPrefix, response, model }) {
+  static _parseTeam({ teamPrefix, response, instance }) {
     const scheduleItems = _.get(response, 'boxscore.scheduleItems');
     const matchups = _.get(_.first(scheduleItems), 'matchups');
     const matchup = _.first(matchups);
@@ -112,7 +112,7 @@ class Boxscore extends BaseAPIObject {
 
     return BoxscoreTeam.buildFromServer(
       { matchupScore, teamBoxscore },
-      { leagueId: model.leagueId, seasonId: model.seasonId }
+      { leagueId: instance.leagueId, seasonId: instance.seasonId }
     );
   }
 
@@ -121,7 +121,7 @@ class Boxscore extends BaseAPIObject {
   }
 
   static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
@@ -136,7 +136,7 @@ class Boxscore extends BaseAPIObject {
       );
     }
 
-    return super.read({ model, route, params, reload });
+    return super.read({ instance, route, params, reload });
   }
 
   read({

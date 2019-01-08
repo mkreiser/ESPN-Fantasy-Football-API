@@ -13,7 +13,7 @@ class BoxscorePlayer extends SlottedPlayer {
   static displayName = 'BoxscorePlayer';
 
   /**
-   * @typedef {object} BoxscorePlayerModel
+   * @typedef {object} BoxscorePlayerObject
    *
    * @property {Player} player A Player instance for generic player information.
    * @property {string} position The position (from `slotCategoryIdToPositionMap`) in which the
@@ -32,7 +32,7 @@ class BoxscorePlayer extends SlottedPlayer {
    */
 
   /**
-    * @type {BoxscorePlayerModel}
+    * @type {BoxscorePlayerObject}
     */
   static responseMap = _.assign({}, SlottedPlayer.responseMap, {
     totalPoints: 'currentPeriodRealStats.appliedStatTotal',

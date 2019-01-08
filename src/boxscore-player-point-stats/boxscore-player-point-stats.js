@@ -13,7 +13,7 @@ class BoxscorePlayerPointStats extends BaseObject {
   static displayName = 'BoxscorePlayerPointStats';
 
   /**
-   * @typedef {object} BoxscorePlayerStatsModel
+   * @typedef {object} BoxscorePlayerStatsObject
    *
    * Defensive yards allowed and points allowed are inclusive and only scored when their condition
    * is met. For example, if a DST allowed 360 yards, then `defensive350To399YardsAllowed` will be
@@ -100,7 +100,7 @@ class BoxscorePlayerPointStats extends BaseObject {
    */
 
   /**
-    * @type {BoxscorePlayerStatsModel}
+    * @type {BoxscorePlayerStatsObject}
     */
   static responseMap = {
     passingYards: '3',

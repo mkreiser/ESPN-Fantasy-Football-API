@@ -61,25 +61,25 @@ class Roster extends BaseAPIObject {
   static responseMap = {
     team: {
       key: 'leagueRosters.teams',
-      manualParse: (responseData, response, model) => {
-        const data = _.find(responseData, { teamId: model.teamId });
+      manualParse: (responseData, response, instance) => {
+        const data = _.find(responseData, { teamId: instance.teamId });
 
         const cachingId = Team.getCacheId({
-          leagueId: model.leagueId,
-          seasonId: model.seasonId,
+          leagueId: instance.leagueId,
+          seasonId: instance.seasonId,
           teamId: _.get(data, 'teamId')
         });
 
         return Team.get(cachingId) || Team.buildFromServer(
           _.get(data, 'team'),
-          { leagueId: model.leagueId, seasonId: model.seasonId }
+          { leagueId: instance.leagueId, seasonId: instance.seasonId }
         );
       }
     },
     players: {
       key: 'leagueRosters.teams',
-      manualParse: (responseData, response, model) => {
-        const data = _.find(responseData, { teamId: _.get(model, 'teamId') });
+      manualParse: (responseData, response, instance) => {
+        const data = _.find(responseData, { teamId: _.get(instance, 'teamId') });
         const slots = _.get(data, 'slots');
         return _.map(slots, (slottedPlayer) => SlottedPlayer.buildFromServer(slottedPlayer));
       }
@@ -93,7 +93,7 @@ class Roster extends BaseAPIObject {
   }
 
   static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
@@ -108,7 +108,7 @@ class Roster extends BaseAPIObject {
       cleanParams.teamIds = cleanParams.teamId;
     }
 
-    return super.read({ model, route, params: cleanParams, reload });
+    return super.read({ instance, route, params: cleanParams, reload });
   }
 
   read({

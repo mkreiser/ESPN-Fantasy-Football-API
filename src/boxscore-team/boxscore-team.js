@@ -30,7 +30,7 @@ class BoxscoreTeam extends BaseObject {
   static displayName = 'BoxscoreTeam';
 
   /**
-   * @typedef {object} BoxscoreTeamModel
+   * @typedef {object} BoxscoreTeamObject
    *
    * @property {Team} team The team instance with the generic team data.
    *
@@ -51,25 +51,25 @@ class BoxscoreTeam extends BaseObject {
    */
 
   /**
-    * @type {BoxscoreTeamModel}
+    * @type {BoxscoreTeamObject}
     */
   static responseMap = {
     team: {
       key: 'teamBoxscore',
-      manualParse: (responseData, response, model) => {
+      manualParse: (responseData, response, instance) => {
         if (_.isEmpty(responseData)) {
           return undefined;
         }
 
         const cachingId = Team.getCacheId({
-          leagueId: model.leagueId,
-          seasonId: model.seasonId,
+          leagueId: instance.leagueId,
+          seasonId: instance.seasonId,
           teamId: responseData.teamId
         });
 
         return Team.get(cachingId) || Team.buildFromServer(
           responseData.team,
-          { leagueId: model.leagueId, seasonId: model.seasonId }
+          { leagueId: instance.leagueId, seasonId: instance.seasonId }
         );
       }
     },

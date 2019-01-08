@@ -148,12 +148,12 @@ describe('Scoreboard', () => {
           test('defers to super.read', () => {
             jest.spyOn(BaseAPIObject, 'read').mockImplementation();
 
-            const model = new Scoreboard();
+            const instance = new Scoreboard();
             const route = 'some route';
             const reload = false;
 
-            Scoreboard.read({ model, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
+            Scoreboard.read({ instance, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
 
             BaseAPIObject.read.mockRestore();
           });
@@ -328,7 +328,6 @@ describe('Scoreboard', () => {
                 matchupPeriodId: instance.matchupPeriodId,
                 scoringPeriodId: instance.scoringPeriodId
               }),
-              model: instance,
               route: Scoreboard.route,
               reload
             });
@@ -344,7 +343,6 @@ describe('Scoreboard', () => {
             instance.read({ params, route });
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params,
-              model: instance,
               route,
               reload: true
             });
@@ -370,7 +368,6 @@ describe('Scoreboard', () => {
                 matchupPeriodId: instance.matchupPeriodId,
                 scoringPeriodId: instance.scoringPeriodId
               },
-              model: instance,
               route: Scoreboard.route,
               reload: true
             });
@@ -384,7 +381,6 @@ describe('Scoreboard', () => {
             instance.read();
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params: {},
-              model: instance,
               route: Scoreboard.route,
               reload: true
             });

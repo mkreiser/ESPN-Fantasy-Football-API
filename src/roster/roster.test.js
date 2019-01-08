@@ -77,61 +77,63 @@ describe('Roster', () => {
   describe('responseMap', () => {
     describe('team', () => {
       describe('manualParse', () => {
-        let model;
+        let instance;
 
         beforeEach(() => {
-          model = new Roster({
+          instance = new Roster({
             leagueId: 123,
             seasonId: 2018
           });
         });
 
         afterEach(() => {
-          model = null;
+          instance = null;
         });
 
-        const testReturnsEmptyModel = ({ value, valueString }) => {
+        const testReturnsEmptyInstance = ({ value, valueString }) => {
           describe(`when the passed data is ${valueString}`, () => {
             test('returns an empty Team', () => {
-              const expectedTeam = new Team({ leagueId: model.leagueId, seasonId: model.seasonId });
+              const expectedTeam = new Team({
+                leagueId: instance.leagueId, seasonId: instance.seasonId
+              });
 
-              const returnedTeam = Roster.responseMap.team.manualParse(value, undefined, model);
+              const returnedTeam = Roster.responseMap.team.manualParse(value, undefined, instance);
               expect(returnedTeam).toEqual(expectedTeam);
             });
           });
         };
 
-        describe('when the populating model does not have a teamId', () => {
+        describe('when the populating instance does not have a teamId', () => {
           beforeEach(() => {
-            model.teamId = undefined;
+            instance.teamId = undefined;
           });
 
-          testReturnsEmptyModel({ value: undefined, valueString: 'undefined' });
-          testReturnsEmptyModel({ value: null, valueString: 'null' });
-          testReturnsEmptyModel({ value: [], valueString: 'empty array' });
-          testReturnsEmptyModel({
+          testReturnsEmptyInstance({ value: undefined, valueString: 'undefined' });
+          testReturnsEmptyInstance({ value: null, valueString: 'null' });
+          testReturnsEmptyInstance({ value: [], valueString: 'empty array' });
+          testReturnsEmptyInstance({
             value: [{ teamId: 4 }, { teamId: 5 }, { teamId: 6 }],
             valueString: 'populated array'
           });
         });
 
-        describe('when the populating model has a teamId', () => {
+        describe('when the populating instance has a teamId', () => {
           beforeEach(() => {
-            model.teamId = 10;
+            instance.teamId = 10;
           });
 
-          testReturnsEmptyModel({ value: undefined, valueString: 'undefined' });
-          testReturnsEmptyModel({ value: null, valueString: 'null' });
-          testReturnsEmptyModel({ value: [], valueString: 'empty array' });
+          testReturnsEmptyInstance({ value: undefined, valueString: 'undefined' });
+          testReturnsEmptyInstance({ value: null, valueString: 'null' });
+          testReturnsEmptyInstance({ value: [], valueString: 'empty array' });
 
           describe('when the passed data is a populated array', () => {
             let responseData;
 
             beforeEach(() => {
               responseData = [{
-                teamId: model.teamId,
+                teamId: instance.teamId,
                 team: {
-                  teamId: model.teamId
+                  teamId: instance.teamId
                 }
               }];
             });
@@ -143,12 +145,12 @@ describe('Roster', () => {
             describe('when there is a cached team', () => {
               test('returns the cached team', () => {
                 const cachedTeam = Team.buildFromServer(
-                  { teamId: model.teamId },
-                  { leagueId: model.leagueId, seasonId: model.seasonId }
+                  { teamId: instance.teamId },
+                  { leagueId: instance.leagueId, seasonId: instance.seasonId }
                 );
 
                 const returnedTeam = Roster.responseMap.team.manualParse(
-                  responseData, undefined, model
+                  responseData, undefined, instance
                 );
                 expect(returnedTeam).toBe(cachedTeam);
 
@@ -161,13 +163,13 @@ describe('Roster', () => {
                 Team.clearCache();
 
                 const cachingId = Team.getCacheId({
-                  leagueId: model.leagueId,
-                  seasonId: model.seasonId,
-                  teamId: model.teamId
+                  leagueId: instance.leagueId,
+                  seasonId: instance.seasonId,
+                  teamId: instance.teamId
                 });
 
                 const returnedTeam = Roster.responseMap.team.manualParse(
-                  responseData, undefined, model
+                  responseData, undefined, instance
                 );
                 expect(returnedTeam).toBe(Team.get(cachingId));
 
@@ -181,33 +183,33 @@ describe('Roster', () => {
 
     describe('player', () => {
       describe('manualParse', () => {
-        let model;
+        let instance;
 
         beforeEach(() => {
-          model = new Roster({
+          instance = new Roster({
             leagueId: 123,
             seasonId: 2018
           });
         });
 
         afterEach(() => {
-          model = null;
+          instance = null;
         });
 
         const testReturnsEmptyArray = ({ value, valueString }) => {
           describe(`when the passed data is ${valueString}`, () => {
             test('returns an empty array', () => {
               const returnedPlayers = Roster.responseMap.players.manualParse(
-                value, undefined, model
+                value, undefined, instance
               );
               expect(returnedPlayers).toEqual([]);
             });
           });
         };
 
-        describe('when the populating model does not have a teamId', () => {
+        describe('when the populating instance does not have a teamId', () => {
           beforeEach(() => {
-            model.teamId = undefined;
+            instance.teamId = undefined;
           });
 
           testReturnsEmptyArray({ value: undefined, valueString: 'undefined' });
@@ -219,9 +221,9 @@ describe('Roster', () => {
           });
         });
 
-        describe('when the populating model has a teamId', () => {
+        describe('when the populating instance has a teamId', () => {
           beforeEach(() => {
-            model.teamId = 10;
+            instance.teamId = 10;
           });
 
           testReturnsEmptyArray({ value: undefined, valueString: 'undefined' });
@@ -231,7 +233,7 @@ describe('Roster', () => {
           describe('when the passed data is a populated array', () => {
             test('returns an array of SlottedPlayers', () => {
               const responseData = [{
-                teamId: model.teamId,
+                teamId: instance.teamId,
                 slots: [{
                   player: {},
                   isKeeper: true
@@ -242,7 +244,7 @@ describe('Roster', () => {
               }];
 
               const returnedPlayers = Roster.responseMap.players.manualParse(
-                responseData, undefined, model
+                responseData, undefined, instance
               );
 
               expect.hasAssertions();
@@ -511,13 +513,13 @@ describe('Roster', () => {
           test('defers to super.read', () => {
             jest.spyOn(BaseAPIObject, 'read').mockImplementation();
 
-            const model = new Roster();
+            const instance = new Roster();
             const route = 'some route';
             const reload = false;
 
-            Roster.read({ model, route, params, reload });
+            Roster.read({ instance, route, params, reload });
             expect(BaseAPIObject.read).toBeCalledWith({
-              model, route, params: expectedParams, reload
+              instance, route, params: expectedParams, reload
             });
 
             BaseAPIObject.read.mockRestore();

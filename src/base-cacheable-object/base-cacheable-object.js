@@ -6,10 +6,10 @@ import BaseObject from '../base-object/base-object.js';
  * The base class for all project objects that can be cached. This class is extremely useful for
  * classes which have identifiers but cannot make API calls (e.g. Team, Player).
  *
- * Note: The id used for caching may be different than any id used by the model over the wire. This
- * allows for caching of a model with the same id but different season data. Example: League with
- * different `seasonId`s can all be cached using this functionality. See the `getCacheId` method
- * for implementation.
+ * Note: The id used for caching may be different than any id used by the response from the wire.
+ * This allows for caching of an instance with the same id but different season data. Example:
+ * League with different `seasonId`s can all be cached using this functionality. See the
+ * `getCacheId` method for implementation.
  *
  * When managing the cache, never set an object to an `undefined` id. Always check that the result
  * from `getCacheId` is valid (see `_populateObject` for an example). Otherwise the cache will not
@@ -21,8 +21,8 @@ class BaseCacheableObject extends BaseObject {
   static displayName = 'BaseCacheableObject';
 
   /**
-   * Denotes which attribute the identifier of the model is defined on. In this project, this is
-   * typically the model name appended by 'id' (e.g. 'leagueId', 'teamId').
+   * Denotes which attribute the identifier of the object is defined on. In this project, this is
+   * typically the object name appended by 'id' (e.g. 'leagueId', 'teamId').
    *
    * Note: When multiple ids or parameters are needed for `read`s, override the `read` method to
    * ensure all necessary parameters are passed. When multiple ids are needed for caching, override
@@ -34,22 +34,22 @@ class BaseCacheableObject extends BaseObject {
   static idName = 'id';
 
   /**
-   * Defers to `BaseObject._populateObject` and then caches the model using the caching id from
+   * Defers to `BaseObject._populateObject` and then caches the instance using the caching id from
    * `getCacheId`.
    * @override
    */
-  static _populateObject({ data, model, isDataFromServer }) {
-    const populatedModel = super._populateObject({ data, model, isDataFromServer });
+  static _populateObject({ data, instance, isDataFromServer }) {
+    const populatedInstance = super._populateObject({ data, instance, isDataFromServer });
 
-    if (isDataFromServer && populatedModel.getCacheId()) {
-      this.cache[populatedModel.getCacheId()] = populatedModel;
+    if (isDataFromServer && populatedInstance.getCacheId()) {
+      this.cache[populatedInstance.getCacheId()] = populatedInstance;
     }
 
-    return populatedModel;
+    return populatedInstance;
   }
 
   /**
-   * Returns all cached models of an BaseCacheableObject. If no cache exists, a cache object is
+   * Returns all cached instances of an BaseCacheableObject. If no cache exists, a cache object is
    * created. This implementation ensures each class has a unique cache of only instances of the
    * BaseCacheableObject that does not overlap with other BaseCacheableObject classes. The keys of
    * the cache should use the caching id implemented in `getCacheId`.
@@ -79,7 +79,7 @@ class BaseCacheableObject extends BaseObject {
   }
 
   /**
-   * Returns a cached model matching the passed caching id if it exists. Otherwise, returns
+   * Returns a cached instance matching the passed caching id if it exists. Otherwise, returns
    * undefined.
    * @param  {number} id This id must match the form of the caching id provided by `getCacheId`.
    * @return {BaseCacheableObject|undefined}

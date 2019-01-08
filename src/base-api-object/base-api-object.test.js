@@ -27,16 +27,16 @@ class TestBaseAPIObject extends BaseAPIObject {
     testId: 'testId',
     someValue: 'some_value',
     someNestedData: 'nested.item',
-    someModel: {
-      key: 'map_model',
+    someObject: {
+      key: 'map_object',
       BaseAPIObject: MappingTestBaseObject
     },
-    someModels: {
-      key: 'map_models',
+    someObjects: {
+      key: 'someObjects',
       BaseAPIObject: MappingTestBaseObject,
       isArray: true
     },
-    someManualModel: {
+    someManualObject: {
       key: 'manual',
       manualParse: jest.fn()
     },
@@ -45,7 +45,7 @@ class TestBaseAPIObject extends BaseAPIObject {
       BaseAPIObject: MappingTestBaseObject,
       manualParse: jest.fn()
     },
-    someDeferredModel: {
+    someDeferredObject: {
       key: 'deferred',
       BaseAPIObject: MappingTestBaseObject,
       defer: true,
@@ -63,12 +63,12 @@ class TestBaseAPIObject extends BaseAPIObject {
 describe('BaseAPIObject', () => {
   describe('class methods', () => {
     describe('read', () => {
-      let deferred, id, model, params, reload;
+      let deferred, id, instance, params, reload;
 
       beforeEach(() => {
         deferred = q.defer();
         id = 121340;
-        model = new TestBaseAPIObject();
+        instance = new TestBaseAPIObject();
         params = { some: 'param' };
         reload = true;
 
@@ -76,10 +76,10 @@ describe('BaseAPIObject', () => {
       });
 
       afterEach(() => {
-        deferred = id = model = params = reload = null;
+        deferred = id = instance = params = reload = null;
       });
 
-      const testReadBehaviorWithModel = () => {
+      const testReadBehaviorWithObject = () => {
         test('calls axios.get with route and params', () => {
           const route = 'some-route';
 
@@ -108,24 +108,24 @@ describe('BaseAPIObject', () => {
 
             deferred.resolve(response);
 
-            await TestBaseAPIObject.read({ model, params, reload });
+            await TestBaseAPIObject.read({ instance, params, reload });
             expect(TestBaseAPIObject._populateObject).toBeCalledWith({
               data: response.data,
-              model,
+              instance,
               isDataFromServer: true
             });
           });
 
-          test('returns built model for chaining', async () => {
-            const builtModel = new TestBaseAPIObject();
+          test('returns built instance for chaining', async () => {
+            const builtObject = new TestBaseAPIObject();
             const response = { data: {} };
 
-            jest.spyOn(TestBaseAPIObject, '_populateObject').mockReturnValue(builtModel);
+            jest.spyOn(TestBaseAPIObject, '_populateObject').mockReturnValue(builtObject);
 
             deferred.resolve(response);
 
-            const returnedModel = await TestBaseAPIObject.read({ model, params, reload });
-            expect(returnedModel).toBe(builtModel);
+            const returnedObject = await TestBaseAPIObject.read({ instance, params, reload });
+            expect(returnedObject).toBe(builtObject);
           });
         });
 
@@ -146,7 +146,7 @@ describe('BaseAPIObject', () => {
         });
       };
 
-      const testReadBehaviorWithoutModel = () => {
+      const testReadBehaviorWithoutObject = () => {
         test('calls axios.get with route and params', () => {
           const route = 'some-route';
 
@@ -179,16 +179,16 @@ describe('BaseAPIObject', () => {
             expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data, params);
           });
 
-          test('returns built model for chaining', async () => {
-            const builtModel = new TestBaseAPIObject();
+          test('returns built instance for chaining', async () => {
+            const builtObject = new TestBaseAPIObject();
             const response = { data: {} };
 
-            jest.spyOn(TestBaseAPIObject, 'buildFromServer').mockReturnValue(builtModel);
+            jest.spyOn(TestBaseAPIObject, 'buildFromServer').mockReturnValue(builtObject);
 
             deferred.resolve(response);
 
-            const returnedModel = await TestBaseAPIObject.read({ params, reload });
-            expect(returnedModel).toBe(builtModel);
+            const returnedObject = await TestBaseAPIObject.read({ params, reload });
+            expect(returnedObject).toBe(builtObject);
           });
         });
 
@@ -210,9 +210,9 @@ describe('BaseAPIObject', () => {
       };
 
       const testCacheBehavior = () => {
-        test('returns cached model', async () => {
-          const returnedModel = await TestBaseAPIObject.read({ model, params, reload });
-          expect(returnedModel).toBe(TestBaseAPIObject.cache[id]);
+        test('returns cached instance', async () => {
+          const returnedObject = await TestBaseAPIObject.read({ instance, params, reload });
+          expect(returnedObject).toBe(TestBaseAPIObject.cache[id]);
         });
       };
 
@@ -238,9 +238,9 @@ describe('BaseAPIObject', () => {
         });
       });
 
-      describe('when model is passed', () => {
+      describe('when instance is passed', () => {
         beforeEach(() => {
-          model = new TestBaseAPIObject();
+          instance = new TestBaseAPIObject();
         });
 
         describe('when idName is defined on the passed params', () => {
@@ -253,22 +253,22 @@ describe('BaseAPIObject', () => {
               reload = true;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
-                model.testId = id;
-                TestBaseAPIObject.cache[id] = model;
+                instance.testId = id;
+                TestBaseAPIObject.cache[id] = instance;
               });
 
               afterEach(() => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
-                model.testId = id;
+                instance.testId = id;
                 TestBaseAPIObject.cache[id] = undefined;
               });
 
@@ -276,7 +276,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
           });
 
@@ -285,10 +285,10 @@ describe('BaseAPIObject', () => {
               reload = false;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
-                model.testId = id;
-                TestBaseAPIObject.cache[id] = model;
+                instance.testId = id;
+                TestBaseAPIObject.cache[id] = instance;
               });
 
               afterEach(() => {
@@ -298,9 +298,9 @@ describe('BaseAPIObject', () => {
               testCacheBehavior();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
-                model.testId = id;
+                instance.testId = id;
                 TestBaseAPIObject.cache[id] = undefined;
               });
 
@@ -308,7 +308,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
           });
         });
@@ -323,22 +323,22 @@ describe('BaseAPIObject', () => {
               reload = true;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
-                model.testId = id;
-                TestBaseAPIObject.cache[id] = model;
+                instance.testId = id;
+                TestBaseAPIObject.cache[id] = instance;
               });
 
               afterEach(() => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
-                model.testId = id;
+                instance.testId = id;
                 TestBaseAPIObject.cache[id] = undefined;
               });
 
@@ -346,7 +346,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
           });
 
@@ -355,10 +355,10 @@ describe('BaseAPIObject', () => {
               reload = false;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
-                model.testId = id;
-                TestBaseAPIObject.cache[id] = model;
+                instance.testId = id;
+                TestBaseAPIObject.cache[id] = instance;
               });
 
               afterEach(() => {
@@ -368,9 +368,9 @@ describe('BaseAPIObject', () => {
               testCacheBehavior();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
-                model.testId = id;
+                instance.testId = id;
                 TestBaseAPIObject.cache[id] = undefined;
               });
 
@@ -378,15 +378,15 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithModel();
+              testReadBehaviorWithObject();
             });
           });
         });
       });
 
-      describe('when model is not passed', () => {
+      describe('when instance is not passed', () => {
         beforeEach(() => {
-          model = undefined;
+          instance = undefined;
         });
 
         describe('when idName is defined on the passed params', () => {
@@ -399,7 +399,7 @@ describe('BaseAPIObject', () => {
               reload = true;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
               });
@@ -408,10 +408,10 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = undefined;
               });
@@ -420,7 +420,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
           });
 
@@ -429,7 +429,7 @@ describe('BaseAPIObject', () => {
               reload = false;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
               });
@@ -441,7 +441,7 @@ describe('BaseAPIObject', () => {
               testCacheBehavior();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = undefined;
               });
@@ -450,7 +450,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
           });
         });
@@ -465,7 +465,7 @@ describe('BaseAPIObject', () => {
               reload = true;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
               });
@@ -474,10 +474,10 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = undefined;
               });
@@ -486,7 +486,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
           });
 
@@ -495,7 +495,7 @@ describe('BaseAPIObject', () => {
               reload = false;
             });
 
-            describe('when a cached model has a matching id', () => {
+            describe('when a cached instance has a matching id', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
               });
@@ -504,10 +504,10 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
 
-            describe('when no matching model is found in the cache', () => {
+            describe('when no matching instance is found in the cache', () => {
               beforeEach(() => {
                 TestBaseAPIObject.cache[id] = undefined;
               });
@@ -516,7 +516,7 @@ describe('BaseAPIObject', () => {
                 TestBaseAPIObject.clearCache();
               });
 
-              testReadBehaviorWithoutModel();
+              testReadBehaviorWithoutObject();
             });
           });
         });
@@ -559,7 +559,7 @@ describe('BaseAPIObject', () => {
           baseAPIObject.read();
           expect(TestBaseAPIObject.read).toBeCalledWith({
             route: TestBaseAPIObject.route,
-            model: baseAPIObject,
+            instance: baseAPIObject,
             params: expectedParams,
             reload: true
           });
@@ -591,7 +591,7 @@ describe('BaseAPIObject', () => {
           baseAPIObject.read({ params });
           expect(TestBaseAPIObject.read).toBeCalledWith({
             route: TestBaseAPIObject.route,
-            model: baseAPIObject,
+            instance: baseAPIObject,
             params: expectedParams,
             reload: true
           });
@@ -621,7 +621,7 @@ describe('BaseAPIObject', () => {
         baseAPIObject.read({ params });
         expect(TestBaseAPIObject.read).toBeCalledWith({
           route: TestBaseAPIObject.route,
-          model: baseAPIObject,
+          instance: baseAPIObject,
           params: expectedParams,
           reload: true
         });

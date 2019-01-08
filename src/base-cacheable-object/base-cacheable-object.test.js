@@ -27,16 +27,16 @@ class TestBaseCacheableObject extends BaseCacheableObject {
     testId: 'testId',
     someValue: 'some_value',
     someNestedData: 'nested.item',
-    someModel: {
-      key: 'map_model',
+    someObject: {
+      key: 'map_object',
       BaseObject: MappingTestBaseObject
     },
-    someModels: {
-      key: 'map_models',
+    someObjects: {
+      key: 'map_objects',
       BaseObject: MappingTestBaseObject,
       isArray: true
     },
-    someManualModel: {
+    someManualObject: {
       key: 'manual',
       manualParse: jest.fn()
     },
@@ -45,7 +45,7 @@ class TestBaseCacheableObject extends BaseCacheableObject {
       BaseObject: MappingTestBaseObject,
       manualParse: jest.fn()
     },
-    someDeferredModel: {
+    someDeferredObject: {
       key: 'deferred',
       BaseObject: MappingTestBaseObject,
       defer: true,
@@ -61,34 +61,34 @@ class TestBaseCacheableObject extends BaseCacheableObject {
 describe('BaseCacheableObject', () => {
   describe('class methods', () => {
     describe('_populateObject', () => {
-      let data, isDataFromServer, model;
+      let data, isDataFromServer, instance;
 
       beforeEach(() => {
         data = {};
         isDataFromServer = true;
-        model = new TestBaseCacheableObject();
+        instance = new TestBaseCacheableObject();
       });
 
       afterEach(() => {
-        data = isDataFromServer = model = null;
+        data = isDataFromServer = instance = null;
       });
 
       test('defers to BaseObject\'s _populateObject for data mapping functionality', () => {
         // Super lazy way to test
         jest.spyOn(BaseObject, '_populateObject');
 
-        BaseCacheableObject._populateObject({ data, model, isDataFromServer });
+        BaseCacheableObject._populateObject({ data, instance, isDataFromServer });
 
-        expect(BaseObject._populateObject).toBeCalledWith({ data, model, isDataFromServer });
+        expect(BaseObject._populateObject).toBeCalledWith({ data, instance, isDataFromServer });
 
         BaseObject._populateObject.mockRestore();
       });
 
       const testDoesNotCache = () => {
-        test('does not cache the model', () => {
+        test('does not cache the instance', () => {
           TestBaseCacheableObject.clearCache();
 
-          TestBaseCacheableObject._populateObject({ data, model, isDataFromServer });
+          TestBaseCacheableObject._populateObject({ data, instance, isDataFromServer });
 
           expect(TestBaseCacheableObject.cache).toEqual({});
         });
@@ -99,20 +99,20 @@ describe('BaseCacheableObject', () => {
           isDataFromServer = true;
         });
 
-        describe('when a caching id is returned by the populated model', () => {
-          test('caches populated model', () => {
+        describe('when a caching id is returned by the populated instance', () => {
+          test('caches populated instance', () => {
             const id = 'someCacheId23';
-            jest.spyOn(model, 'getCacheId').mockReturnValue(id);
+            jest.spyOn(instance, 'getCacheId').mockReturnValue(id);
 
-            TestBaseCacheableObject._populateObject({ data, model, isDataFromServer });
+            TestBaseCacheableObject._populateObject({ data, instance, isDataFromServer });
 
-            expect(TestBaseCacheableObject.get(id)).toBe(model);
+            expect(TestBaseCacheableObject.get(id)).toBe(instance);
           });
         });
 
-        describe('when a caching id is not returned by the populated model', () => {
+        describe('when a caching id is not returned by the populated instance', () => {
           beforeEach(() => {
-            jest.spyOn(model, 'getCacheId').mockReturnValue();
+            jest.spyOn(instance, 'getCacheId').mockReturnValue();
           });
 
           testDoesNotCache();
@@ -124,29 +124,29 @@ describe('BaseCacheableObject', () => {
           isDataFromServer = false;
         });
 
-        describe('when a caching id is returned by the populated model', () => {
+        describe('when a caching id is returned by the populated instance', () => {
           beforeEach(() => {
-            jest.spyOn(model, 'getCacheId').mockReturnValue('someCacheId23');
+            jest.spyOn(instance, 'getCacheId').mockReturnValue('someCacheId23');
           });
 
           testDoesNotCache();
         });
 
-        describe('when a caching id is not returned by the populated model', () => {
+        describe('when a caching id is not returned by the populated instance', () => {
           beforeEach(() => {
-            jest.spyOn(model, 'getCacheId').mockReturnValue();
+            jest.spyOn(instance, 'getCacheId').mockReturnValue();
           });
 
           testDoesNotCache();
         });
       });
 
-      test('returns populated model', () => {
-        const returnedModel = TestBaseCacheableObject._populateObject({
-          data, model, isDataFromServer
+      test('returns populated instance', () => {
+        const returnedInstance = TestBaseCacheableObject._populateObject({
+          data, instance, isDataFromServer
         });
 
-        expect(returnedModel).toBe(model);
+        expect(returnedInstance).toBe(instance);
       });
     });
 
@@ -207,28 +207,28 @@ describe('BaseCacheableObject', () => {
     });
 
     describe('get', () => {
-      describe('when there is a model with a matching id', () => {
-        test('returns the model', () => {
+      describe('when there is a instance with a matching id', () => {
+        test('returns the instance', () => {
           const id = 12;
-          const model = new TestBaseCacheableObject({ testId: id });
-          TestBaseCacheableObject.cache[id] = model;
+          const instance = new TestBaseCacheableObject({ testId: id });
+          TestBaseCacheableObject.cache[id] = instance;
 
-          const cachedModel = TestBaseCacheableObject.get(id);
-          expect(cachedModel).toBe(model);
+          const cachedInstance = TestBaseCacheableObject.get(id);
+          expect(cachedInstance).toBe(instance);
 
           TestBaseCacheableObject.clearCache();
         });
       });
 
-      describe('when there is not a model with a matching id', () => {
+      describe('when there is not a instance with a matching id', () => {
         test('returns undefined', () => {
           const id = 12;
-          const model = new TestBaseCacheableObject({ testId: id + 1 });
+          const instance = new TestBaseCacheableObject({ testId: id + 1 });
           TestBaseCacheableObject.cache[id] = undefined;
-          TestBaseCacheableObject.cache[id + 1] = model;
+          TestBaseCacheableObject.cache[id + 1] = instance;
 
-          const cachedModel = TestBaseCacheableObject.get(id);
-          expect(cachedModel).toBeUndefined();
+          const cachedInstance = TestBaseCacheableObject.get(id);
+          expect(cachedInstance).toBeUndefined();
 
           TestBaseCacheableObject.clearCache();
         });

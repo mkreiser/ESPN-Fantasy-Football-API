@@ -14,18 +14,20 @@ class BaseAPIObject extends BaseCacheableObject {
   /**
    * Makes a call to the passed route with the passed params.
    *
-   * If reload is true, then any matching cached model is ignored and overridden on successful read.
-   * If reload is false and a matching model is found in the cache, the cached model is returned in
-   * an immediately resolving promise. If reload is false but no cached model is found, the request
-   * will be made to load the model for the first time.
+   * If reload is true, then any matching cached instance is ignored and overridden on successful
+   * read.
+   * If reload is false and a matching instance is found in the cache, the cached instance is
+   * returned in
+   * an immediately resolving promise. If reload is false but no cached instance is found, the
+   * request will be made to load the instance for the first time.
    *
-   * Populated models are cached on succesful reads.
+   * Populated instances are cached on succesful reads.
    *
    * Consumers of this project are responsible for catching errors.
    *
    * @async
    * @throws {Error} If route is not defined
-   * @param  {BaseAPIObject} options.model The model to populate rather than creating a new
+   * @param  {BaseAPIObject} options.instance The instance to populate rather than creating a new
    *                                       instance.
    * @param  {string} options.route The route on the API to call.
    * @param  {object} options.params Params to pass on the GET call.
@@ -33,21 +35,21 @@ class BaseAPIObject extends BaseCacheableObject {
    * @return {Promise}
    */
   static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
   ) {
     if (!route) {
       throw new Error(`${this.displayName}: static read: cannot read without route`);
     }
 
-    const cachingId = _.invoke(model, 'getCacheId') || this.getCacheId(params);
+    const cachingId = _.invoke(instance, 'getCacheId') || this.getCacheId(params);
     if (cachingId && !reload && _.get(this.cache, cachingId)) {
       return Promise.resolve(_.get(this.cache, cachingId));
     }
 
     return axios.get(route, { params }).then((response) => {
-      return model ? this._populateObject({
+      return instance ? this._populateObject({
         data: response.data,
-        model,
+        instance,
         isDataFromServer: true
       }) : this.buildFromServer(response.data, params);
     });
@@ -78,7 +80,7 @@ class BaseAPIObject extends BaseCacheableObject {
 
     return this.constructor.read({
       route,
-      model: this,
+      instance: this,
       params: paramsWithId,
       reload
     });

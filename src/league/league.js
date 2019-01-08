@@ -18,7 +18,7 @@ class League extends BaseAPIObject {
   static route = 'leagueSettings';
 
   /**
-   * @typedef {object} LeagueModel
+   * @typedef {object} LeagueObject
    *
    * On the ESPN API:
    *
@@ -80,7 +80,7 @@ class League extends BaseAPIObject {
    */
 
   /**
-    * @type {LeagueModel}
+    * @type {LeagueObject}
     */
   static responseMap = {
     leagueId: 'leaguesettings.id',
@@ -113,23 +113,23 @@ class League extends BaseAPIObject {
     draftOrder: {
       key: 'leaguesettings.draftOrder',
       defer: true,
-      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
-        responseData, model
-      })
+      manualParse: (responseData, response, instance) => {
+        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
+      }
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
-      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
-        responseData, model
-      })
+      manualParse: (responseData, response, instance) => {
+        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
+      }
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
-      manualParse: (responseData, response, model) => model.constructor._parseUsingCachedTeam({
-        responseData, model
-      })
+      manualParse: (responseData, response, instance) => {
+        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
+      }
     },
 
     numTeams: 'leaguesettings.size',
@@ -178,11 +178,11 @@ class League extends BaseAPIObject {
    * Helper for deferred items in the `responseMap` that use cached Team instances.
    * @private
    */
-  static _parseUsingCachedTeam({ responseData, model }) {
+  static _parseUsingCachedTeam({ responseData, instance }) {
     return _.map(responseData, (teamId) => {
       const cachingId = Team.getCacheId({
-        leagueId: model.leagueId,
-        seasonId: model.seasonId,
+        leagueId: instance.leagueId,
+        seasonId: instance.seasonId,
         teamId
       });
 
@@ -197,13 +197,13 @@ class League extends BaseAPIObject {
   }
 
   static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
     }
 
-    return super.read({ model, route, params, reload });
+    return super.read({ instance, route, params, reload });
   }
 
   read({
@@ -217,7 +217,6 @@ class League extends BaseAPIObject {
 
     return super.read({
       route,
-      model: this,
       params: paramsWithIds,
       reload
     });
