@@ -29,7 +29,7 @@ class Team extends BaseCacheableObject {
   static idName = 'teamId';
 
   /**
-   * @typedef {object} TeamModel
+   * @typedef {object} TeamObject
    * @property {number} teamId
    * @property {string} firstName ESPN breaks team name into two parts ('location' and 'nickname').
    *                              This is the first part ('location').
@@ -80,7 +80,7 @@ class Team extends BaseCacheableObject {
    */
 
   /**
-   * @type {TeamModel}
+   * @type {TeamObject}
    */
   static responseMap = {
     teamId: 'teamId',

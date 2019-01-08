@@ -50,7 +50,7 @@ class Scoreboard extends BaseAPIObject {
   static route = 'scoreboard';
 
   /**
-   * @typedef {object} ScoreboardModel
+   * @typedef {object} ScoreboardObject
    * @property {number} matchupPeriodId The id of the match-up the scoreboard represents.
    * @property {number} scoringPeriodId The id of the scoring period the scoreboard represents.
    *
@@ -60,7 +60,7 @@ class Scoreboard extends BaseAPIObject {
    */
 
   /**
-    * @type {ScoreboardModel}
+    * @type {ScoreboardObject}
     */
   static responseMap = {
     matchupPeriodId: 'scoreboard.matchupPeriodId',
@@ -71,10 +71,10 @@ class Scoreboard extends BaseAPIObject {
 
     matchups: {
       key: 'scoreboard.matchups',
-      manualParse: (responseData, response, model) => _.map(responseData, (matchup) => {
+      manualParse: (responseData, response, instance) => _.map(responseData, (matchup) => {
         return ScoreboardMatchup.buildFromServer(
           matchup,
-          { leagueId: model.leagueId, seasonId: model.seasonId }
+          { leagueId: instance.leagueId, seasonId: instance.seasonId }
         );
       })
     }
@@ -85,7 +85,7 @@ class Scoreboard extends BaseAPIObject {
   }
 
   static read(
-    { model, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
@@ -98,7 +98,7 @@ class Scoreboard extends BaseAPIObject {
       );
     }
 
-    return super.read({ model, route, params, reload });
+    return super.read({ instance, route, params, reload });
   }
 
   read({
@@ -117,7 +117,6 @@ class Scoreboard extends BaseAPIObject {
 
     return super.read({
       route,
-      model: this,
       params: paramsWithIds,
       reload
     });

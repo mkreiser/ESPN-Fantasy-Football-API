@@ -17,7 +17,7 @@ class Player extends BaseCacheableObject {
   static idName = 'playerId';
 
   /**
-   * @typedef {object} PlayerModel
+   * @typedef {object} PlayerObject
    * @property {number} playerId
    * @property {string} firstName First name of the player.
    * @property {string} lastName Last name of the player.
@@ -37,7 +37,7 @@ class Player extends BaseCacheableObject {
    */
 
   /**
-    * @type {PlayerModel}
+    * @type {PlayerObject}
     */
   static responseMap = {
     playerId: 'playerId',

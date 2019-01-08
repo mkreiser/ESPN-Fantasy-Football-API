@@ -181,12 +181,12 @@ describe('Boxscore', () => {
           test('defers to super.read', () => {
             jest.spyOn(BaseAPIObject, 'read').mockImplementation();
 
-            const model = new Boxscore();
+            const instance = new Boxscore();
             const route = 'some route';
             const reload = false;
 
-            Boxscore.read({ model, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
+            Boxscore.read({ instance, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
 
             BaseAPIObject.read.mockRestore();
           });

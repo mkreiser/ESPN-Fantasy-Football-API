@@ -32,7 +32,7 @@ class ScoreboardMatchup extends BaseObject {
   static idName = 'leagueId';
 
   /**
-   * @typedef {object} ScoreboardMatchupModel
+   * @typedef {object} ScoreboardMatchupObject
    * @property {Team} homeTeam An instance of the home team. Uses a cached instance if possible.
    * @property {Team} awayTeam An instance of the home team. Uses a cached instance if possible.
    * @property {number} homeTeamScore Score of the home team.
@@ -42,31 +42,31 @@ class ScoreboardMatchup extends BaseObject {
    */
 
   /**
-    * @type {ScoreboardMatchupModel}
+    * @type {ScoreboardMatchupObject}
     */
   static responseMap = {
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeam({
-        isHome: true, responseData, model
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
+        isHome: true, responseData, instance
       })
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeam({
-        isHome: false, responseData, model
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
+        isHome: false, responseData, instance
       })
     },
 
     homeTeamScore: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeamScore({
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeamScore({
         isHome: true, responseData
       })
     },
     awayTeamScore: {
       key: 'teams',
-      manualParse: (responseData, response, model) => model.constructor._parseTeamScore({
+      manualParse: (responseData, response, instance) => instance.constructor._parseTeamScore({
         isHome: false, responseData
       })
     },
@@ -75,12 +75,12 @@ class ScoreboardMatchup extends BaseObject {
     winner: {
       key: 'teams',
       defer: true,
-      manualParse: (responseData, response, model) => {
+      manualParse: (responseData, response, instance) => {
         if (_.isEmpty(response.winner)) {
           return undefined;
         }
 
-        return response.winner === 'home' ? model.homeTeam : model.awayTeam;
+        return response.winner === 'home' ? instance.homeTeam : instance.awayTeam;
       }
     }
   };
@@ -89,15 +89,15 @@ class ScoreboardMatchup extends BaseObject {
    * Helper for team parsing.
    * @private
    */
-  static _parseTeam({ isHome, responseData, model }) {
+  static _parseTeam({ isHome, responseData, instance }) {
     const teamData = _.find(responseData, { home: isHome });
     if (!teamData) {
       return undefined;
     }
 
     const cachingId = Team.getCacheId({
-      leagueId: model.leagueId,
-      seasonId: model.seasonId,
+      leagueId: instance.leagueId,
+      seasonId: instance.seasonId,
       teamId: teamData.teamId
     });
 

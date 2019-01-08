@@ -208,10 +208,10 @@ describe('ScoreboardMatchup', () => {
         test('returns the parsed homeTeam', () => {
           const response = { winner: 'home' };
           const homeTeam = new Team();
-          const model = { homeTeam };
+          const instance = { homeTeam };
 
           const returnedWinner = ScoreboardMatchup.responseMap.winner.manualParse(
-            {}, response, model
+            {}, response, instance
           );
 
           expect(returnedWinner).toBe(homeTeam);
@@ -222,10 +222,10 @@ describe('ScoreboardMatchup', () => {
         test('returns the parsed awayTeam', () => {
           const response = { winner: 'away' };
           const awayTeam = new Team();
-          const model = { awayTeam };
+          const instance = { awayTeam };
 
           const returnedWinner = ScoreboardMatchup.responseMap.winner.manualParse(
-            {}, response, model
+            {}, response, instance
           );
 
           expect(returnedWinner).toBe(awayTeam);
@@ -237,10 +237,10 @@ describe('ScoreboardMatchup', () => {
           const response = { winner: '' };
           const homeTeam = new Team();
           const awayTeam = new Team();
-          const model = { homeTeam, awayTeam };
+          const instance = { homeTeam, awayTeam };
 
           const returnedWinner = ScoreboardMatchup.responseMap.winner.manualParse(
-            {}, response, model
+            {}, response, instance
           );
 
           expect(returnedWinner).toBeUndefined();

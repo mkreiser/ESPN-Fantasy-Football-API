@@ -14,7 +14,7 @@ class BaseObject {
     if (!_.isEmpty(options)) {
       this.constructor._populateObject({
         data: options,
-        model: this,
+        instance: this,
         isDataFromServer: false
       });
     }
@@ -32,13 +32,13 @@ class BaseObject {
    * used by other methods. See {@link ResponseMapValueObject} for `responseMap` documentation.
    * @private
    * @param  {object} options.data
-   * @param  {BaseObject} options.model The model to populate. This model will be mutated.
+   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
    * @param  {boolean} options.isDataFromServer When true, the data came from the ESPN API over the
    *                                            wire. When false, the data came locally.
    * @param  {string} options.key The key of the responseMap entry being parsed.
    * @param  {string} options.value The value of the responseMap entry being parsed.
    */
-  static _processResponseMapItem({ data, model, isDataFromServer, key, value }) {
+  static _processResponseMapItem({ data, instance, isDataFromServer, key, value }) {
     /**
      * @typedef {object} ResponseMapValueObject
      *
@@ -53,13 +53,13 @@ class BaseObject {
      * @property {boolean} isArray Whether or not the response data is an array. Useful for
      *                             attributes such as "teams".
      * @property {boolean} defer Whether or not to wait to parse the entry until a second pass of
-     *                           the map. This is useful for populating items with cached models
+     *                           the map. This is useful for populating items with cached instances
      *                           that are not guaranteed to be parsed/cached during initial parsing.
      *                           Example: Using Team instances on League.
      * @property {function} manualParse A function to manually apply logic to the response. This
      *                                  function must return its result to be attached to the
      *                                  populated BaseObject. The arguments to this function are:
-     *                                  (data at the key), (the whole response), (the model being
+     *                                  (data at the key), (the whole response), (the instance being
      *                                  populated).
      * @example
      * static responseMap = {
@@ -76,7 +76,7 @@ class BaseObject {
      *   manualTeams: {
      *     key: 'manual_teams_on_response',
      *     BaseObject: Team,
-     *     manualParse: (keyData, allData, populatingModel) => Team.buildFromServer(keyData)
+     *     manualParse: (responseData, response, instance) => Team.buildFromServer(responseData)
      *   }
      * };
      */
@@ -96,12 +96,12 @@ class BaseObject {
 
       const responseData = _.get(data, value.key);
       if (_.isFunction(value.manualParse)) {
-        item = value.manualParse(responseData, data, model);
+        item = value.manualParse(responseData, data, instance);
       } else if (value.BaseObject) {
         const ValueBaseObjectClass = value.BaseObject;
-        const buildModel = (passedData) => ValueBaseObjectClass.buildFromServer(passedData);
+        const buildInstance = (passedData) => ValueBaseObjectClass.buildFromServer(passedData);
 
-        item = value.isArray ? _.map(responseData, buildModel) : buildModel(responseData);
+        item = value.isArray ? _.map(responseData, buildInstance) : buildInstance(responseData);
       } else {
         throw new Error(
           `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
@@ -116,7 +116,7 @@ class BaseObject {
     }
 
     if (!_.isUndefined(item)) {
-      _.set(model, key, item);
+      _.set(instance, key, item);
     }
   }
 
@@ -124,17 +124,17 @@ class BaseObject {
    * Returns the passed instance of the BaseObject populated with the passed data, mapping the
    * attributes defined in the value of responseMap to the matching key.
    * @private
-   * @param  {object} options.data The data to map onto the passed model.
-   * @param  {BaseObject} options.model The model to populate. This model will be mutated.
+   * @param  {object} options.data The data to map onto the passed instance.
+   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
    * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
    *                                            data came locally.
-   * @return {BaseObject} The mutated BaseObject model.
+   * @return {BaseObject} The mutated BaseObject instance.
    */
-  static _populateObject({ data, model, isDataFromServer }) {
-    if (!model) {
-      throw new Error(`${this.displayName}: _populateObject: Did not receive model to populate`);
+  static _populateObject({ data, instance, isDataFromServer }) {
+    if (!instance) {
+      throw new Error(`${this.displayName}: _populateObject: Did not receive instance to populate`);
     } else if (_.isEmpty(data)) {
-      return model;
+      return instance;
     }
 
     const deferredMapItems = {};
@@ -142,15 +142,15 @@ class BaseObject {
       if (_.isPlainObject(value) && value.defer) {
         _.set(deferredMapItems, key, value);
       } else {
-        this._processResponseMapItem({ data, model, isDataFromServer, key, value });
+        this._processResponseMapItem({ data, instance, isDataFromServer, key, value });
       }
     });
 
     _.forEach(deferredMapItems, (value, key) => {
-      this._processResponseMapItem({ data, model, isDataFromServer, key, value });
+      this._processResponseMapItem({ data, instance, isDataFromServer, key, value });
     });
 
-    return model;
+    return instance;
   }
 
   /**
@@ -163,9 +163,9 @@ class BaseObject {
    * @return {BaseObject} A new instance of the BaseObject populated with the passed data.
    */
   static buildFromServer(data, constructorParams) {
-    const model = new this(constructorParams);
-    this._populateObject({ data, model, isDataFromServer: true });
-    return model;
+    const instance = new this(constructorParams);
+    this._populateObject({ data, instance, isDataFromServer: true });
+    return instance;
   }
 }
 

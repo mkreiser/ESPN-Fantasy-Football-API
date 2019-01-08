@@ -49,15 +49,15 @@ describe('League', () => {
         jest.spyOn(Team, 'get');
 
         const ids = [1, 2, 3];
-        const model = new League({ leagueId: 242343, seasonId: 2015 });
+        const instance = new League({ leagueId: 242343, seasonId: 2015 });
 
         expect.hasAssertions();
-        _.invoke(League.responseMap, `${method}.manualParse`, ids, undefined, model);
+        _.invoke(League.responseMap, `${method}.manualParse`, ids, undefined, instance);
 
         _.forEach(ids, (id) => {
           const cachingId = Team.getCacheId({
-            leagueId: model.leagueId,
-            seasonId: model.seasonId,
+            leagueId: instance.leagueId,
+            seasonId: instance.seasonId,
             teamId: id
           });
           expect(Team.get).toBeCalledWith(cachingId);
@@ -348,13 +348,13 @@ describe('League', () => {
           test('defers to super.read', () => {
             jest.spyOn(BaseAPIObject, 'read').mockImplementation();
 
-            const model = new League();
+            const instance = new League();
             const route = 'some route';
             const params = { leagueId: 1231232 };
             const reload = false;
 
-            League.read({ model, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ model, route, params, reload });
+            League.read({ instance, route, params, reload });
+            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
 
             BaseAPIObject.read.mockRestore();
           });
@@ -387,7 +387,6 @@ describe('League', () => {
             seasonId,
             some: 'params'
           },
-          model: league,
           route: League.route,
           reload: true
         });
@@ -408,7 +407,6 @@ describe('League', () => {
 
         expect(BaseAPIObject.prototype.read).toBeCalledWith({
           params: { seasonId },
-          model: league,
           route: League.route,
           reload: true
         });

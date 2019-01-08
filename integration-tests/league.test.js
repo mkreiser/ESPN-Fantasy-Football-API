@@ -19,15 +19,15 @@ describe('League functionality', () => {
   });
 
   test('can load League from class', async () => {
-    const leagueModel = await League.read({ params: { leagueId, seasonId } });
-    expect(leagueModel).toMatchSnapshot();
+    const league = await League.read({ params: { leagueId, seasonId } });
+    expect(league).toMatchSnapshot();
   });
 
   test('can load League from an instance', async () => {
     const leagueInstance = new League({ leagueId, seasonId });
 
-    const leagueModel = await leagueInstance.read();
-    expect(leagueModel).toMatchSnapshot();
+    const league = await leagueInstance.read();
+    expect(league).toMatchSnapshot();
   });
 
   test('cannot load League without leagueId', async () => {
@@ -41,44 +41,44 @@ describe('League functionality', () => {
   });
 
   test('can load League without seasonId', async () => {
-    const leagueModel = await League.read({ params: { leagueId } });
+    const league = await League.read({ params: { leagueId } });
 
     // Since this test is season/time dependent, this prevents failing snapshots when the season
     // changes.
-    expect(leagueModel.leagueId).toBe(leagueId);
+    expect(league.leagueId).toBe(leagueId);
     _.forEach(League.responseMap, (value, key) => {
-      expect(_.get(leagueModel, key)).not.toBeUndefined();
+      expect(_.get(league, key)).not.toBeUndefined();
     });
   });
 
   test('overrides a matching cached League on reload', async () => {
-    const originalModel = await League.read({ params: { leagueId, seasonId } });
-    const cachedModel = await League.read({ params: { leagueId, seasonId } });
+    const originalLeague = await League.read({ params: { leagueId, seasonId } });
+    const cachedLeague = await League.read({ params: { leagueId, seasonId } });
 
-    expect(originalModel).not.toBe(cachedModel);
+    expect(originalLeague).not.toBe(cachedLeague);
   });
 
   test('uses a cached League on non-reloads when there is a matched cached League', async () => {
-    const originalModel = await League.read({ params: { leagueId, seasonId } });
-    const cachedModel = await League.read({ params: { leagueId, seasonId }, reload: false });
+    const originalLeague = await League.read({ params: { leagueId, seasonId } });
+    const cachedLeague = await League.read({ params: { leagueId, seasonId }, reload: false });
 
-    expect(originalModel).toBe(cachedModel);
+    expect(originalLeague).toBe(cachedLeague);
   });
 
   test('loads League on non-reloads when there is not a cached League', async () => {
-    const leagueModel = await League.read({ params: { leagueId, seasonId }, reload: false });
-    expect(leagueModel).toMatchSnapshot();
+    const league = await League.read({ params: { leagueId, seasonId }, reload: false });
+    expect(league).toMatchSnapshot();
   });
 
   test('can use Team object equality between attributes', async () => {
-    const leagueModel = await League.read({ params: { leagueId, seasonId } });
+    const league = await League.read({ params: { leagueId, seasonId } });
 
     const teamId = 9;
 
-    const teamInstance = _.find(leagueModel.teams, { teamId });
-    const draftOrderInstance = _.find(leagueModel.draftOrder, { teamId });
-    const playoffSeedInstance = _.find(leagueModel.playoffSeedOrder, { teamId });
-    const rankingInstance = _.find(leagueModel.finalRankings, { teamId });
+    const teamInstance = _.find(league.teams, { teamId });
+    const draftOrderInstance = _.find(league.draftOrder, { teamId });
+    const playoffSeedInstance = _.find(league.playoffSeedOrder, { teamId });
+    const rankingInstance = _.find(league.finalRankings, { teamId });
 
     expect(teamInstance).toBe(draftOrderInstance);
     expect(draftOrderInstance).toBe(playoffSeedInstance);
