@@ -58,4 +58,12 @@ describe('Player', () => {
       });
     });
   });
+
+  describe('class methods', () => {
+    describe('getCacheId', () => {
+      test('returns undefined', () => {
+        expect(Player.getCacheId()).toBeUndefined();
+      });
+    });
+  });
 });

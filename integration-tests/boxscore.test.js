@@ -1,20 +1,16 @@
-import _ from 'lodash';
-
 import { Boxscore } from '../index.js';
 
 describe('Boxscore functionality', () => {
-  let leagueId, matchupPeriodId, scoringPeriodId, seasonId, teamId;
+  let leagueId, seasonId, teamId;
 
   beforeEach(() => {
     leagueId = 336358;
-    matchupPeriodId = 11;
-    scoringPeriodId = 10;
     seasonId = 2017;
     teamId = 9;
   });
 
   afterEach(() => {
-    leagueId = matchupPeriodId = scoringPeriodId = seasonId = teamId = null;
+    leagueId = seasonId = teamId = null;
   });
 
   const testClassAndInstance = (params) => {

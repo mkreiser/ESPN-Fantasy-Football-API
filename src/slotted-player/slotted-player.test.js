@@ -61,27 +61,12 @@ describe('SlottedPlayer', () => {
           });
         });
 
-        describe('when there is a cached player', () => {
-          test('returns the cached player', () => {
-            const playerId = 10;
-            const cachedPlayer = Player.buildFromServer({ playerId });
-
-            const returnedPlayer = SlottedPlayer.responseMap.player.manualParse({ playerId });
-            expect(returnedPlayer).toBe(cachedPlayer);
-
-            Player.clearCache();
-          });
-        });
-
-        describe('when there is not a cached player', () => {
+        describe('when the passed data is populated', () => {
           test('creates a new player', () => {
             const playerId = 10;
-            Player.clearCache();
 
             const returnedPlayer = SlottedPlayer.responseMap.player.manualParse({ playerId });
-            expect(returnedPlayer).toBe(Player.get(playerId));
-
-            Player.clearCache();
+            expect(returnedPlayer).toEqual(Player.buildFromServer({ playerId }));
           });
         });
       });

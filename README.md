@@ -49,6 +49,14 @@ const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```
 
+## Testing
+
+*How do you know it works?*
+
+This project includes an expansive unit test suite as well as a live integration test suite. The integration tests make live calls to the ESPN API, ensuring that the project will work in the real world.
+
+Travis CI is used to build and verify changes. Additionally, the master branch runs a weekly build on Travis.
+
 ## Built With
 
 [axios](https://github.com/axios/axios) - Promise based HTTP client.

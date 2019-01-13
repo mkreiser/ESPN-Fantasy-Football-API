@@ -135,7 +135,9 @@ describe('ScoreboardMatchup', () => {
             );
             expect(returnedTeam).toBeInstanceOf(Team);
             expect(returnedTeam.teamId).toBe(teamId);
-            expect(Team.buildFromServer).toBeCalledWith(_.first(data).team);
+            expect(Team.buildFromServer).toBeCalledWith(
+              _.first(data).team, { leagueId: matchup.leagueId, seasonId: matchup.seasonId }
+            );
 
             Team.clearCache();
           });

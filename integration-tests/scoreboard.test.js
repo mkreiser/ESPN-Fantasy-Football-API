@@ -1,19 +1,15 @@
-import _ from 'lodash';
-
 import { Scoreboard } from '../index.js';
 
 describe('Scoreboard functionality', () => {
-  let leagueId, matchupPeriodId, scoringPeriodId, seasonId;
+  let leagueId, seasonId;
 
   beforeEach(() => {
     leagueId = 336358;
-    matchupPeriodId = 11;
-    scoringPeriodId = 10;
     seasonId = 2017;
   });
 
   afterEach(() => {
-    leagueId = matchupPeriodId = scoringPeriodId = seasonId = null;
+    leagueId = seasonId = null;
   });
 
   const testClassAndInstance = (params) => {
