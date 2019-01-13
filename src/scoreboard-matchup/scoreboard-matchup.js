@@ -101,7 +101,12 @@ class ScoreboardMatchup extends BaseObject {
       teamId: teamData.teamId
     });
 
-    return Team.get(cachingId) || Team.buildFromServer(teamData.team);
+    return (
+      Team.get(cachingId) ||
+      Team.buildFromServer(
+        teamData.team, { leagueId: instance.leagueId, seasonId: instance.seasonId }
+      )
+    );
   }
 
   /**
