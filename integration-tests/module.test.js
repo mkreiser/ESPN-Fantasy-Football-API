@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-import { Boxscore, League, Roster, Scoreboard, Team } from '../index.js';
+import { Boxscore, League, Scoreboard } from '../index.js';
 
 describe('Module functionality', () => {
   let leagueId, scoringPeriodId, seasonId, teamId;
@@ -94,7 +94,7 @@ describe('Module functionality', () => {
       params: { leagueId, seasonId, teamId, scoringPeriodId }
     });
 
-    const scoreboard = await Scoreboard.read({  params: { leagueId, seasonId, scoringPeriodId } });
+    const scoreboard = await Scoreboard.read({ params: { leagueId, seasonId, scoringPeriodId } });
 
     expect(league).toMatchSnapshot();
     expect(boxscore).toMatchSnapshot();

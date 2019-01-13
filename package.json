@@ -20,7 +20,7 @@
     "clean:dist": "rm -rf dist",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
-    "lint": "eslint index.js src/**/*.js",
+    "lint": "eslint index.js integration-tests/**/*.js src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest",
     "test:all": "npm run test:unit && npm run test:integration",

@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import { Roster } from '../index.js';
 
 describe('Roster functionality', () => {
