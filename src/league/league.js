@@ -102,34 +102,34 @@ class League extends BaseAPIObject {
 
     lineupPositionLimits: {
       key: 'leaguesettings.slotCategoryItems',
-      manualParse: (responseData) => _.map(responseData, (position) => {
-        return {
+      manualParse: (responseData) => _.map(responseData, (position) => (
+        {
           limit: position.num,
           position: _.get(slotCategoryIdToPositionMap, position.slotCategoryId)
-        };
-      })
+        }
+      ))
     },
 
     draftOrder: {
       key: 'leaguesettings.draftOrder',
       defer: true,
-      manualParse: (responseData, response, instance) => {
-        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
-      }
+      manualParse: (responseData, response, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      )
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
-      manualParse: (responseData, response, instance) => {
-        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
-      }
+      manualParse: (responseData, response, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      )
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
-      manualParse: (responseData, response, instance) => {
-        return instance.constructor._parseUsingCachedTeam({ responseData, instance });
-      }
+      manualParse: (responseData, response, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      )
     },
 
     numTeams: 'leaguesettings.size',

@@ -10,7 +10,6 @@
     "ecmaVersion": 6
   },
   "rules": {
-    "arrow-body-style": "off",
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
     "no-multi-assign": "off",
