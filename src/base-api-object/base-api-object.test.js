@@ -76,7 +76,11 @@ describe('BaseAPIObject', () => {
     });
 
     describe('read', () => {
-      let deferred, id, instance, params, reload;
+      let deferred;
+      let id;
+      let instance;
+      let params;
+      let reload;
 
       beforeEach(() => {
         deferred = q.defer();

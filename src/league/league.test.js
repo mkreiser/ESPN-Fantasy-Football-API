@@ -265,7 +265,8 @@ describe('League', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId;
+      let leagueId;
+      let seasonId;
 
       afterEach(() => {
         leagueId = null;

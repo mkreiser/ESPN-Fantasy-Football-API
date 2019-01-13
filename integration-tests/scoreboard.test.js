@@ -1,7 +1,8 @@
 import { Scoreboard } from '../index.js';
 
 describe('Scoreboard functionality', () => {
-  let leagueId, seasonId;
+  let leagueId;
+  let seasonId;
 
   beforeEach(() => {
     leagueId = 336358;

@@ -1,7 +1,10 @@
 import { Roster } from '../index.js';
 
 describe('Roster functionality', () => {
-  let leagueId, scoringPeriodId, seasonId, teamId;
+  let leagueId;
+  let scoringPeriodId;
+  let seasonId;
+  let teamId;
 
   beforeEach(() => {
     leagueId = 336358;

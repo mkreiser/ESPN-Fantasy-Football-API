@@ -14,8 +14,6 @@
     "comma-dangle": ["error", "never"],
     "no-underscore-dangle": "off",
     "object-curly-newline": "off",
-    "one-var": "off",
-    "one-var-declaration-per-line": "off",
     "operator-linebreak": ["error", "after"],
 
     "import/extensions": "off"

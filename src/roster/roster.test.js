@@ -260,7 +260,10 @@ describe('Roster', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId, teamId, scoringPeriodId;
+      let leagueId;
+      let seasonId;
+      let teamId;
+      let scoringPeriodId;
 
       afterEach(() => {
         leagueId = null;

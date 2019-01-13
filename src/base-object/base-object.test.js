@@ -121,7 +121,9 @@ describe('BaseObject', () => {
 
   describe('class methods', () => {
     describe('_populateObject', () => {
-      let data, instance, isDataFromServer;
+      let data;
+      let instance;
+      let isDataFromServer;
 
       beforeEach(() => {
         data = {

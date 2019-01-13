@@ -61,7 +61,9 @@ class TestBaseCacheableObject extends BaseCacheableObject {
 describe('BaseCacheableObject', () => {
   describe('class methods', () => {
     describe('_populateObject', () => {
-      let data, isDataFromServer, instance;
+      let data;
+      let isDataFromServer;
+      let instance;
 
       beforeEach(() => {
         data = {};

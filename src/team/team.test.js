@@ -71,7 +71,9 @@ describe('Team', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId, teamId;
+      let leagueId;
+      let seasonId;
+      let teamId;
 
       afterEach(() => {
         leagueId = null;

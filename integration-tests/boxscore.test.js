@@ -1,7 +1,9 @@
 import { Boxscore } from '../index.js';
 
 describe('Boxscore functionality', () => {
-  let leagueId, seasonId, teamId;
+  let leagueId;
+  let seasonId;
+  let teamId;
 
   beforeEach(() => {
     leagueId = 336358;
