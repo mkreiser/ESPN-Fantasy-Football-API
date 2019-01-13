@@ -159,8 +159,9 @@ describe('BaseCacheableObject', () => {
         });
 
         test('sets _cache to an empty object', () => {
-          TestBaseCacheableObject.cache;
-          expect(TestBaseCacheableObject._cache).toEqual({});
+          const returnedCache = TestBaseCacheableObject.cache;
+
+          expect(returnedCache).toEqual({});
         });
 
         test('returns empty object', () => {
@@ -173,8 +174,9 @@ describe('BaseCacheableObject', () => {
           const cache = { some: 'cache' };
           TestBaseCacheableObject._cache = cache;
 
-          TestBaseCacheableObject.cache;
-          expect(TestBaseCacheableObject._cache).toBe(cache);
+          const returnedCache = TestBaseCacheableObject.cache;
+
+          expect(returnedCache).toEqual(cache);
         });
 
         test('returns _cache', () => {
