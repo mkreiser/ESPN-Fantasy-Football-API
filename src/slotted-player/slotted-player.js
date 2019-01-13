@@ -33,11 +33,7 @@ class SlottedPlayer extends BaseObject {
     player: {
       key: 'player',
       manualParse: (responseData) => {
-        if (_.isEmpty(responseData)) {
-          return undefined;
-        }
-
-        return Player.get(responseData.playerId) || Player.buildFromServer(responseData);
+        return _.isEmpty(responseData) ? undefined : Player.buildFromServer(responseData);
       }
     },
 

@@ -61,6 +61,10 @@ class Player extends BaseCacheableObject {
       )
     }
   };
+
+  static getCacheId() {
+    return undefined;
+  }
 }
 
 export default Player;
