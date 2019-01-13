@@ -62,6 +62,19 @@ class TestBaseAPIObject extends BaseAPIObject {
 
 describe('BaseAPIObject', () => {
   describe('class methods', () => {
+    describe('setCookies', () => {
+      test('sets cookies onto class for use with all requests', () => {
+        const espnS2 = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx';
+        const SWID = '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxx}';
+
+        TestBaseAPIObject.setCookies({ espnS2, SWID });
+        expect(TestBaseAPIObject._espnS2).toBe(espnS2);
+        expect(TestBaseAPIObject._SWID).toBe(SWID);
+
+        TestBaseAPIObject.setCookies({}); // Reset for later tests
+      });
+    });
+
     describe('read', () => {
       let deferred, id, instance, params, reload;
 
@@ -80,11 +93,32 @@ describe('BaseAPIObject', () => {
       });
 
       const testReadBehaviorWithObject = () => {
-        test('calls axios.get with route and params', () => {
-          const route = 'some-route';
+        describe('when cookies are set', () => {
+          test('calls axios.get with route, params, headers, and the correct config', () => {
+            const route = 'some-route';
+            const espnS2 = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx';
+            const SWID = '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxx}';
 
-          TestBaseAPIObject.read({ route, params });
-          expect(axios.get).toBeCalledWith(route, { params });
+            TestBaseAPIObject.setCookies({ espnS2, SWID });
+
+            TestBaseAPIObject.read({ instance, route, params });
+            expect(axios.get).toBeCalledWith(route, {
+              params, headers: { Cookie: `espnS2:${espnS2};SWID${SWID};` }, withCredientials: true
+            });
+
+            TestBaseAPIObject.setCookies({}); // Reset for later tests
+          });
+        });
+
+        describe('when cookies are not set', () => {
+          test('calls axios.get with route, params, and the correct config', () => {
+            const route = 'some-route';
+
+            TestBaseAPIObject.read({ instance, route, params });
+            expect(axios.get).toBeCalledWith(route, {
+              params, headers: undefined, withCredientials: false
+            });
+          });
         });
 
         test('returns a promise from axios.get', async () => {
@@ -93,7 +127,7 @@ describe('BaseAPIObject', () => {
           deferred.resolve({});
 
           expect.assertions(1);
-          await TestBaseAPIObject.read({ route, params, reload }).then(
+          await TestBaseAPIObject.read({ instance, route, params, reload }).then(
             () => callback()
           ).finally(() => {
             expect(callback).toBeCalled();
@@ -147,11 +181,32 @@ describe('BaseAPIObject', () => {
       };
 
       const testReadBehaviorWithoutObject = () => {
-        test('calls axios.get with route and params', () => {
-          const route = 'some-route';
+        describe('when cookies are set', () => {
+          test('calls axios.get with route, params, headers, and the correct config', () => {
+            const route = 'some-route';
+            const espnS2 = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx';
+            const SWID = '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxx}';
 
-          TestBaseAPIObject.read({ route, params });
-          expect(axios.get).toBeCalledWith(route, { params });
+            TestBaseAPIObject.setCookies({ espnS2, SWID });
+
+            TestBaseAPIObject.read({ route, params });
+            expect(axios.get).toBeCalledWith(route, {
+              params, headers: { Cookie: `espnS2:${espnS2};SWID${SWID};` }, withCredientials: true
+            });
+
+            TestBaseAPIObject.setCookies({}); // Reset for later tests
+          });
+        });
+
+        describe('when cookies are not set', () => {
+          test('calls axios.get with route, params, and the correct config', () => {
+            const route = 'some-route';
+
+            TestBaseAPIObject.read({ route, params });
+            expect(axios.get).toBeCalledWith(route, {
+              params, headers: undefined, withCredientials: false
+            });
+          });
         });
 
         test('returns a promise from axios.get', async () => {
@@ -227,14 +282,18 @@ describe('BaseAPIObject', () => {
       describe('when route is not passed', () => {
         test('defaults to static route', () => {
           expect(() => TestBaseAPIObject.read()).not.toThrowError();
-          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, { params: undefined });
+          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
+            params: undefined, headers: undefined, withCredientials: false
+          });
         });
       });
 
       describe('when no parameters are passed', () => {
         test('defaults to static route and reloads', () => {
           expect(() => TestBaseAPIObject.read()).not.toThrowError();
-          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, { params: undefined });
+          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
+            params: undefined, headers: undefined, withCredientials: false
+          });
         });
       });
 

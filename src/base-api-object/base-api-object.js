@@ -5,11 +5,25 @@ import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.
 
 /**
  * The base class for all project objects that can communicate with the ESPN API. Provides `read`
- * functionality.
+ * functionality. Can connect to private leagues when cookies are set on this class.
  * @extends BaseCacheableObject
  */
 class BaseAPIObject extends BaseCacheableObject {
   static displayName = 'BaseAPIObject';
+
+  /**
+   * Sets ESPN cookies to allow access to private leagues. Not required to be set for public
+   * leagues. By setting cookies on this class, every subclass (League, Boxscore, etc) will use the
+   * cookies when making read calls.
+   * @param {string} options.espnS2 Found at "Application > Cookies > espn.com > espn_s2" via Chrome
+   *                                devtools.
+   * @param {string} options.SWID Found at "Application > Cookies > espn.com > SWID" via Chrome
+   *                              devtools.
+   */
+  static setCookies({ espnS2, SWID }) {
+    this._espnS2 = espnS2;
+    this._SWID = SWID;
+  }
 
   /**
    * Makes a call to the passed route with the passed params.
@@ -46,7 +60,12 @@ class BaseAPIObject extends BaseCacheableObject {
       return Promise.resolve(_.get(this.cache, cachingId));
     }
 
-    return axios.get(route, { params }).then((response) => {
+    const headers = (this._espnS2 && this._SWID) ?
+      { Cookie: `espnS2:${this._espnS2};SWID${this._SWID};` } :
+      undefined;
+    const axiosConfig = { params, headers, withCredientials: !_.isEmpty(headers) };
+
+    return axios.get(route, axiosConfig).then((response) => {
       return instance ? this._populateObject({
         data: response.data,
         instance,

@@ -45,6 +45,18 @@ import { League, Team } from './dist/index-node.js';
 
 ```javascript
 import { League } from 'espn-fantasy-football-api';
+
+const league = new League({ leagueId: 336358, seasonId: 2018 });
+league.read().then(() => console.log(league)); // Prints loaded league
+```
+
+### Loading a Private League
+
+```javascript
+import { BaseAPIObject, League } from 'espn-fantasy-football-api';
+
+BaseAPIObject.setCookies({ espnS2: 'xxxxx', SWID: '{xxxxxxxxxx}' }); // fire and forget
+
 const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```

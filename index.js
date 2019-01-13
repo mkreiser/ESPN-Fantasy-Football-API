@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+import BaseAPIObject from './src/base-api-object/base-api-object.js';
 import Boxscore from './src/boxscore/boxscore.js';
 import BoxscorePlayer from './src/boxscore-player/boxscore-player.js';
 import BoxscorePlayerPointStats
@@ -23,6 +24,7 @@ import {
 axios.defaults.baseURL = 'http://games.espn.com/ffl/api/v2/';
 
 export {
+  BaseAPIObject,
   Boxscore,
   BoxscorePlayer,
   BoxscorePlayerPointStats,
