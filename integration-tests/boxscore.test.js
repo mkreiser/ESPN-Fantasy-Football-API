@@ -10,7 +10,9 @@ describe('Boxscore functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = seasonId = teamId = null;
+    leagueId = null;
+    seasonId = null;
+    teamId = null;
   });
 
   const testClassAndInstance = (params) => {

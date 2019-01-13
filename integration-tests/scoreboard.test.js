@@ -9,7 +9,8 @@ describe('Scoreboard functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = seasonId = null;
+    leagueId = null;
+    seasonId = null;
   });
 
   const testClassAndInstance = (params) => {

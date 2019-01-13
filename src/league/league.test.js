@@ -268,7 +268,8 @@ describe('League', () => {
       let leagueId, seasonId;
 
       afterEach(() => {
-        leagueId = seasonId = null;
+        leagueId = null;
+        seasonId = null;
       });
 
       const testReturnsUndefined = () => {

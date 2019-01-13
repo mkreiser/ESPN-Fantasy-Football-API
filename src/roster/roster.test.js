@@ -263,7 +263,10 @@ describe('Roster', () => {
       let leagueId, seasonId, teamId, scoringPeriodId;
 
       afterEach(() => {
-        leagueId = seasonId = teamId = scoringPeriodId = null;
+        leagueId = null;
+        seasonId = null;
+        teamId = null;
+        scoringPeriodId = null;
       });
 
       const testReturnsUndefined = () => {

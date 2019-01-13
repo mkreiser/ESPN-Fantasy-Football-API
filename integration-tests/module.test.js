@@ -13,7 +13,10 @@ describe('Module functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = scoringPeriodId = seasonId = teamId = null;
+    leagueId = null;
+    scoringPeriodId = null;
+    seasonId = null;
+    teamId = null;
   });
 
   test('can get multiple seasons of Leagues', async () => {

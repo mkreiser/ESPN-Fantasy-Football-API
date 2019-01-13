@@ -105,7 +105,9 @@ describe('BoxscoreTeam', () => {
           });
 
           afterEach(() => {
-            ids = responseData = teamId = null;
+            ids = null;
+            responseData = null;
+            teamId = null;
 
             Team.clearCache();
           });

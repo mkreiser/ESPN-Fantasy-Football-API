@@ -13,7 +13,10 @@ describe('Roster functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = scoringPeriodId = seasonId = teamId = null;
+    leagueId = null;
+    scoringPeriodId = null;
+    seasonId = null;
+    teamId = null;
 
     Roster.clearCache();
   });

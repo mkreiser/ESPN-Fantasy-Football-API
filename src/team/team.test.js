@@ -74,7 +74,9 @@ describe('Team', () => {
       let leagueId, seasonId, teamId;
 
       afterEach(() => {
-        leagueId = seasonId = teamId = null;
+        leagueId = null;
+        seasonId = null;
+        teamId = null;
       });
 
       const testReturnsUndefined = () => {

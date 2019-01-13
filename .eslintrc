@@ -12,7 +12,6 @@
   "rules": {
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
-    "no-multi-assign": "off",
     "no-underscore-dangle": "off",
     "no-unused-expressions": "off",
     "object-curly-newline": "off",

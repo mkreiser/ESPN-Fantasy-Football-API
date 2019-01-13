@@ -70,7 +70,9 @@ describe('BaseCacheableObject', () => {
       });
 
       afterEach(() => {
-        data = isDataFromServer = instance = null;
+        data = null;
+        isDataFromServer = null;
+        instance = null;
       });
 
       test('defers to BaseObject\'s _populateObject for data mapping functionality', () => {

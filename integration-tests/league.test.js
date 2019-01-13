@@ -13,7 +13,8 @@ describe('League functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = seasonId = null;
+    leagueId = null;
+    seasonId = null;
 
     League.clearCache();
   });

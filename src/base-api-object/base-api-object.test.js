@@ -89,7 +89,11 @@ describe('BaseAPIObject', () => {
       });
 
       afterEach(() => {
-        deferred = id = instance = params = reload = null;
+        deferred = null;
+        id = null;
+        instance = null;
+        params = null;
+        reload = null;
       });
 
       const testReadBehaviorWithObject = () => {
