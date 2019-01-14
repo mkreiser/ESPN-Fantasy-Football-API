@@ -13,7 +13,6 @@
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
     "no-underscore-dangle": "off",
-    "object-curly-newline": "off",
     "operator-linebreak": ["error", "after"],
 
     "import/extensions": "off"

@@ -31,11 +31,15 @@ describe('Boxscore functionality', () => {
   };
 
   describe('can load Boxscore with matchupPeriodId', () => {
-    testClassAndInstance({ leagueId: 336358, seasonId: 2017, teamId: 9, matchupPeriodId: 11 });
+    testClassAndInstance({
+      leagueId: 336358, seasonId: 2017, teamId: 9, matchupPeriodId: 11
+    });
   });
 
   describe('can load Boxscore with scoringPeriodId', () => {
-    testClassAndInstance({ leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11 });
+    testClassAndInstance({
+      leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11
+    });
   });
 
   describe('can load Boxscore with matchupPeriodId and scoringPeriodId', () => {

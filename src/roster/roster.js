@@ -93,7 +93,9 @@ class Roster extends BaseAPIObject {
   }
 
   static read(
-    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    {
+      instance, route = this.route, params, reload = true
+    } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
@@ -108,7 +110,9 @@ class Roster extends BaseAPIObject {
       cleanParams.teamIds = cleanParams.teamId;
     }
 
-    return super.read({ instance, route, params: cleanParams, reload });
+    return super.read({
+      instance, route, params: cleanParams, reload
+    });
   }
 
   read({

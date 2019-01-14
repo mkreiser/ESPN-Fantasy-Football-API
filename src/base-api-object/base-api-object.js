@@ -49,7 +49,9 @@ class BaseAPIObject extends BaseCacheableObject {
    * @return {Promise}
    */
   static read(
-    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    {
+      instance, route = this.route, params, reload = true
+    } = { route: this.route, reload: true }
   ) {
     if (!route) {
       throw new Error(`${this.displayName}: static read: cannot read without route`);

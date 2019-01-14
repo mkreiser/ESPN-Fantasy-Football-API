@@ -135,7 +135,9 @@ describe('BaseAPIObject', () => {
           deferred.resolve({});
 
           expect.assertions(1);
-          await TestBaseAPIObject.read({ instance, route, params, reload }).then(
+          await TestBaseAPIObject.read({
+            instance, route, params, reload
+          }).then(
             () => callback()
           ).finally(() => {
             expect(callback).toBeCalled();
