@@ -1,7 +1,9 @@
 import { Boxscore } from '../index.js';
 
 describe('Boxscore functionality', () => {
-  let leagueId, seasonId, teamId;
+  let leagueId;
+  let seasonId;
+  let teamId;
 
   beforeEach(() => {
     leagueId = 336358;
@@ -10,7 +12,9 @@ describe('Boxscore functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = seasonId = teamId = null;
+    leagueId = null;
+    seasonId = null;
+    teamId = null;
   });
 
   const testClassAndInstance = (params) => {
@@ -27,11 +31,15 @@ describe('Boxscore functionality', () => {
   };
 
   describe('can load Boxscore with matchupPeriodId', () => {
-    testClassAndInstance({ leagueId: 336358, seasonId: 2017, teamId: 9, matchupPeriodId: 11 });
+    testClassAndInstance({
+      leagueId: 336358, seasonId: 2017, teamId: 9, matchupPeriodId: 11
+    });
   });
 
   describe('can load Boxscore with scoringPeriodId', () => {
-    testClassAndInstance({ leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11 });
+    testClassAndInstance({
+      leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11
+    });
   });
 
   describe('can load Boxscore with matchupPeriodId and scoringPeriodId', () => {

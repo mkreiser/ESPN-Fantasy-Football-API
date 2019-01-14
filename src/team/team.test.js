@@ -71,10 +71,14 @@ describe('Team', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId, teamId;
+      let leagueId;
+      let seasonId;
+      let teamId;
 
       afterEach(() => {
-        leagueId = seasonId = teamId = null;
+        leagueId = null;
+        seasonId = null;
+        teamId = null;
       });
 
       const testReturnsUndefined = () => {

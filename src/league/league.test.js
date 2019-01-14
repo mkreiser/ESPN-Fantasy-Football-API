@@ -265,10 +265,12 @@ describe('League', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId;
+      let leagueId;
+      let seasonId;
 
       afterEach(() => {
-        leagueId = seasonId = null;
+        leagueId = null;
+        seasonId = null;
       });
 
       const testReturnsUndefined = () => {
@@ -353,8 +355,12 @@ describe('League', () => {
             const params = { leagueId: 1231232 };
             const reload = false;
 
-            League.read({ instance, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
+            League.read({
+              instance, route, params, reload
+            });
+            expect(BaseAPIObject.read).toBeCalledWith({
+              instance, route, params, reload
+            });
 
             BaseAPIObject.read.mockRestore();
           });

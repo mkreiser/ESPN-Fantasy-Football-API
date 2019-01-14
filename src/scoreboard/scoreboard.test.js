@@ -152,8 +152,12 @@ describe('Scoreboard', () => {
             const route = 'some route';
             const reload = false;
 
-            Scoreboard.read({ instance, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
+            Scoreboard.read({
+              instance, route, params, reload
+            });
+            expect(BaseAPIObject.read).toBeCalledWith({
+              instance, route, params, reload
+            });
 
             BaseAPIObject.read.mockRestore();
           });

@@ -260,15 +260,23 @@ describe('Roster', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId, seasonId, teamId, scoringPeriodId;
+      let leagueId;
+      let seasonId;
+      let teamId;
+      let scoringPeriodId;
 
       afterEach(() => {
-        leagueId = seasonId = teamId = scoringPeriodId = null;
+        leagueId = null;
+        seasonId = null;
+        teamId = null;
+        scoringPeriodId = null;
       });
 
       const testReturnsUndefined = () => {
         test('returns undefined', () => {
-          const params = { leagueId, seasonId, teamId, scoringPeriodId };
+          const params = {
+            leagueId, seasonId, teamId, scoringPeriodId
+          };
           expect(Roster.getCacheId(params)).toBeUndefined();
         });
       };
@@ -300,7 +308,9 @@ describe('Roster', () => {
               });
 
               test('returns a valid caching id', () => {
-                const params = { leagueId, seasonId, teamId, scoringPeriodId };
+                const params = {
+                  leagueId, seasonId, teamId, scoringPeriodId
+                };
 
                 const returnedCachingId = Roster.getCacheId(params);
                 expect(returnedCachingId).toBe(
@@ -517,7 +527,9 @@ describe('Roster', () => {
             const route = 'some route';
             const reload = false;
 
-            Roster.read({ instance, route, params, reload });
+            Roster.read({
+              instance, route, params, reload
+            });
             expect(BaseAPIObject.read).toBeCalledWith({
               instance, route, params: expectedParams, reload
             });
@@ -536,7 +548,9 @@ describe('Roster', () => {
           describe('when seasonId is passed on params', () => {
             describe('when teamIds is passed on params', () => {
               describe('when teamId is passed on params', () => {
-                const params = { leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9 };
+                const params = {
+                  leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9
+                };
                 testDefersRead({
                   params,
                   expectedParams: params
@@ -556,7 +570,9 @@ describe('Roster', () => {
               describe('when teamId is passed on params', () => {
                 testDefersRead({
                   params: { leagueId: 3213, seasonId: 2017, teamId: 9 },
-                  expectedParams: { leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9 }
+                  expectedParams: {
+                    leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9
+                  }
                 });
               });
 

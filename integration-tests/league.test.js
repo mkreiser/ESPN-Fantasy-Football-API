@@ -3,7 +3,8 @@ import _ from 'lodash';
 import { League } from '../index.js';
 
 describe('League functionality', () => {
-  let leagueId, seasonId;
+  let leagueId;
+  let seasonId;
 
   beforeEach(() => {
     leagueId = 336358;
@@ -13,7 +14,8 @@ describe('League functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = seasonId = null;
+    leagueId = null;
+    seasonId = null;
 
     League.clearCache();
   });

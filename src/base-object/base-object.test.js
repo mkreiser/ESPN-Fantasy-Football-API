@@ -121,7 +121,9 @@ describe('BaseObject', () => {
 
   describe('class methods', () => {
     describe('_populateObject', () => {
-      let data, instance, isDataFromServer;
+      let data;
+      let instance;
+      let isDataFromServer;
 
       beforeEach(() => {
         data = {
@@ -135,7 +137,9 @@ describe('BaseObject', () => {
       });
 
       afterEach(() => {
-        data = instance = isDataFromServer = null;
+        data = null;
+        instance = null;
+        isDataFromServer = null;
       });
 
       const callPopulate = (Klass = TestBaseObject) => Klass._populateObject({

@@ -1,7 +1,10 @@
 import { Roster } from '../index.js';
 
 describe('Roster functionality', () => {
-  let leagueId, scoringPeriodId, seasonId, teamId;
+  let leagueId;
+  let scoringPeriodId;
+  let seasonId;
+  let teamId;
 
   beforeEach(() => {
     leagueId = 336358;
@@ -13,7 +16,10 @@ describe('Roster functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = scoringPeriodId = seasonId = teamId = null;
+    leagueId = null;
+    scoringPeriodId = null;
+    seasonId = null;
+    teamId = null;
 
     Roster.clearCache();
   });
@@ -32,7 +38,9 @@ describe('Roster functionality', () => {
   };
 
   describe('can load Scoreboard with scoringPeriodId', () => {
-    testClassAndInstance({ leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11 });
+    testClassAndInstance({
+      leagueId: 336358, seasonId: 2017, teamId: 9, scoringPeriodId: 11
+    });
   });
 
   describe('can load Scoreboard without scoringPeriodId', () => {
@@ -71,10 +79,14 @@ describe('Roster functionality', () => {
 
   test('overrides a matching cached Roster on reload', async () => {
     const originalRoster = await Roster.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      }
     });
     const cachedRoster = await Roster.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      }
     });
 
     expect(originalRoster).not.toBe(cachedRoster);
@@ -82,10 +94,15 @@ describe('Roster functionality', () => {
 
   test('uses a cached Roster on non-reloads when there is a matched cached Roster', async () => {
     const originalRoster = await Roster.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      }
     });
     const cachedRoster = await Roster.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }, reload: false
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      },
+      reload: false
     });
 
     expect(originalRoster).toBe(cachedRoster);
@@ -93,7 +110,10 @@ describe('Roster functionality', () => {
 
   test('loads Roster on non-reloads when there is not a cached Roster', async () => {
     const roster = await Roster.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }, reload: false
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      },
+      reload: false
     });
     expect(roster).toMatchSnapshot();
   });

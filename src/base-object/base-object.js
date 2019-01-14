@@ -38,7 +38,9 @@ class BaseObject {
    * @param  {string} options.key The key of the responseMap entry being parsed.
    * @param  {string} options.value The value of the responseMap entry being parsed.
    */
-  static _processResponseMapItem({ data, instance, isDataFromServer, key, value }) {
+  static _processResponseMapItem({
+    data, instance, isDataFromServer, key, value
+  }) {
     /**
      * @typedef {object} ResponseMapValueObject
      *
@@ -142,12 +144,16 @@ class BaseObject {
       if (_.isPlainObject(value) && value.defer) {
         _.set(deferredMapItems, key, value);
       } else {
-        this._processResponseMapItem({ data, instance, isDataFromServer, key, value });
+        this._processResponseMapItem({
+          data, instance, isDataFromServer, key, value
+        });
       }
     });
 
     _.forEach(deferredMapItems, (value, key) => {
-      this._processResponseMapItem({ data, instance, isDataFromServer, key, value });
+      this._processResponseMapItem({
+        data, instance, isDataFromServer, key, value
+      });
     });
 
     return instance;

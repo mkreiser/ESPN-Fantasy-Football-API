@@ -71,12 +71,11 @@ class Scoreboard extends BaseAPIObject {
 
     matchups: {
       key: 'scoreboard.matchups',
-      manualParse: (responseData, response, instance) => _.map(responseData, (matchup) => {
-        return ScoreboardMatchup.buildFromServer(
-          matchup,
-          { leagueId: instance.leagueId, seasonId: instance.seasonId }
-        );
-      })
+      manualParse: (responseData, response, instance) => _.map(responseData, (matchup) => (
+        ScoreboardMatchup.buildFromServer(
+          matchup, { leagueId: instance.leagueId, seasonId: instance.seasonId }
+        )
+      ))
     }
   };
 
@@ -85,7 +84,9 @@ class Scoreboard extends BaseAPIObject {
   }
 
   static read(
-    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    {
+      instance, route = this.route, params, reload = true
+    } = { route: this.route, reload: true }
   ) {
     if (!_.get(params, 'leagueId')) {
       throw new Error(`${this.displayName}: static read: cannot read without leagueId`);
@@ -98,7 +99,9 @@ class Scoreboard extends BaseAPIObject {
       );
     }
 
-    return super.read({ instance, route, params, reload });
+    return super.read({
+      instance, route, params, reload
+    });
   }
 
   read({

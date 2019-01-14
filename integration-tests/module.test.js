@@ -3,7 +3,10 @@ import _ from 'lodash';
 import { Boxscore, League, Scoreboard } from '../index.js';
 
 describe('Module functionality', () => {
-  let leagueId, scoringPeriodId, seasonId, teamId;
+  let leagueId;
+  let scoringPeriodId;
+  let seasonId;
+  let teamId;
 
   beforeEach(() => {
     leagueId = 336358;
@@ -13,7 +16,10 @@ describe('Module functionality', () => {
   });
 
   afterEach(() => {
-    leagueId = scoringPeriodId = seasonId = teamId = null;
+    leagueId = null;
+    scoringPeriodId = null;
+    seasonId = null;
+    teamId = null;
   });
 
   test('can get multiple seasons of Leagues', async () => {
@@ -34,9 +40,21 @@ describe('Module functionality', () => {
     expect.assertions(1);
 
     const promises = [
-      Boxscore.read({ params: { leagueId, seasonId, teamId, scoringPeriodId: 10 } }),
-      Boxscore.read({ params: { leagueId, seasonId, teamId, scoringPeriodId: 11 } }),
-      Boxscore.read({ params: { leagueId, seasonId, teamId, scoringPeriodId: 12 } })
+      Boxscore.read({
+        params: {
+          leagueId, seasonId, teamId, scoringPeriodId: 10
+        }
+      }),
+      Boxscore.read({
+        params: {
+          leagueId, seasonId, teamId, scoringPeriodId: 11
+        }
+      }),
+      Boxscore.read({
+        params: {
+          leagueId, seasonId, teamId, scoringPeriodId: 12
+        }
+      })
     ];
 
     const boxscores = await Promise.all(promises);
@@ -91,7 +109,9 @@ describe('Module functionality', () => {
     const league = await League.read({ params: { leagueId, seasonId } });
 
     const boxscore = await Boxscore.read({
-      params: { leagueId, seasonId, teamId, scoringPeriodId }
+      params: {
+        leagueId, seasonId, teamId, scoringPeriodId
+      }
     });
 
     const scoreboard = await Scoreboard.read({ params: { leagueId, seasonId, scoringPeriodId } });

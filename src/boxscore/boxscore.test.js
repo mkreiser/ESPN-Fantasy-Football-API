@@ -185,8 +185,12 @@ describe('Boxscore', () => {
             const route = 'some route';
             const reload = false;
 
-            Boxscore.read({ instance, route, params, reload });
-            expect(BaseAPIObject.read).toBeCalledWith({ instance, route, params, reload });
+            Boxscore.read({
+              instance, route, params, reload
+            });
+            expect(BaseAPIObject.read).toBeCalledWith({
+              instance, route, params, reload
+            });
 
             BaseAPIObject.read.mockRestore();
           });
@@ -216,7 +220,9 @@ describe('Boxscore', () => {
 
                 describe('when scoringPeriodId is not passed on params', () => {
                   testDefersRead({
-                    params: { leagueId: 232131, seasonId: 2017, teamId: 9, matchupPeriodId: 11 }
+                    params: {
+                      leagueId: 232131, seasonId: 2017, teamId: 9, matchupPeriodId: 11
+                    }
                   });
                 });
               });
@@ -224,7 +230,9 @@ describe('Boxscore', () => {
               describe('when matchupPeriodId is not passed on params', () => {
                 describe('when scoringPeriodId is passed on params', () => {
                   testDefersRead({
-                    params: { leagueId: 232131, seasonId: 2017, teamId: 9, scoringPeriodId: 11 }
+                    params: {
+                      leagueId: 232131, seasonId: 2017, teamId: 9, scoringPeriodId: 11
+                    }
                   });
                 });
 
@@ -354,7 +362,9 @@ describe('Boxscore', () => {
               describe('when matchupPeriodId is passed on params', () => {
                 describe('when scoringPeriodId is passed on params', () => {
                   testThrowsError({
-                    params: { seasonId: 2017, teamId: 9, matchupPeriodId: 11, scoringPeriodId: 11 },
+                    params: {
+                      seasonId: 2017, teamId: 9, matchupPeriodId: 11, scoringPeriodId: 11
+                    },
                     errorMessage: 'Boxscore: static read: cannot read without leagueId'
                   });
                 });

@@ -87,7 +87,9 @@ describe('BoxscoreTeam', () => {
         });
 
         describe('when the passed data is populated', () => {
-          let ids, responseData, teamId;
+          let ids;
+          let responseData;
+          let teamId;
 
           beforeEach(() => {
             Team.clearCache();
@@ -105,7 +107,9 @@ describe('BoxscoreTeam', () => {
           });
 
           afterEach(() => {
-            ids = responseData = teamId = null;
+            ids = null;
+            responseData = null;
+            teamId = null;
 
             Team.clearCache();
           });

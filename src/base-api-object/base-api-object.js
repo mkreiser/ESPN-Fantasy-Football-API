@@ -49,7 +49,9 @@ class BaseAPIObject extends BaseCacheableObject {
    * @return {Promise}
    */
   static read(
-    { instance, route = this.route, params, reload = true } = { route: this.route, reload: true }
+    {
+      instance, route = this.route, params, reload = true
+    } = { route: this.route, reload: true }
   ) {
     if (!route) {
       throw new Error(`${this.displayName}: static read: cannot read without route`);
@@ -65,13 +67,13 @@ class BaseAPIObject extends BaseCacheableObject {
       undefined;
     const axiosConfig = { params, headers, withCredientials: !_.isEmpty(headers) };
 
-    return axios.get(route, axiosConfig).then((response) => {
-      return instance ? this._populateObject({
+    return axios.get(route, axiosConfig).then((response) => (
+      instance ? this._populateObject({
         data: response.data,
         instance,
         isDataFromServer: true
-      }) : this.buildFromServer(response.data, params);
-    });
+      }) : this.buildFromServer(response.data, params)
+    ));
   }
 
   /**

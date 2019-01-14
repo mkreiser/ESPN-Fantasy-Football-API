@@ -76,7 +76,11 @@ describe('BaseAPIObject', () => {
     });
 
     describe('read', () => {
-      let deferred, id, instance, params, reload;
+      let deferred;
+      let id;
+      let instance;
+      let params;
+      let reload;
 
       beforeEach(() => {
         deferred = q.defer();
@@ -89,7 +93,11 @@ describe('BaseAPIObject', () => {
       });
 
       afterEach(() => {
-        deferred = id = instance = params = reload = null;
+        deferred = null;
+        id = null;
+        instance = null;
+        params = null;
+        reload = null;
       });
 
       const testReadBehaviorWithObject = () => {
@@ -127,7 +135,9 @@ describe('BaseAPIObject', () => {
           deferred.resolve({});
 
           expect.assertions(1);
-          await TestBaseAPIObject.read({ instance, route, params, reload }).then(
+          await TestBaseAPIObject.read({
+            instance, route, params, reload
+          }).then(
             () => callback()
           ).finally(() => {
             expect(callback).toBeCalled();

@@ -61,7 +61,9 @@ class TestBaseCacheableObject extends BaseCacheableObject {
 describe('BaseCacheableObject', () => {
   describe('class methods', () => {
     describe('_populateObject', () => {
-      let data, isDataFromServer, instance;
+      let data;
+      let isDataFromServer;
+      let instance;
 
       beforeEach(() => {
         data = {};
@@ -70,7 +72,9 @@ describe('BaseCacheableObject', () => {
       });
 
       afterEach(() => {
-        data = isDataFromServer = instance = null;
+        data = null;
+        isDataFromServer = null;
+        instance = null;
       });
 
       test('defers to BaseObject\'s _populateObject for data mapping functionality', () => {
@@ -157,8 +161,9 @@ describe('BaseCacheableObject', () => {
         });
 
         test('sets _cache to an empty object', () => {
-          TestBaseCacheableObject.cache;
-          expect(TestBaseCacheableObject._cache).toEqual({});
+          const returnedCache = TestBaseCacheableObject.cache;
+
+          expect(returnedCache).toEqual({});
         });
 
         test('returns empty object', () => {
@@ -171,8 +176,9 @@ describe('BaseCacheableObject', () => {
           const cache = { some: 'cache' };
           TestBaseCacheableObject._cache = cache;
 
-          TestBaseCacheableObject.cache;
-          expect(TestBaseCacheableObject._cache).toBe(cache);
+          const returnedCache = TestBaseCacheableObject.cache;
+
+          expect(returnedCache).toEqual(cache);
         });
 
         test('returns _cache', () => {
