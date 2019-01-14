@@ -1,5 +1,5 @@
 # ESPN Fantasy Football API
-[![Build Status](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API) [![Maintainability](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API?type=dev) [![Known Vulnerabilities](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API/badge.svg?targetFile=package.json)](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API?targetFile=package.json) [![Blazing Fast](https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg)](https://twitter.com/acdlite/status/974390255393505280)
+![](https://img.shields.io/npm/v/espn-fantasy-football-api.svg?colorB=deepskyblue) [![Build Status](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API) [![Maintainability](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API?type=dev) [![Known Vulnerabilities](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API/badge.svg?targetFile=package.json)](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API?targetFile=package.json) [![Blazing Fast](https://img.shields.io/badge/speed-blazing%20%F0%9F%94%A5-brightgreen.svg)](https://twitter.com/acdlite/status/974390255393505280)
 
 A Javascript API client for both web and NodeJS that connects to ESPN's fantasy football API. Available as an npm package.
 
@@ -7,7 +7,7 @@ A Javascript API client for both web and NodeJS that connects to ESPN's fantasy 
 
 * Supports leagues, matchups, boxscores, and rosters.
   * Get matchup details, player performances, league standings, historical data, and more.
-  * Private league support coming soon™.
+  * Private league support.
 * Highly documented.
 * Built for speed and efficiency with caching support.
 * Built for extensibility by using ES6 classes.
@@ -18,11 +18,11 @@ Hosted documentation available at http://espn-fantasy-football-api.s3-website.us
 
 ## Installation
 
-***npm module coming soon™.***
+[![NPM](https://nodei.co/npm/espn-fantasy-football-api.png?compact=true)](https://nodei.co/npm/espn-fantasy-football-api/)
 
 There are two files exported in the package:
 
-* `dist/index-web.js` - Production file built for web environments
+* `dist/index-web.js` - Production file built for web environments (main/default file)
 
 * `dist/index-node.js` - Production file built for node environments
 

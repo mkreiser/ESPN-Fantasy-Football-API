@@ -36,9 +36,16 @@
   },
   "homepage": "https://github.com/mkreiser/ESPN-Fantasy-Football-API#readme",
   "keywords": [
+    "api",
+    "api-client",
     "ESPN",
+    "espn-api",
+    "espn api",
     "fantasy football",
-    "api"
+    "fantasy",
+    "football",
+    "football-api",
+    "football api"
   ],
   "devDependencies": {
     "@babel/core": "^7.1.6",
