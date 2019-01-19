@@ -61,6 +61,29 @@ const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```
 
+## Roadmap
+
+#### 0.7.0
+
+- Improve passing of constructor params to nested classes - *#1 priority*
+- Remove q dev dependency
+- Address CodeClimate feedback
+- Research an axios `get` only package
+- Player caching - *May be bumped*
+- Versioned documentation - *May be bumped*
+- Clean up test suites - *May be bumped, not required for version bump*
+
+
+
+#### 1.0.0
+
+- Satisfied with stable pre-1.0.0 package
+
+#### 1.1.0 
+
+- Increased functional patterns, reduce data mutability
+- Introduce Flow or TypeScript
+
 ## Testing
 
 *How do you know it works?*
