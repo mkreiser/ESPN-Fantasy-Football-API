@@ -57,6 +57,8 @@ class Scoreboard extends BaseAPIObject {
    * @property {string} dateOfFirstNFLGameInScoringPeriod A UTC timestamp of when the first NFL game
    *                                                      in the scoring period begins.
    * @property {boolean} nflGamesInProgress Whether or not there are any NFL games being played.
+   *
+   * @property {ScoreboardMatchupObject[]} matchups An array of the matchups on the scoreboard.
    */
 
   /**

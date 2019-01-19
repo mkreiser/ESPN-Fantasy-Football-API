@@ -15,7 +15,7 @@ class NFLGame extends BaseObject {
   static idName = 'gameId';
 
   /**
-   * @typedef {object} NFLGamObject
+   * @typedef {object} NFLGameObject
    * @property {number} gameId Note: There is no known endpoint to do anything with this id.
    * @property {string} gameDate The timestamp of when the NFL game is scheduled for.
    * @property {string} gameStatus A string representing the state of the game. Returned on the
