@@ -18,17 +18,44 @@ Hosted documentation available at http://espn-fantasy-football-api.s3-website.us
 
 ## Installation
 
-[![NPM](https://nodei.co/npm/espn-fantasy-football-api.png?compact=true)](https://nodei.co/npm/espn-fantasy-football-api/)
+```
+npm install --save espn-fantasy-football-api
+```
 
 There are two files exported in the package:
 
-* `dist/index-web.js` - Production file built for web environments (main/default file)
-
-* `dist/index-node.js` - Production file built for node environments
+* `dist/index-web.js` - Production file built for web environments (**main/default file**).
+* `dist/index-node.js` - Production file built for node environments.
 
 ## How to use
 
-### Importing
+### ESPN API Conventions
+
+`seasonId` matches the year in which the season was played.
+
+`matchupPeriod` refers to an entire match-up, including if the match-up lasts multiple weeks (not rare in playoff settings for smaller leagues).
+
+`scoringPeriod` refers to a single NFL week. Since most matchups are 1 week long, the `scoringPeriod` will typically match the `matchupPeriod`. However, for multi-week matchups, `scoringPeriod` allows one to get information about a specific week in the match-up (useful in multi-week playoff match-up).
+
+If both a `matchupPeriod` and a `scoringPeriod` are used, the `scoringPeriod` takes precedence.
+
+### How to get data
+
+*See documentation reference for more detail.*
+
+**League** provides league information and settings. Great for league info and team data.
+
+**Boxscore** provides detailed scoring information on a matchup. Great for getting scoring breakdowns by player.
+
+**Scoreboard** provides a summary of each matchup. Great for matchup summary data (e.g. team scores).
+
+**Roster** provides a detailed breakdown of a team's roster. Great for player information.
+
+### Examples
+
+NOTE: The NodeJS REPL does not work with `async`/`await`, so the following examples are written with Promises.
+
+#### Importing
 
 ```javascript
 // Web
@@ -41,7 +68,7 @@ import { League, Team } from 'espn-fantasy-football-api/dist/index-node.js';
 import { League, Team } from './dist/index-node.js';
 ```
 
-### Loading a League
+#### Loading a League
 
 ```javascript
 import { League } from 'espn-fantasy-football-api';
@@ -50,7 +77,7 @@ const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```
 
-### Loading a Private League
+#### Loading a Private League
 
 ```javascript
 import { BaseAPIObject, League } from 'espn-fantasy-football-api';
@@ -61,6 +88,30 @@ const league = new League({ leagueId: 336358, seasonId: 2018 });
 league.read().then(() => console.log(league)); // Prints loaded league
 ```
 
+#### Loading all Boxscores for a week
+
+To prevent loading duplicate Boxscores, load the week's Scoreboard first and use each matchup to load the matching Boxscore.
+
+```javascript
+import { Boxscore, Scoreboard } from 'espn-fantasy-football-api';
+
+const leagueId = 336358;
+const seasonId = 2018;
+const scoringPeriodId = 10; // Some week
+
+Scoreboard.read({
+    params: { leagueId, seasonId, scoringPeriodId }
+}).then((scoreboard) => {
+    const boxscorePromises = scoreboard.matchups.map((matchup) => Boxscore.read({
+        params: { leagueId, seasonId, teamId: matchup.homeTeam.teamId, scoringPeriodId }
+    }));
+
+    return Promise.all(boxscorePromises)
+}).then((boxscores) => {
+    console.log(boxscores); // Prints all loaded Boxscores
+});
+```
+
 ## Roadmap
 
 #### 0.7.0
@@ -68,18 +119,21 @@ league.read().then(() => console.log(league)); // Prints loaded league
 - Improve passing of constructor params to nested classes - *#1 priority*
 - Remove q dev dependency
 - Address CodeClimate feedback
-- Research an axios `get` only package
+- ~~Research an axios `get` only package~~ - Not a thing
+- Test node versions for support
 - Player caching - *May be bumped*
 - Versioned documentation - *May be bumped*
 - Clean up test suites - *May be bumped, not required for version bump*
 
+#### 0.8.0
 
+- Basic support for auction leagues
 
 #### 1.0.0
 
 - Satisfied with stable pre-1.0.0 package
 
-#### 1.1.0 
+#### 1.1.0
 
 - Increased functional patterns, reduce data mutability
 - Introduce Flow or TypeScript
