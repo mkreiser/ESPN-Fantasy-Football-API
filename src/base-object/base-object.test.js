@@ -121,11 +121,13 @@ describe('BaseObject', () => {
 
   describe('class methods', () => {
     describe('_populateObject', () => {
+      let constructorParams;
       let data;
       let instance;
       let isDataFromServer;
 
       beforeEach(() => {
+        constructorParams = { leagueId: 123213 };
         data = {
           testId: 42,
           some_value: 'some item',
@@ -137,13 +139,14 @@ describe('BaseObject', () => {
       });
 
       afterEach(() => {
+        constructorParams = null;
         data = null;
         instance = null;
         isDataFromServer = null;
       });
 
       const callPopulate = (Klass = TestBaseObject) => Klass._populateObject({
-        data, instance, isDataFromServer
+        data, constructorParams, instance, isDataFromServer
       });
 
       describe('when a instance is not passed', () => {
@@ -290,7 +293,7 @@ describe('BaseObject', () => {
                 test('calls the manualParse function', () => {
                   callPopulate();
                   expect(TestBaseObject.responseMap.someManualObject.manualParse).toBeCalledWith(
-                    data.manual, data, instance
+                    data.manual, data, constructorParams, instance
                   );
                 });
 
@@ -423,7 +426,7 @@ describe('BaseObject', () => {
                   expect(
                     TestBaseObject.responseMap.someManualAndBaseObject.manualParse
                   ).toBeCalledWith(
-                    data.both, data, instance
+                    data.both, data, constructorParams, instance
                   );
                   expect(MappingTestBaseObject.buildFromServer).not.toBeCalledWith(data.both);
 
@@ -589,6 +592,7 @@ describe('BaseObject', () => {
         TestBaseObject.buildFromServer(data, constructorParams);
         expect(TestBaseObject._populateObject).toBeCalledWith({
           data,
+          constructorParams,
           instance: expect.any(TestBaseObject),
           isDataFromServer: true
         });

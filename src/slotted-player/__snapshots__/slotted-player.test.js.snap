@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`SlottedPlayer attribute population from local object parses data correctly 1`] = `
+exports[`SlottedPlayer when creating a team from a server response parses and assigns data correctly 1`] = `
 SlottedPlayer {
   "isKeeper": false,
   "isLocked": true,
@@ -23,7 +23,7 @@ SlottedPlayer {
 }
 `;
 
-exports[`SlottedPlayer attribute population from server response parses data correctly 1`] = `
+exports[`SlottedPlayer when creating a team locally parses and assigns data correctly 1`] = `
 SlottedPlayer {
   "isKeeper": false,
   "isLocked": true,

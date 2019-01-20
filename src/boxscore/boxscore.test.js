@@ -9,43 +9,22 @@ import Boxscore from './boxscore.js';
 import { localObject, serverResponse } from './boxscore.stubs.js';
 
 describe('Boxscore', () => {
-  let boxscore;
-
-  beforeEach(() => {
-    boxscore = new Boxscore({
-      leagueId: 234123,
-      seasonId: 2014,
-      teamId: 3,
-      matchupPeriodId: 11,
-      scoringPeriodId: 11
-    });
-  });
-
-  afterEach(() => {
-    boxscore = null;
-  });
-
   test('extends BaseAPIObject', () => {
-    expect(boxscore).toBeInstanceOf(BaseAPIObject);
+    const instance = new Boxscore();
+    expect(instance).toBeInstanceOf(BaseAPIObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      boxscore = Boxscore.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(boxscore).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = Boxscore.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      boxscore = new Boxscore(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(boxscore).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new Boxscore(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
@@ -83,47 +62,91 @@ describe('Boxscore', () => {
   });
 
   describe('responseMap', () => {
+    const buildBoxscore = (data, options) => Boxscore.buildFromServer(data, options);
+
     describe('nflGames', () => {
       describe('manualParse', () => {
-        test('returns an array of NFLGames', () => {
-          const data = [{
-            gameId: 234
+        test('sets an array of NFLGames', () => {
+          const progames = [{
+            gameId: 234,
+            homeScore: 3,
+            awayScore: 6
           }, {
-            gameId: 432
+            gameId: 432,
+            homeScore: 3,
+            awayScore: 6
           }];
 
-          const returnedTeams = Boxscore.responseMap.nflGames.manualParse(data);
+          const data = {
+            boxscore: { progames }
+          };
+
+          const boxscore = buildBoxscore(data);
 
           expect.hasAssertions();
-          _.forEach(returnedTeams, (team, index) => {
-            expect(team).toBeInstanceOf(NFLGame);
-            expect(team.gameId).toBe(data[index].gameId);
+          _.forEach(boxscore.nflGames, (game, index) => {
+            expect(game).toBeInstanceOf(NFLGame);
+            expect(game.gameId).toBe(progames[index].gameId);
+            expect(game.homeTeamScore).toBe(progames[index].homeScore);
+            expect(game.awayTeamScore).toBe(progames[index].awayScore);
           });
         });
       });
     });
 
     const testTeamBehavior = ({ prefix }) => {
-      describe('when no response is passed', () => {
-        test('returns a sparse BoxscoreTeam', () => {
-          const expectedTeam = BoxscoreTeam.buildFromServer(
-            { matchupScore: 0 },
-            { leagueId: boxscore.leagueId, seasonId: boxscore.seasonId }
-          );
-          const returnedTeam = _.invoke(
-            Boxscore.responseMap, `${prefix}Team.manualParse`, undefined, undefined, boxscore
-          );
-          expect(returnedTeam).toEqual(expectedTeam);
+      describe('when there are not any scheduleItems', () => {
+        test('sets undefined', () => {
+          const data = {
+            boxscore: {
+              scheduleItems: undefined,
+              teams: []
+            }
+          };
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore[`${prefix}Team`]).toBeUndefined();
         });
       });
 
-      describe('when response is passed', () => {
-        test('returns a populated BoxscoreTeam', () => {
+      describe('when there are not any matchups', () => {
+        test('sets undefined', () => {
+          const data = {
+            boxscore: {
+              scheduleItems: [],
+              teams: []
+            }
+          };
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore[`${prefix}Team`]).toBeUndefined();
+        });
+      });
+
+      describe('when there are no team matching the teamId in the matchup', () => {
+        test('sets undefined', () => {
+          const teamId = 10;
+          const data = {
+            boxscore: {
+              scheduleItems: [{
+                [`${prefix}TeamId`]: teamId
+              }],
+              teams: [{ teamId: teamId + 1 }]
+            }
+          };
+
+          const boxscore = buildBoxscore(data);
+          expect(boxscore[`${prefix}Team`]).toBeUndefined();
+        });
+      });
+
+      describe('when there is a team matching the teamId in the matchup', () => {
+        test('sets a BoxscoreTeam', () => {
           const teamId = 12;
           const scores = [100, 100];
           const team = { teamId };
 
-          const response = {
+          const data = {
             boxscore: {
               scheduleItems: [{
                 matchups: [{
@@ -134,15 +157,14 @@ describe('Boxscore', () => {
               teams: [{}, team]
             }
           };
+          const options = { leagueId: 312312, seasonId: 2017 };
 
-          const returnedTeam = _.invoke(
-            Boxscore.responseMap, `${prefix}Team.manualParse`, undefined, response, boxscore
-          );
+          const boxscore = buildBoxscore(data, options);
+
           const expectedTeam = BoxscoreTeam.buildFromServer(
-            { matchupScore: _.sum(scores), teamBoxscore: team },
-            { leagueId: boxscore.leagueId, seasonId: boxscore.seasonId }
+            { matchupScore: _.sum(scores), teamBoxscore: team }, options
           );
-          expect(returnedTeam).toEqual(expectedTeam);
+          expect(boxscore[`${prefix}Team`]).toEqual(expectedTeam);
         });
       });
     };
@@ -514,8 +536,8 @@ describe('Boxscore', () => {
       });
 
       describe('when params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with params merged with id params', () => {
             const instance = new Boxscore({
               leagueId: 4213,
               seasonId: 2018,
@@ -541,8 +563,33 @@ describe('Boxscore', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when some id params are undefined on the instance', () => {
+          test('calls super.read with params merged with only defined id params', () => {
+            const instance = new Boxscore({
+              leagueId: 4213,
+              seasonId: 2018,
+              teamId: 4,
+              matchupPeriodId: 12
+            });
+            const params = { some: 'params' };
+            const route = 'some route';
+
+            instance.read({ params, route });
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: _.assign({}, params, {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                teamId: instance.teamId,
+                matchupPeriodId: instance.matchupPeriodId
+              }),
+              route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when all id params are undefined on the instance', () => {
+          test('calls super.read with only passed params', () => {
             const instance = new Boxscore();
             const params = { some: 'params' };
             const route = 'some route';
@@ -558,8 +605,8 @@ describe('Boxscore', () => {
       });
 
       describe('when no params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with all id params', () => {
             const instance = new Boxscore({
               leagueId: 4213,
               seasonId: 2018,
@@ -583,8 +630,31 @@ describe('Boxscore', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
+        describe('when some id params are undefined on the instance', () => {
           test('calls super.read with only defined id params', () => {
+            const instance = new Boxscore({
+              leagueId: 4213,
+              seasonId: 2018,
+              teamId: 4,
+              matchupPeriodId: 12
+            });
+
+            instance.read();
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                teamId: instance.teamId,
+                matchupPeriodId: instance.matchupPeriodId
+              },
+              route: Boxscore.route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when id params are undefined on the instance', () => {
+          test('calls super.read without params', () => {
             const instance = new Boxscore();
 
             instance.read();

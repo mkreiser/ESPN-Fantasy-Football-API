@@ -38,8 +38,12 @@ class BaseCacheableObject extends BaseObject {
    * `getCacheId`.
    * @override
    */
-  static _populateObject({ data, instance, isDataFromServer }) {
-    const populatedInstance = super._populateObject({ data, instance, isDataFromServer });
+  static _populateObject({
+    data, constructorParams, instance, isDataFromServer
+  }) {
+    const populatedInstance = super._populateObject({
+      data, constructorParams, instance, isDataFromServer
+    });
 
     if (isDataFromServer && populatedInstance.getCacheId()) {
       this.cache[populatedInstance.getCacheId()] = populatedInstance;

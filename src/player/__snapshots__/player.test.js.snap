@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Player attribute population from local object parses data correctly 1`] = `
+exports[`Player when creating a team from a server response parses and assigns data correctly 1`] = `
 Player {
   "eligiblePositions": Array [
     "QB",
@@ -18,7 +18,7 @@ Player {
 }
 `;
 
-exports[`Player attribute population from server response parses data correctly 1`] = `
+exports[`Player when creating a team locally parses and assigns data correctly 1`] = `
 Player {
   "eligiblePositions": Array [
     "QB",

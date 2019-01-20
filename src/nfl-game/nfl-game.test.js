@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import BaseObject from '../base-object/base-object.js';
+
 import nflTeams from '../nfl-teams/nfl-teams.js';
 
 import NFLGame from './nfl-game.js';
@@ -8,41 +9,28 @@ import NFLGame from './nfl-game.js';
 import { localObject, serverResponse } from './nfl-game.stubs.js';
 
 describe('NFLGame', () => {
-  let nflGame;
-
-  beforeEach(() => {
-    nflGame = new NFLGame();
-  });
-
-  afterEach(() => {
-    nflGame = null;
-  });
-
   test('extends BaseObject', () => {
-    expect(nflGame).toBeInstanceOf(BaseObject);
+    const instance = new NFLGame();
+    expect(instance).toBeInstanceOf(BaseObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      nflGame = NFLGame.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(nflGame).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = NFLGame.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      nflGame = new NFLGame(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(nflGame).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new NFLGame(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
   describe('responseMap', () => {
+    const buildNFLGame = (data, options) => NFLGame.buildFromServer(data, options);
+
     describe('gameStatus', () => {
       describe('manualParse', () => {
         describe('when valid enum key is passed', () => {
@@ -56,34 +44,67 @@ describe('NFLGame', () => {
             expect.hasAssertions();
             _.forEach(gameStatuses, (value, key) => {
               const numKey = _.toNumber(key);
-              const status = NFLGame.responseMap.gameStatus.manualParse(numKey);
-              expect(status).toBe(value);
+              const data = { status: numKey };
+
+              const slottedPlayer = buildNFLGame(data);
+              expect(slottedPlayer.gameStatus).toBe(value);
             });
           });
         });
 
         describe('when invalid enum key is passed', () => {
           test('returns error string', () => {
-            const status = NFLGame.responseMap.gameStatus.manualParse(-231);
-            expect(status).toBe('ERROR: gameStatus not recognized');
+            const data = { status: -231 };
+
+            const slottedPlayer = buildNFLGame(data);
+            expect(slottedPlayer.gameStatus).toBe('ERROR: gameStatus not recognized');
           });
         });
       });
     });
 
+    const testTeam = ({ isHome }) => {
+      const teamPrefix = isHome ? 'home' : 'away';
+
+      describe('when the passed id is undefined', () => {
+        test(`sets ${teamPrefix}Team to undefined`, () => {
+          const data = { [`${teamPrefix}ProTeamId`]: undefined };
+
+          const slottedPlayer = buildNFLGame(data);
+          expect(slottedPlayer[`${teamPrefix}Team`]).toBeUndefined();
+        });
+      });
+
+      describe('when the passed id does not match a known team', () => {
+        test(`sets ${teamPrefix}Team to undefined`, () => {
+          const id = 112310;
+          const data = { [`${teamPrefix}ProTeamId`]: id };
+
+          const slottedPlayer = buildNFLGame(data);
+          expect(slottedPlayer[`${teamPrefix}Team`]).toBeUndefined();
+        });
+      });
+
+      describe('when the passed id matches a known team', () => {
+        test(`sets ${teamPrefix}Team to the correct NFLTeam`, () => {
+          const id = 10;
+          const data = { [`${teamPrefix}ProTeamId`]: id };
+
+          const slottedPlayer = buildNFLGame(data);
+          expect(slottedPlayer[`${teamPrefix}Team`]).toBe(nflTeams[id]);
+        });
+      });
+    };
+
     describe('homeTeam', () => {
-      test('maps to an NFLTeam', () => {
-        const id = 10;
-        const team = NFLGame.responseMap.homeTeam.manualParse(id);
-        expect(team).toBe(_.get(nflTeams, id));
+      describe('manualParse', () => {
+        testTeam({ isHome: true });
       });
     });
 
     describe('awayTeam', () => {
-      test('maps to an NFLTeam', () => {
-        const id = 10;
-        const team = NFLGame.responseMap.awayTeam.manualParse(id);
-        expect(team).toBe(_.get(nflTeams, id));
+      describe('manualParse', () => {
+        testTeam({ isHome: false });
       });
     });
   });

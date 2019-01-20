@@ -8,8 +8,8 @@ import Team from '../team/team.js';
 /**
  * Represents a roster of players on a fantasy football team.
  *
- * Roster DOES NOT have an `id`. Rather, the nessecary identifers are gathered via a combination of
- * id parameters.
+ * Roster does not have a provided unique id. Rather, the nessecary identifers are gathered via a
+ * combination of id parameters.
  *
  * @extends BaseAPIObject
  */
@@ -18,20 +18,19 @@ class Roster extends BaseAPIObject {
     super(options);
 
     /**
-     * Id of the league to which the roster belongs. Required to make reads on the Roster instance.
+     * Id of the league to which the roster belongs. Required to make reads.
      * @type {number}
      */
     this.leagueId = options.leagueId;
 
     /**
-     * Id of the season (i.e. the year) to which the roster belongs. Required to make reads on the
-     * Roster instance.
+     * Id of the season (i.e. the year) to which the roster belongs. Required to make reads.
      * @type {number}
      */
     this.seasonId = options.seasonId;
 
     /**
-     * Id of the team to which the roster belongs. Required to make reads on the Roster instance.
+     * Id of the team to which the roster belongs. Required to make reads.
      * @type {number}
      */
     this.teamId = options.teamId;
@@ -52,7 +51,7 @@ class Roster extends BaseAPIObject {
    * @typedef {object} RosterObject
    *
    * @property {Team} team The team to which the roster belongs to.
-   * @property {SlottedPlayer[]} team The players in their slots on the roster.
+   * @property {SlottedPlayer[]} team The players on the roster.
    */
 
   /**
@@ -61,34 +60,31 @@ class Roster extends BaseAPIObject {
   static responseMap = {
     team: {
       key: 'leagueRosters.teams',
-      manualParse: (responseData, response, instance) => {
-        const data = _.find(responseData, { teamId: instance.teamId });
+      manualParse: (responseData, response, constructorParams) => {
+        const data = _.find(responseData, { teamId: constructorParams.teamId });
+        const cachingId = Team.getCacheId(constructorParams);
 
-        const cachingId = Team.getCacheId({
-          leagueId: instance.leagueId,
-          seasonId: instance.seasonId,
-          teamId: _.get(data, 'teamId')
-        });
-
-        return Team.get(cachingId) || Team.buildFromServer(
-          _.get(data, 'team'),
-          { leagueId: instance.leagueId, seasonId: instance.seasonId }
-        );
+        return Team.get(cachingId) || Team.buildFromServer(_.get(data, 'team'), constructorParams);
       }
     },
     players: {
       key: 'leagueRosters.teams',
-      manualParse: (responseData, response, instance) => {
-        const data = _.find(responseData, { teamId: _.get(instance, 'teamId') });
+      manualParse: (responseData, response, constructorParams) => {
+        const data = _.find(responseData, { teamId: constructorParams.teamId });
         const slots = _.get(data, 'slots');
-        return _.map(slots, (slottedPlayer) => SlottedPlayer.buildFromServer(slottedPlayer));
+
+        return _.map(slots, (slottedPlayer) => (
+          SlottedPlayer.buildFromServer(slottedPlayer, constructorParams)
+        ));
       }
     }
   };
 
-  static getCacheId(params = {}) {
-    return (params.teamId && params.leagueId && params.seasonId && params.scoringPeriodId) ?
-      `${params.teamId}-${params.leagueId}-${params.seasonId}-${params.scoringPeriodId}` :
+  static getCacheId({
+    leagueId, seasonId, teamId, scoringPeriodId
+  } = {}) {
+    return (teamId && leagueId && seasonId && scoringPeriodId) ?
+      `${teamId}-${leagueId}-${seasonId}-${scoringPeriodId}` :
       undefined;
   }
 
@@ -123,7 +119,8 @@ class Roster extends BaseAPIObject {
     const idParams = _.pickBy({
       leagueId: this.leagueId,
       seasonId: this.seasonId,
-      teamIds: this.teamId,
+      teamId: this.teamId, // For passing teamId down to populated instances
+      teamIds: this.teamId, // Rename for ESPN API request
       scoringPeriodId: this.scoringPeriodId
     }, (value) => _.isFinite(value));
 

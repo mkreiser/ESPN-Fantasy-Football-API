@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import BaseAPIObject from '../base-api-object/base-api-object.js';
+
 import SlottedPlayer from '../slotted-player/slotted-player.js';
 import Team from '../team/team.js';
 
@@ -9,37 +10,22 @@ import Roster from './roster.js';
 import { localObject, serverResponse } from './roster.stubs.js';
 
 describe('Roster', () => {
-  let roster;
-
-  beforeEach(() => {
-    roster = new Roster();
-  });
-
-  afterEach(() => {
-    roster = null;
-  });
-
   test('extends BaseAPIObject', () => {
-    expect(roster).toBeInstanceOf(BaseAPIObject);
+    const instance = new Roster();
+    expect(instance).toBeInstanceOf(BaseAPIObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      roster = Roster.buildFromServer(serverResponse, { teamId: 9 });
-    });
-
-    test('parses data correctly', () => {
-      expect(roster).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = Roster.buildFromServer(serverResponse, { teamId: 9 });
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      roster = new Roster(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(roster).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new Roster(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
@@ -75,105 +61,86 @@ describe('Roster', () => {
   });
 
   describe('responseMap', () => {
+    const buildRoster = (data, options) => Roster.buildFromServer(data, options);
+
     describe('team', () => {
       describe('manualParse', () => {
-        let instance;
-
-        beforeEach(() => {
-          instance = new Roster({
-            leagueId: 123,
-            seasonId: 2018
-          });
-        });
-
-        afterEach(() => {
-          instance = null;
-        });
-
-        const testReturnsEmptyInstance = ({ value, valueString }) => {
+        const testSetsUndefined = ({ teamId, value, valueString }) => {
           describe(`when the passed data is ${valueString}`, () => {
-            test('returns an empty Team', () => {
-              const expectedTeam = new Team({
-                leagueId: instance.leagueId, seasonId: instance.seasonId
-              });
+            test('sets undefined', () => {
+              const leagueId = 342343;
+              const seasonId = 2017;
 
-              const returnedTeam = Roster.responseMap.team.manualParse(value, undefined, instance);
-              expect(returnedTeam).toEqual(expectedTeam);
+              const data = {
+                leagueRosters: {
+                  teams: value
+                }
+              };
+
+              const roster = buildRoster(data, { leagueId, seasonId, teamId });
+              expect(roster.teams).toBeUndefined();
             });
           });
         };
 
-        describe('when the populating instance does not have a teamId', () => {
-          beforeEach(() => {
-            instance.teamId = undefined;
-          });
-
-          testReturnsEmptyInstance({ value: undefined, valueString: 'undefined' });
-          testReturnsEmptyInstance({ value: null, valueString: 'null' });
-          testReturnsEmptyInstance({ value: [], valueString: 'empty array' });
-          testReturnsEmptyInstance({
+        describe('when the passed constructorParams do not have a teamId', () => {
+          testSetsUndefined({ value: undefined, valueString: 'undefined' });
+          testSetsUndefined({ value: null, valueString: 'null' });
+          testSetsUndefined({ value: [], valueString: 'empty array' });
+          testSetsUndefined({
             value: [{ teamId: 4 }, { teamId: 5 }, { teamId: 6 }],
             valueString: 'populated array'
           });
         });
 
-        describe('when the populating instance has a teamId', () => {
-          beforeEach(() => {
-            instance.teamId = 10;
-          });
-
-          testReturnsEmptyInstance({ value: undefined, valueString: 'undefined' });
-          testReturnsEmptyInstance({ value: null, valueString: 'null' });
-          testReturnsEmptyInstance({ value: [], valueString: 'empty array' });
+        describe('when the passed constructorParams have a teamId', () => {
+          testSetsUndefined({ teamId: 10, value: undefined, valueString: 'undefined' });
+          testSetsUndefined({ teamId: 10, value: null, valueString: 'null' });
+          testSetsUndefined({ teamId: 10, value: [], valueString: 'empty array' });
 
           describe('when the passed data is a populated array', () => {
-            let responseData;
+            let data;
+            let teamId;
 
             beforeEach(() => {
-              responseData = [{
-                teamId: instance.teamId,
-                team: {
-                  teamId: instance.teamId
-                }
+              teamId = 10;
+
+              const teams = [{
+                teamId,
+                team: { teamId }
+              }, {
+                teamId: teamId + 1,
+                team: { teamId: teamId + 1 }
               }];
+
+              data = { leagueRosters: { teams } };
             });
 
             afterEach(() => {
-              responseData = null;
+              data = null;
+              teamId = null;
             });
 
             describe('when there is a cached team', () => {
-              test('returns the cached team', () => {
-                const cachedTeam = Team.buildFromServer(
-                  { teamId: instance.teamId },
-                  { leagueId: instance.leagueId, seasonId: instance.seasonId }
-                );
+              test('sets the cached team', () => {
+                const leagueId = 312312;
+                const seasonId = 2017;
+                const cachedTeam = Team.buildFromServer({ teamId }, { leagueId, seasonId, teamId });
 
-                const returnedTeam = Roster.responseMap.team.manualParse(
-                  responseData, undefined, instance
-                );
-                expect(returnedTeam).toBe(cachedTeam);
-
-                Team.clearCache();
+                const roster = buildRoster(data, { leagueId, seasonId, teamId });
+                expect(roster.team).toBe(cachedTeam);
               });
             });
 
             describe('when there is not a cached team', () => {
-              test('creates a new team', () => {
-                Team.clearCache();
+              test('sets a new team', () => {
+                const leagueId = 312312;
+                const seasonId = 2017;
 
-                const cachingId = Team.getCacheId({
-                  leagueId: instance.leagueId,
-                  seasonId: instance.seasonId,
-                  teamId: instance.teamId
-                });
-
-                const returnedTeam = Roster.responseMap.team.manualParse(
-                  responseData, undefined, instance
+                const roster = buildRoster(data, { leagueId, seasonId, teamId });
+                expect(roster.team).toEqual(
+                  Team.buildFromServer({ teamId }, { leagueId, seasonId })
                 );
-                expect(returnedTeam).toBe(Team.get(cachingId));
-
-                Team.clearCache();
               });
             });
           });
@@ -183,35 +150,28 @@ describe('Roster', () => {
 
     describe('player', () => {
       describe('manualParse', () => {
-        let instance;
+        const testReturnsEmptyArray = ({ teamId, value, valueString }) => {
+          describe(`when the slots data is ${valueString}`, () => {
+            test('sets an empty array', () => {
+              const leagueId = 342343;
+              const seasonId = 2017;
 
-        beforeEach(() => {
-          instance = new Roster({
-            leagueId: 123,
-            seasonId: 2018
-          });
-        });
+              const data = {
+                leagueRosters: {
+                  teams: [{
+                    teamId: teamId || 9,
+                    slots: value
+                  }]
+                }
+              };
 
-        afterEach(() => {
-          instance = null;
-        });
-
-        const testReturnsEmptyArray = ({ value, valueString }) => {
-          describe(`when the passed data is ${valueString}`, () => {
-            test('returns an empty array', () => {
-              const returnedPlayers = Roster.responseMap.players.manualParse(
-                value, undefined, instance
-              );
-              expect(returnedPlayers).toEqual([]);
+              const roster = buildRoster(data, { leagueId, seasonId, teamId });
+              expect(roster.players).toEqual([]);
             });
           });
         };
 
-        describe('when the populating instance does not have a teamId', () => {
-          beforeEach(() => {
-            instance.teamId = undefined;
-          });
-
+        describe('when the passed constructorParams do not have a teamId', () => {
           testReturnsEmptyArray({ value: undefined, valueString: 'undefined' });
           testReturnsEmptyArray({ value: null, valueString: 'null' });
           testReturnsEmptyArray({ value: [], valueString: 'empty array' });
@@ -221,19 +181,19 @@ describe('Roster', () => {
           });
         });
 
-        describe('when the populating instance has a teamId', () => {
-          beforeEach(() => {
-            instance.teamId = 10;
-          });
-
-          testReturnsEmptyArray({ value: undefined, valueString: 'undefined' });
-          testReturnsEmptyArray({ value: null, valueString: 'null' });
-          testReturnsEmptyArray({ value: [], valueString: 'empty array' });
+        describe('when the passed constructorParams have a teamId', () => {
+          testReturnsEmptyArray({ teamId: 10, value: undefined, valueString: 'undefined' });
+          testReturnsEmptyArray({ teamId: 10, value: null, valueString: 'null' });
+          testReturnsEmptyArray({ teamId: 10, value: [], valueString: 'empty array' });
 
           describe('when the passed data is a populated array', () => {
             test('returns an array of SlottedPlayers', () => {
-              const responseData = [{
-                teamId: instance.teamId,
+              const leagueId = 342343;
+              const seasonId = 2017;
+              const teamId = 10;
+
+              const teams = [{
+                teamId,
                 slots: [{
                   player: {},
                   isKeeper: true
@@ -243,12 +203,11 @@ describe('Roster', () => {
                 }]
               }];
 
-              const returnedPlayers = Roster.responseMap.players.manualParse(
-                responseData, undefined, instance
-              );
+              const data = { leagueRosters: { teams } };
+              const roster = buildRoster(data, { leagueId, seasonId, teamId });
 
               expect.hasAssertions();
-              _.forEach(returnedPlayers, (slottedPlayer) => {
+              _.forEach(roster.players, (slottedPlayer) => {
                 expect(slottedPlayer).toBeInstanceOf(SlottedPlayer);
               });
             });
@@ -260,23 +219,8 @@ describe('Roster', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId;
-      let seasonId;
-      let teamId;
-      let scoringPeriodId;
-
-      afterEach(() => {
-        leagueId = null;
-        seasonId = null;
-        teamId = null;
-        scoringPeriodId = null;
-      });
-
-      const testReturnsUndefined = () => {
+      const testReturnsUndefined = (params) => {
         test('returns undefined', () => {
-          const params = {
-            leagueId, seasonId, teamId, scoringPeriodId
-          };
           expect(Roster.getCacheId(params)).toBeUndefined();
         });
       };
@@ -288,221 +232,101 @@ describe('Roster', () => {
       });
 
       describe('when leagueId is defined', () => {
-        beforeEach(() => {
-          leagueId = 132123;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
               test('returns a valid caching id', () => {
                 const params = {
-                  leagueId, seasonId, teamId, scoringPeriodId
+                  leagueId: 132123, seasonId: 2017, teamId: 9, scoringPeriodId: 8
                 };
 
                 const returnedCachingId = Roster.getCacheId(params);
                 expect(returnedCachingId).toBe(
-                  `${teamId}-${leagueId}-${seasonId}-${scoringPeriodId}`
+                  `${params.teamId}-${params.leagueId}-${params.seasonId}-${params.scoringPeriodId}`
                 );
               });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, seasonId: 2017, teamId: 9 });
             });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, seasonId: 2017, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, seasonId: 2017 });
             });
           });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, teamId: 9, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, teamId: 9 });
             });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ leagueId: 132123 });
             });
           });
         });
       });
 
       describe('when leagueId is undefined', () => {
-        beforeEach(() => {
-          leagueId = undefined;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ seasonId: 2017, teamId: 9, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ seasonId: 2017, teamId: 9 });
             });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ seasonId: 2017, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ seasonId: 2017 });
             });
           });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ teamId: 9, scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ teamId: 9 });
             });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
             describe('when scoringPeriodId is defined', () => {
-              beforeEach(() => {
-                scoringPeriodId = 11;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({ scoringPeriodId: 8 });
             });
 
             describe('when scoringPeriodId is undefined', () => {
-              beforeEach(() => {
-                scoringPeriodId = undefined;
-              });
-
-              testReturnsUndefined();
+              testReturnsUndefined({});
             });
           });
         });
@@ -551,6 +375,7 @@ describe('Roster', () => {
                 const params = {
                   leagueId: 3213, seasonId: 2017, teamId: 9, teamIds: 9
                 };
+
                 testDefersRead({
                   params,
                   expectedParams: params
@@ -559,6 +384,7 @@ describe('Roster', () => {
 
               describe('when teamId is not passed on params', () => {
                 const params = { leagueId: 3213, seasonId: 2017, teamIds: 9 };
+
                 testDefersRead({
                   params,
                   expectedParams: params
@@ -704,13 +530,15 @@ describe('Roster', () => {
       });
 
       describe('when params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with passed pararms merged with all id params', () => {
+            const leagueId = 4213;
+            const seasonId = 2018;
+            const teamId = 4;
+            const scoringPeriodId = 1;
+
             const instance = new Roster({
-              leagueId: 4213,
-              seasonId: 2018,
-              teamId: 4,
-              scoringPeriodId: 12
+              leagueId, seasonId, teamId, scoringPeriodId
             });
             const params = { some: 'params' };
             const reload = false;
@@ -718,10 +546,11 @@ describe('Roster', () => {
             instance.read({ params, reload });
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params: _.assign({}, params, {
-                leagueId: instance.leagueId,
-                seasonId: instance.seasonId,
-                teamIds: instance.teamId,
-                scoringPeriodId: instance.scoringPeriodId
+                leagueId,
+                scoringPeriodId,
+                seasonId,
+                teamId,
+                teamIds: teamId
               }),
               route: Roster.route,
               reload
@@ -729,8 +558,29 @@ describe('Roster', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when some id params are undefined on the instance', () => {
+          test('calls super.read with passed pararms merged with only defined id params', () => {
+            const leagueId = 4213;
+            const seasonId = 2018;
+            const teamId = 4;
+
+            const instance = new Roster({ leagueId, seasonId, teamId });
+            const params = { some: 'params' };
+            const route = 'some route';
+
+            instance.read({ params, route });
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: _.assign({}, params, {
+                leagueId, teamId, seasonId, teamIds: teamId
+              }),
+              route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when all id params are undefined on the instance', () => {
+          test('calls super.read with passed params without id params', () => {
             const instance = new Roster();
             const params = { some: 'params' };
             const route = 'some route';
@@ -746,22 +596,25 @@ describe('Roster', () => {
       });
 
       describe('when no params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with all defined id params', () => {
+            const leagueId = 4213;
+            const seasonId = 2018;
+            const teamId = 4;
+            const scoringPeriodId = 1;
+
             const instance = new Roster({
-              leagueId: 4213,
-              seasonId: 2018,
-              teamId: 4,
-              scoringPeriodId: 12
+              leagueId, seasonId, teamId, scoringPeriodId
             });
 
             instance.read();
             expect(BaseAPIObject.prototype.read).toBeCalledWith({
               params: {
-                leagueId: instance.leagueId,
-                seasonId: instance.seasonId,
-                teamIds: instance.teamId,
-                scoringPeriodId: instance.scoringPeriodId
+                leagueId,
+                scoringPeriodId,
+                seasonId,
+                teamId,
+                teamIds: teamId
               },
               route: Roster.route,
               reload: true
@@ -769,8 +622,30 @@ describe('Roster', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when some id params are undefined on the instance', () => {
+          test('calls super.read with all defined id params', () => {
+            const leagueId = 4213;
+            const seasonId = 2018;
+            const teamId = 4;
+
+            const instance = new Roster({ leagueId, seasonId, teamId });
+
+            instance.read();
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: {
+                leagueId,
+                seasonId,
+                teamId,
+                teamIds: teamId
+              },
+              route: Roster.route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when all id params are undefined on the instance', () => {
+          test('calls super.read without id params', () => {
             const instance = new Roster();
 
             instance.read();

@@ -1,12 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`ScoreboardMatchup attribute population from local object parses data correctly 1`] = `
+exports[`ScoreboardMatchup when creating a team from a server response parses and assigns data correctly 1`] = `
 ScoreboardMatchup {
   "awayTeam": Team {
     "abbreviation": "GOAT",
     "awayLosses": 1,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 5,
     "division": Object {
       "divisionId": 0,
@@ -15,12 +14,11 @@ ScoreboardMatchup {
     },
     "divisionLosses": 2,
     "divisionTies": 0,
-    "divisionWinningPercentage": 0.66667,
+    "divisionWinningPercentage": 66.667,
     "divisionWins": 4,
     "firstName": "The Boston",
     "homeLosses": 3,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 4,
     "lastName": "TE Party",
     "leagueId": undefined,
@@ -34,7 +32,7 @@ ScoreboardMatchup {
     "teamId": 1,
     "ties": 0,
     "waiverRank": 6,
-    "winningPercentage": 0.69231,
+    "winningPercentage": 69.231,
     "wins": 9,
   },
   "awayTeamScore": 103.84,
@@ -42,7 +40,6 @@ ScoreboardMatchup {
     "abbreviation": "GRON",
     "awayLosses": 2,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 4,
     "division": Object {
       "divisionId": 1,
@@ -51,12 +48,11 @@ ScoreboardMatchup {
     },
     "divisionLosses": 4,
     "divisionTies": 0,
-    "divisionWinningPercentage": 0.33333,
+    "divisionWinningPercentage": 33.333,
     "divisionWins": 2,
     "firstName": "Prestige",
     "homeLosses": 6,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 1,
     "lastName": "Worldwide",
     "leagueId": undefined,
@@ -70,7 +66,7 @@ ScoreboardMatchup {
     "teamId": 2,
     "ties": 0,
     "waiverRank": 5,
-    "winningPercentage": 0.38462,
+    "winningPercentage": 38.462,
     "wins": 5,
   },
   "homeTeamScore": 56.64,
@@ -81,7 +77,6 @@ ScoreboardMatchup {
     "abbreviation": "GOAT",
     "awayLosses": 1,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 5,
     "division": Object {
       "divisionId": 0,
@@ -90,12 +85,11 @@ ScoreboardMatchup {
     },
     "divisionLosses": 2,
     "divisionTies": 0,
-    "divisionWinningPercentage": 0.66667,
+    "divisionWinningPercentage": 66.667,
     "divisionWins": 4,
     "firstName": "The Boston",
     "homeLosses": 3,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 4,
     "lastName": "TE Party",
     "leagueId": undefined,
@@ -109,19 +103,18 @@ ScoreboardMatchup {
     "teamId": 1,
     "ties": 0,
     "waiverRank": 6,
-    "winningPercentage": 0.69231,
+    "winningPercentage": 69.231,
     "wins": 9,
   },
 }
 `;
 
-exports[`ScoreboardMatchup attribute population from server response parses data correctly 1`] = `
+exports[`ScoreboardMatchup when creating a team locally parses and assigns data correctly 1`] = `
 ScoreboardMatchup {
   "awayTeam": Team {
     "abbreviation": "GOAT",
     "awayLosses": 1,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 5,
     "division": Object {
       "divisionId": 0,
@@ -135,7 +128,6 @@ ScoreboardMatchup {
     "firstName": "The Boston",
     "homeLosses": 3,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 4,
     "lastName": "TE Party",
     "leagueId": undefined,
@@ -157,7 +149,6 @@ ScoreboardMatchup {
     "abbreviation": "GRON",
     "awayLosses": 2,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 4,
     "division": Object {
       "divisionId": 1,
@@ -171,7 +162,6 @@ ScoreboardMatchup {
     "firstName": "Prestige",
     "homeLosses": 6,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 1,
     "lastName": "Worldwide",
     "leagueId": undefined,
@@ -196,7 +186,6 @@ ScoreboardMatchup {
     "abbreviation": "GOAT",
     "awayLosses": 1,
     "awayTies": 0,
-    "awayWinningPercentage": 0,
     "awayWins": 5,
     "division": Object {
       "divisionId": 0,
@@ -210,7 +199,6 @@ ScoreboardMatchup {
     "firstName": "The Boston",
     "homeLosses": 3,
     "homeTies": 0,
-    "homeWinningPercentage": 0,
     "homeWins": 4,
     "lastName": "TE Party",
     "leagueId": undefined,

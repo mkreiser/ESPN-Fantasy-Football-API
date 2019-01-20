@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BoxscorePlayerPointStats attribute population from local object parses data correctly 1`] = `
+exports[`BoxscorePlayerPointStats when creating a team from a server response parses and assigns data correctly 1`] = `
 BoxscorePlayerPointStats {
   "defensive0PointsAllowed": 10,
   "defensive100To199YardsAllowed": -10,
@@ -46,7 +46,7 @@ BoxscorePlayerPointStats {
 }
 `;
 
-exports[`BoxscorePlayerPointStats attribute population from server response parses data correctly 1`] = `
+exports[`BoxscorePlayerPointStats when creating a team locally parses and assigns data correctly 1`] = `
 BoxscorePlayerPointStats {
   "defensive0PointsAllowed": 10,
   "defensive100To199YardsAllowed": -10,

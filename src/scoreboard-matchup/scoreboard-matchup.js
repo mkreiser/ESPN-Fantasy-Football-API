@@ -6,8 +6,9 @@ import Team from '../team/team.js';
 
 /**
  * Represents a single matchup on a {@link Scoreboard}. Each team, their score, and the matchup
- * winner, is populated here. If the matchup represents a bye week (where the matchup is not
- * actually being contested), the `isByeWeek` prop will be `true`.
+ * winner is populated. If the matchup represents a bye week (where the matchup is not actually
+ * being contested), the `isByeWeek` prop will be `true`.
+ *
  * @extends BaseObject
  */
 class ScoreboardMatchup extends BaseObject {
@@ -33,12 +34,15 @@ class ScoreboardMatchup extends BaseObject {
 
   /**
    * @typedef {object} ScoreboardMatchupObject
-   * @property {Team} homeTeam An instance of the home team. Uses a cached instance if possible.
-   * @property {Team} awayTeam An instance of the home team. Uses a cached instance if possible.
+   *
+   * @property {Team} homeTeam An instance of the home team. Uses a cached Team if possible.
+   * @property {Team} awayTeam An instance of the away team. Uses a cached Team if possible.
+   *
    * @property {number} homeTeamScore Score of the home team.
    * @property {number} awayTeamScore Score of the away team.
+   *
    * @property {boolean} isByeWeek Whether or not the matchup is in a bye week.
-   * @property {Team} wunner The Team instance of the winning team.
+   * @property {Team} wunner The winning team.
    */
 
   /**
@@ -47,35 +51,43 @@ class ScoreboardMatchup extends BaseObject {
   static responseMap = {
     homeTeam: {
       key: 'teams',
-      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
-        isHome: true, responseData, instance
-      })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseTeam({
+          isHome: true, responseData, constructorParams
+        })
+      )
     },
     awayTeam: {
       key: 'teams',
-      manualParse: (responseData, response, instance) => instance.constructor._parseTeam({
-        isHome: false, responseData, instance
-      })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseTeam({
+          isHome: false, responseData, constructorParams
+        })
+      )
     },
 
     homeTeamScore: {
       key: 'teams',
-      manualParse: (responseData, response, instance) => instance.constructor._parseTeamScore({
-        isHome: true, responseData
-      })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseTeamScore({
+          isHome: true, responseData
+        })
+      )
     },
     awayTeamScore: {
       key: 'teams',
-      manualParse: (responseData, response, instance) => instance.constructor._parseTeamScore({
-        isHome: false, responseData
-      })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseTeamScore({
+          isHome: false, responseData
+        })
+      )
     },
 
     isByeWeek: 'bye',
     winner: {
       key: 'teams',
       defer: true,
-      manualParse: (responseData, response, instance) => {
+      manualParse: (responseData, response, constructorParams, instance) => {
         if (_.isEmpty(response.winner)) {
           return undefined;
         }
@@ -89,24 +101,14 @@ class ScoreboardMatchup extends BaseObject {
    * Helper for team parsing.
    * @private
    */
-  static _parseTeam({ isHome, responseData, instance }) {
+  static _parseTeam({ isHome, responseData, constructorParams }) {
     const teamData = _.find(responseData, { home: isHome });
     if (!teamData) {
       return undefined;
     }
 
-    const cachingId = Team.getCacheId({
-      leagueId: instance.leagueId,
-      seasonId: instance.seasonId,
-      teamId: teamData.teamId
-    });
-
-    return (
-      Team.get(cachingId) ||
-      Team.buildFromServer(
-        teamData.team, { leagueId: instance.leagueId, seasonId: instance.seasonId }
-      )
-    );
+    const cachingId = Team.getCacheId(_.assign({}, constructorParams, { teamId: teamData.teamId }));
+    return Team.get(cachingId) || Team.buildFromServer(teamData.team, constructorParams);
   }
 
   /**

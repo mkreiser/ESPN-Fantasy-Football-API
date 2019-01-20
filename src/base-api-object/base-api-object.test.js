@@ -155,6 +155,7 @@ describe('BaseAPIObject', () => {
             await TestBaseAPIObject.read({ instance, params, reload });
             expect(TestBaseAPIObject._populateObject).toBeCalledWith({
               data: response.data,
+              constructorParams: params,
               instance,
               isDataFromServer: true
             });

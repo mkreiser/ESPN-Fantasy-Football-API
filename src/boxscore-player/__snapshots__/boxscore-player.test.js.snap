@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`BoxscorePlayer attribute population from local object parses data correctly 1`] = `
+exports[`BoxscorePlayer when creating a team from a server response parses and assigns data correctly 1`] = `
 BoxscorePlayer {
+  "isKeeper": false,
   "isLocked": true,
   "player": Player {
     "eligiblePositions": Array [
@@ -37,9 +38,8 @@ BoxscorePlayer {
 }
 `;
 
-exports[`BoxscorePlayer attribute population from server response parses data correctly 1`] = `
+exports[`BoxscorePlayer when creating a team locally parses and assigns data correctly 1`] = `
 BoxscorePlayer {
-  "isKeeper": false,
   "isLocked": true,
   "player": Player {
     "eligiblePositions": Array [

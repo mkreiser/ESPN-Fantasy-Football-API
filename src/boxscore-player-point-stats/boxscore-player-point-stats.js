@@ -7,6 +7,7 @@ import BaseObject from '../base-object/base-object.js';
  *
  * The stat map is not comprehensive, but should cover normal standard and PPR scoring rules. The
  * largest missing piece is IDP scoring.
+ *
  * @extends BaseObject
  */
 class BoxscorePlayerPointStats extends BaseObject {
