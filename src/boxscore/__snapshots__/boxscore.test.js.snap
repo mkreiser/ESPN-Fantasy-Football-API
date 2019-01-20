@@ -1,73 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Boxscore attribute population from local object parses data correctly 1`] = `
-Boxscore {
-  "awayTeam": BoxscoreTeam {
-    "leagueId": undefined,
-    "matchupScore": 113.94,
-    "players": Array [],
-    "seasonId": undefined,
-    "team": Team {
-      "abbreviation": "GRON",
-      "division": Object {
-        "divisionId": 1,
-        "divisionName": "Division 2",
-        "size": 4,
-      },
-      "divisionStanding": 4,
-      "firstName": "Prestige",
-      "lastName": "Worldwide",
-      "leagueId": undefined,
-      "leagueStanding": 8,
-      "logoURL": "http://3219a2.medialib.glogster.com/media/f8/f81cfe4e18dba8da78f1e654f311d7852eedf937770ef0670f656835288409ca/prestige-png.png",
-      "seasonId": undefined,
-      "streakType": "ERROR: streakType not recognized",
-      "teamId": 2,
-      "waiverRank": 8,
-    },
-    "weekBenchProjectedScore": 75.52,
-    "weekBenchScore": 0,
-    "weekProjectedScore": 108.12,
-    "weekScore": 0,
-  },
-  "homeTeam": BoxscoreTeam {
-    "leagueId": undefined,
-    "matchupScore": 113.94,
-    "players": Array [],
-    "seasonId": undefined,
-    "team": Team {
-      "abbreviation": "GRON",
-      "division": Object {
-        "divisionId": 1,
-        "divisionName": "Division 2",
-        "size": 4,
-      },
-      "divisionStanding": 4,
-      "firstName": "Prestige",
-      "lastName": "Worldwide",
-      "leagueId": undefined,
-      "leagueStanding": 8,
-      "logoURL": "http://3219a2.medialib.glogster.com/media/f8/f81cfe4e18dba8da78f1e654f311d7852eedf937770ef0670f656835288409ca/prestige-png.png",
-      "seasonId": undefined,
-      "streakType": "ERROR: streakType not recognized",
-      "teamId": 2,
-      "waiverRank": 8,
-    },
-    "weekBenchProjectedScore": 75.52,
-    "weekBenchScore": 0,
-    "weekProjectedScore": 108.12,
-    "weekScore": 0,
-  },
-  "leagueId": undefined,
-  "matchupPeriodId": undefined,
-  "nflGames": Array [],
-  "scoringPeriodId": undefined,
-  "seasonId": undefined,
-  "teamId": undefined,
-}
-`;
-
-exports[`Boxscore attribute population from server response parses data correctly 1`] = `
+exports[`Boxscore when creating a team from a server response parses and assigns data correctly 1`] = `
 Boxscore {
   "awayTeam": BoxscoreTeam {
     "leagueId": undefined,
@@ -1330,6 +1263,73 @@ Boxscore {
     },
   ],
   "scoringPeriodId": 17,
+  "seasonId": undefined,
+  "teamId": undefined,
+}
+`;
+
+exports[`Boxscore when creating a team locally parses and assigns data correctly 1`] = `
+Boxscore {
+  "awayTeam": BoxscoreTeam {
+    "leagueId": undefined,
+    "matchupScore": 113.94,
+    "players": Array [],
+    "seasonId": undefined,
+    "team": Team {
+      "abbreviation": "GRON",
+      "division": Object {
+        "divisionId": 1,
+        "divisionName": "Division 2",
+        "size": 4,
+      },
+      "divisionStanding": 4,
+      "firstName": "Prestige",
+      "lastName": "Worldwide",
+      "leagueId": undefined,
+      "leagueStanding": 8,
+      "logoURL": "http://3219a2.medialib.glogster.com/media/f8/f81cfe4e18dba8da78f1e654f311d7852eedf937770ef0670f656835288409ca/prestige-png.png",
+      "seasonId": undefined,
+      "streakType": "ERROR: streakType not recognized",
+      "teamId": 2,
+      "waiverRank": 8,
+    },
+    "weekBenchProjectedScore": 75.52,
+    "weekBenchScore": 0,
+    "weekProjectedScore": 108.12,
+    "weekScore": 0,
+  },
+  "homeTeam": BoxscoreTeam {
+    "leagueId": undefined,
+    "matchupScore": 113.94,
+    "players": Array [],
+    "seasonId": undefined,
+    "team": Team {
+      "abbreviation": "GRON",
+      "division": Object {
+        "divisionId": 1,
+        "divisionName": "Division 2",
+        "size": 4,
+      },
+      "divisionStanding": 4,
+      "firstName": "Prestige",
+      "lastName": "Worldwide",
+      "leagueId": undefined,
+      "leagueStanding": 8,
+      "logoURL": "http://3219a2.medialib.glogster.com/media/f8/f81cfe4e18dba8da78f1e654f311d7852eedf937770ef0670f656835288409ca/prestige-png.png",
+      "seasonId": undefined,
+      "streakType": "ERROR: streakType not recognized",
+      "teamId": 2,
+      "waiverRank": 8,
+    },
+    "weekBenchProjectedScore": 75.52,
+    "weekBenchScore": 0,
+    "weekProjectedScore": 108.12,
+    "weekScore": 0,
+  },
+  "leagueId": undefined,
+  "matchupPeriodId": undefined,
+  "nflGames": Array [],
+  "scoringPeriodId": undefined,
   "seasonId": undefined,
   "teamId": undefined,
 }
