@@ -2,6 +2,7 @@ import _ from 'lodash';
 
 /**
  * The base class for all project objects. Provides data mapping functionality.
+ *
  * @class
  */
 class BaseObject {
@@ -39,7 +40,7 @@ class BaseObject {
    * @param  {string} options.value The value of the responseMap entry being parsed.
    */
   static _processResponseMapItem({
-    data, instance, isDataFromServer, key, value
+    data, constructorParams, instance, isDataFromServer, key, value
   }) {
     /**
      * @typedef {object} ResponseMapValueObject
@@ -49,6 +50,7 @@ class BaseObject {
      * ResponseMapValueObject, the data at the `key` will be used to create BaseObject(s) or
      * manually parsed with a provided `manualParse function`. Either result is attached to the
      * BaseObject being populated.
+     *
      * @property {string} key The key on the response data where the data can be found. This must be
      *                        defined.
      * @property {BaseObject} BaseObject The BaseObject to create with the response data.
@@ -78,10 +80,13 @@ class BaseObject {
      *   manualTeams: {
      *     key: 'manual_teams_on_response',
      *     BaseObject: Team,
-     *     manualParse: (responseData, response, instance) => Team.buildFromServer(responseData)
+     *     manualParse: (responseData, response, constructorParams instance) => (
+     *       Team.buildFromServer(responseData)
+     *     )
      *   }
      * };
      */
+
     let item;
 
     if (!isDataFromServer) {
@@ -98,10 +103,12 @@ class BaseObject {
 
       const responseData = _.get(data, value.key);
       if (_.isFunction(value.manualParse)) {
-        item = value.manualParse(responseData, data, instance);
+        item = value.manualParse(responseData, data, constructorParams, instance);
       } else if (value.BaseObject) {
         const ValueBaseObjectClass = value.BaseObject;
-        const buildInstance = (passedData) => ValueBaseObjectClass.buildFromServer(passedData);
+        const buildInstance = (passedData) => (
+          ValueBaseObjectClass.buildFromServer(passedData, constructorParams)
+        );
 
         item = value.isArray ? _.map(responseData, buildInstance) : buildInstance(responseData);
       } else {
@@ -132,7 +139,9 @@ class BaseObject {
    *                                            data came locally.
    * @return {BaseObject} The mutated BaseObject instance.
    */
-  static _populateObject({ data, instance, isDataFromServer }) {
+  static _populateObject({
+    data, constructorParams, instance, isDataFromServer
+  }) {
     if (!instance) {
       throw new Error(`${this.displayName}: _populateObject: Did not receive instance to populate`);
     } else if (_.isEmpty(data)) {
@@ -145,14 +154,14 @@ class BaseObject {
         _.set(deferredMapItems, key, value);
       } else {
         this._processResponseMapItem({
-          data, instance, isDataFromServer, key, value
+          data, constructorParams, instance, isDataFromServer, key, value
         });
       }
     });
 
     _.forEach(deferredMapItems, (value, key) => {
       this._processResponseMapItem({
-        data, instance, isDataFromServer, key, value
+        data, constructorParams, instance, isDataFromServer, key, value
       });
     });
 
@@ -170,7 +179,9 @@ class BaseObject {
    */
   static buildFromServer(data, constructorParams) {
     const instance = new this(constructorParams);
-    this._populateObject({ data, instance, isDataFromServer: true });
+    this._populateObject({
+      data, constructorParams, instance, isDataFromServer: true
+    });
     return instance;
   }
 }

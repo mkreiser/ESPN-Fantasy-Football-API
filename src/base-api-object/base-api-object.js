@@ -70,6 +70,7 @@ class BaseAPIObject extends BaseCacheableObject {
     return axios.get(route, axiosConfig).then((response) => (
       instance ? this._populateObject({
         data: response.data,
+        constructorParams: params,
         instance,
         isDataFromServer: true
       }) : this.buildFromServer(response.data, params)
