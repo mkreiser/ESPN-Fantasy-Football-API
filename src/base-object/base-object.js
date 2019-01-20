@@ -29,11 +29,52 @@ class BaseObject {
   static displayName = 'BaseObject';
 
   /**
+   * Helper for processing items on `responseMap`s that are objects.
+   * @private
+   *
+   * @param  {object} options.data
+   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
+   * @param  {object} options.constructorParams Params to be passed to the instance's constructor.
+   *                                            Useful for passing parent data, such as `leagueId`.
+   * @param  {string} options.value The value of the responseMap entry being parsed.
+   * @return {*}
+   */
+  static _processObjectValue({
+    data, constructorParams, instance, value
+  }) {
+    if (!value.key) {
+      throw new Error(
+        `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
+        'key. See docs for typedef of ResponseMapValueObject.'
+      );
+    }
+
+    const responseData = _.get(data, value.key);
+    if (_.isFunction(value.manualParse)) {
+      return value.manualParse(responseData, data, constructorParams, instance);
+    } else if (value.BaseObject) {
+      const buildInstance = (passedData) => (
+        value.BaseObject.buildFromServer(passedData, constructorParams)
+      );
+
+      return value.isArray ? _.map(responseData, buildInstance) : buildInstance(responseData);
+    }
+
+    throw new Error(
+      `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
+      '`BaseObject` or `manualParse`. See docs for typedef of ResponseMapValueObject.'
+    );
+  }
+
+  /**
    * Helper method for `_populateObject` that houses the attribute mapping logic. Should never be
    * used by other methods. See {@link ResponseMapValueObject} for `responseMap` documentation.
    * @private
+   *
    * @param  {object} options.data
    * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
+   * @param  {object} options.constructorParams Params to be passed to the instance's constructor.
+   *                                            Useful for passing parent data, such as `leagueId`.
    * @param  {boolean} options.isDataFromServer When true, the data came from the ESPN API over the
    *                                            wire. When false, the data came locally.
    * @param  {string} options.key The key of the responseMap entry being parsed.
@@ -94,29 +135,9 @@ class BaseObject {
     } else if (_.isString(value)) {
       item = _.get(data, value);
     } else if (_.isPlainObject(value)) {
-      if (!value.key) {
-        throw new Error(
-          `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
-          'key. See docs for typedef of ResponseMapValueObject.'
-        );
-      }
-
-      const responseData = _.get(data, value.key);
-      if (_.isFunction(value.manualParse)) {
-        item = value.manualParse(responseData, data, constructorParams, instance);
-      } else if (value.BaseObject) {
-        const ValueBaseObjectClass = value.BaseObject;
-        const buildInstance = (passedData) => (
-          ValueBaseObjectClass.buildFromServer(passedData, constructorParams)
-        );
-
-        item = value.isArray ? _.map(responseData, buildInstance) : buildInstance(responseData);
-      } else {
-        throw new Error(
-          `${this.displayName}: _populateObject: Invalid responseMap object. Object must define ` +
-          '`BaseObject` or `manualParse`. See docs for typedef of ResponseMapValueObject.'
-        );
-      }
+      item = this._processObjectValue({
+        data, constructorParams, instance, value
+      });
     } else {
       throw new Error(
         `${this.displayName}: _populateObject: Did not recognize responseMap value type for key ` +
@@ -133,6 +154,7 @@ class BaseObject {
    * Returns the passed instance of the BaseObject populated with the passed data, mapping the
    * attributes defined in the value of responseMap to the matching key.
    * @private
+   *
    * @param  {object} options.data The data to map onto the passed instance.
    * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
    * @param  {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
