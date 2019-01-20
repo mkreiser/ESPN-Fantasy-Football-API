@@ -1,17 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Roster attribute population from local object parses data correctly 1`] = `
-Roster {
-  "leagueId": undefined,
-  "players": Array [],
-  "scoringPeriodId": undefined,
-  "seasonId": undefined,
-  "team": Object {},
-  "teamId": undefined,
-}
-`;
-
-exports[`Roster attribute population from server response parses data correctly 1`] = `
+exports[`Roster when creating a team from a server response parses and assigns data correctly 1`] = `
 Roster {
   "leagueId": undefined,
   "players": Array [
@@ -349,5 +338,16 @@ Roster {
     "waiverRank": 2,
   },
   "teamId": 9,
+}
+`;
+
+exports[`Roster when creating a team locally parses and assigns data correctly 1`] = `
+Roster {
+  "leagueId": undefined,
+  "players": Array [],
+  "scoringPeriodId": undefined,
+  "seasonId": undefined,
+  "team": Object {},
+  "teamId": undefined,
 }
 `;
