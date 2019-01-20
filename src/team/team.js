@@ -1,9 +1,12 @@
+import _ from 'lodash';
+
 import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
 
 /**
- * Represents a fantasy football team in a League. To get team information, a request must be made
- * to the `leagueSettings` route. There is not a generic team route on the ESPN API. Teams should
- * be populate when you get a League, so additional request should be unnecessary.
+ * Represents a fantasy football team in a League. To get fully populated team information, a
+ * request should be made to the `leagueSettings` route. There is not a generic team route on the
+ * ESPN API.
+ *
  * @extends BaseCacheableObject
  */
 class Team extends BaseCacheableObject {
@@ -11,14 +14,13 @@ class Team extends BaseCacheableObject {
     super(options);
 
     /**
-     * Id of the League to which the team belongs. Required to make reads on the Team instance.
+     * Id of the League to which the team belongs.
      * @type {number}
      */
     this.leagueId = options.leagueId;
 
     /**
-     * Id of the season (i.e. the year) to which the team belongs. Required to make reads on the
-     * Team instance.
+     * Id of the season (i.e. the year) to which the team belongs.
      * @type {number}
      */
     this.seasonId = options.seasonId;
@@ -30,6 +32,7 @@ class Team extends BaseCacheableObject {
 
   /**
    * @typedef {object} TeamObject
+   *
    * @property {number} teamId
    * @property {string} firstName ESPN breaks team name into two parts ('location' and 'nickname').
    *                              This is the first part ('location').
@@ -60,22 +63,18 @@ class Team extends BaseCacheableObject {
    * @property {number} awayLosses The number of regular season match-ups the team has lost away.
    * @property {number} awayTies The number of regular season match-ups the team has tied away.
    *
-   * @property {number} winningPercentage The percentage (between 0 and 1) of the regular season
-   *                                      games the team has won.
-   * @property {number} divisionWinningPercentage The percentage (between 0 and 1) of the regular
-   *                                              season divisional games the team has won.
-   * @property {number} homeWinningPercentage The percentage (between 0 and 1) of the regular season
-   *                                          home games the team has won.
-   * @property {number} awayWinningPercentage The percentage (between 0 and 1) of the regular season
-   *                                          away games the team has won.
+   * @property {number} winningPercentage The percentage of the regular season games the team has
+   *                                      won.
+   * @property {number} divisionWinningPercentage The percentage of the regular season divisional
+   *                                              games the team has won.
    *
-   * @property {number} streakLength How long the current streak is.
+   * @property {number} streakLength Length of the current winning/losing streak.
    * @property {string} streakType A string representing if the current streak is a losing streak
    *                               or a winning streak.
    *                               1: W
    *                               2: L
    *
-   * @property {number} leagueStanding The team's standing in the entire league, ignoring division.
+   * @property {number} leagueStanding The team's standing in the entire league.
    * @property {number} divisionStanding The team's standing within its division.
    */
 
@@ -107,10 +106,14 @@ class Team extends BaseCacheableObject {
     awayLosses: 'record.awayLosses',
     awayTies: 'record.awayTies',
 
-    winningPercentage: 'record.overallPercentage',
-    divisionWinningPercentage: 'record.divisionPercentage',
-    homeWinningPercentage: 'record.homePercentage',
-    awayWinningPercentage: 'record.awayPercentage',
+    winningPercentage: {
+      key: 'record.overallPercentage',
+      manualParse: (responseData) => (_.isFinite(responseData) ? responseData * 100 : undefined)
+    },
+    divisionWinningPercentage: {
+      key: 'record.divisionPercentage',
+      manualParse: (responseData) => (_.isFinite(responseData) ? responseData * 100 : undefined)
+    },
 
     streakLength: 'record.streakLength',
     streakType: {
@@ -128,10 +131,8 @@ class Team extends BaseCacheableObject {
     divisionStanding: 'divisionStanding'
   };
 
-  static getCacheId(params = {}) {
-    return (params.teamId && params.leagueId && params.seasonId) ?
-      `${params.teamId}-${params.leagueId}-${params.seasonId}` :
-      undefined;
+  static getCacheId({ leagueId, seasonId, teamId } = {}) {
+    return (teamId && leagueId && seasonId) ? `${teamId}-${leagueId}-${seasonId}` : undefined;
   }
 }
 

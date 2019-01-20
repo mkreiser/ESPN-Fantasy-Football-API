@@ -1,46 +1,61 @@
 import _ from 'lodash';
 
 import BaseObject from '../base-object/base-object.js';
+
 import Team from './team.js';
 
 import { localObject, serverResponse } from './team.stubs.js';
 
 describe('Team', () => {
-  let team;
-
-  beforeEach(() => {
-    team = new Team();
-  });
-
-  afterEach(() => {
-    team = null;
-  });
-
   test('extends BaseObject', () => {
-    expect(team).toBeInstanceOf(BaseObject);
+    const instance = new Team();
+    expect(instance).toBeInstanceOf(BaseObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      team = Team.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(team).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = Team.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      team = new Team(localObject);
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new Team(localObject);
+      expect(instance).toMatchSnapshot();
+    });
+  });
+
+  describe('constructor', () => {
+    describe('when options are not passed', () => {
+      const testPropIsUndefined = (prop) => {
+        test(`${prop} is undefined`, () => {
+          const newInstance = new Team();
+          expect(_.get(newInstance, prop)).toBeUndefined();
+        });
+      };
+
+      testPropIsUndefined('leagueId');
+      testPropIsUndefined('seasonId');
     });
 
-    test('parses data correctly', () => {
-      expect(team).toMatchSnapshot();
+    describe('when options are passed', () => {
+      const testPropIsSetFromOptions = (prop) => {
+        test(`${prop} is set from options`, () => {
+          const value = 25;
+          const newInstance = new Team({ [prop]: value });
+          expect(newInstance[prop]).toBe(value);
+        });
+      };
+
+      testPropIsSetFromOptions('leagueId');
+      testPropIsSetFromOptions('seasonId');
     });
   });
 
   describe('responseMap', () => {
+    const buildTeam = (data, options) => Team.buildFromServer(data, options);
+
     describe('streakType', () => {
       describe('manualParse', () => {
         describe('when valid enum key is passed', () => {
@@ -50,20 +65,53 @@ describe('Team', () => {
               2: 'L'
             };
 
-            expect.hasAssertions();
             _.forEach(streakTypes, (value, key) => {
               const numKey = _.toNumber(key);
-              const streakString = Team.responseMap.streakType.manualParse(numKey);
-              expect(streakString).toBe(value);
+              const data = {
+                record: { streakType: numKey }
+              };
+
+              const team = buildTeam(data);
+              expect(team.streakType).toBe(value);
             });
           });
         });
 
         describe('when invalid enum key is passed', () => {
           test('returns error string', () => {
-            const streakString = Team.responseMap.streakType.manualParse(-231);
-            expect(streakString).toBe('ERROR: streakType not recognized');
+            const data = {
+              record: { streakType: -231 }
+            };
+
+            const team = buildTeam(data);
+            expect(team.streakType).toBe('ERROR: streakType not recognized');
           });
+        });
+      });
+    });
+
+    const testSetsPercentage = ({ dataKey, modelKey }) => {
+      test(`sets ${modelKey} to the correct percentage`, () => {
+        const value = 0.75;
+        const data = {};
+        _.set(data, dataKey, value);
+
+        const team = buildTeam(data);
+        expect(team[modelKey]).toBe(value * 100);
+      });
+    };
+
+    describe('winningPercentage', () => {
+      describe('manualParse', () => {
+        testSetsPercentage({ dataKey: 'record.overallPercentage', modelKey: 'winningPercentage' });
+      });
+    });
+
+    describe('divisionWinningPercentage', () => {
+      describe('manualParse', () => {
+        testSetsPercentage({
+          dataKey: 'record.divisionPercentage',
+          modelKey: 'divisionWinningPercentage'
         });
       });
     });
@@ -71,17 +119,7 @@ describe('Team', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId;
-      let seasonId;
-      let teamId;
-
-      afterEach(() => {
-        leagueId = null;
-        seasonId = null;
-        teamId = null;
-      });
-
-      const testReturnsUndefined = () => {
+      const testReturnsUndefined = ({ leagueId, seasonId, teamId }) => {
         test('returns undefined', () => {
           const params = { leagueId, seasonId, teamId };
           expect(Team.getCacheId(params)).toBeUndefined();
@@ -95,108 +133,52 @@ describe('Team', () => {
       });
 
       describe('when leagueId is defined', () => {
-        beforeEach(() => {
-          leagueId = 132123;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
             test('returns a valid caching id', () => {
-              const params = { leagueId, seasonId, teamId };
+              const params = { leagueId: 341243, seasonId: 2017, teamId: 9 };
 
               const returnedCachingId = Team.getCacheId(params);
               expect(returnedCachingId).toBe(
-                `${teamId}-${leagueId}-${seasonId}`
+                `${params.teamId}-${params.leagueId}-${params.seasonId}`
               );
             });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ leagueId: 341243, seasonId: 2017 });
           });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ leagueId: 341243, teamId: 9 });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ leagueId: 341243 });
           });
         });
       });
 
       describe('when leagueId is undefined', () => {
-        beforeEach(() => {
-          leagueId = undefined;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ seasonId: 2017, teamId: 9 });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ seasonId: 2017 });
           });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
           describe('when teamId is defined', () => {
-            beforeEach(() => {
-              teamId = 4;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({ teamId: 9 });
           });
 
           describe('when teamId is undefined', () => {
-            beforeEach(() => {
-              teamId = undefined;
-            });
-
-            testReturnsUndefined();
+            testReturnsUndefined({});
           });
         });
       });

@@ -1,11 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Team attribute population from local object parses data correctly 1`] = `
+exports[`Team when creating a team from a server response parses and assigns data correctly 1`] = `
 Team {
   "abbreviation": "mk",
   "awayLosses": 3,
   "awayTies": 0,
-  "awayWinningPercentage": 0,
   "awayWins": 3,
   "division": Object {
     "divisionId": 0,
@@ -15,12 +14,11 @@ Team {
   "divisionLosses": 3,
   "divisionStanding": 2,
   "divisionTies": 0,
-  "divisionWinningPercentage": 0.5,
+  "divisionWinningPercentage": 50,
   "divisionWins": 3,
   "firstName": "2 Gurleys",
   "homeLosses": 2,
   "homeTies": 0,
-  "homeWinningPercentage": 0,
   "homeWins": 5,
   "lastName": "One Cup",
   "leagueId": undefined,
@@ -35,17 +33,16 @@ Team {
   "teamId": 9,
   "ties": 0,
   "waiverRank": 2,
-  "winningPercentage": 0.61538,
+  "winningPercentage": 61.538000000000004,
   "wins": 8,
 }
 `;
 
-exports[`Team attribute population from server response parses data correctly 1`] = `
+exports[`Team when creating a team locally parses and assigns data correctly 1`] = `
 Team {
   "abbreviation": "mk",
   "awayLosses": 3,
   "awayTies": 0,
-  "awayWinningPercentage": 0,
   "awayWins": 3,
   "division": Object {
     "divisionId": 0,
@@ -60,7 +57,6 @@ Team {
   "firstName": "2 Gurleys",
   "homeLosses": 2,
   "homeTies": 0,
-  "homeWinningPercentage": 0,
   "homeWins": 5,
   "lastName": "One Cup",
   "leagueId": undefined,
