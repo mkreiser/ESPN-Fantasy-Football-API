@@ -12,6 +12,9 @@
     "email": "mikepkreiser@gmail.com",
     "url": "http://mikekreiser.com/"
   },
+  "engines" : {
+    "node" : ">=6.0.0"
+  },
   "license": "LGPL-3.0-only",
   "scripts": {
     "build": "npm run clean:dist && webpack",
