@@ -8,6 +8,7 @@ import Team from '../team/team.js';
 /**
  * Represents a team in a boxscore. Data must be manually passed on `teamBoxscore` and
  * `matchupScore` attributes.
+ *
  * @extends BaseObject
  */
 class BoxscoreTeam extends BaseObject {
@@ -56,21 +57,15 @@ class BoxscoreTeam extends BaseObject {
   static responseMap = {
     team: {
       key: 'teamBoxscore',
-      manualParse: (responseData, response, instance) => {
+      manualParse: (responseData, response, constructorParams) => {
         if (_.isEmpty(responseData)) {
           return undefined;
         }
 
-        const cachingId = Team.getCacheId({
-          leagueId: instance.leagueId,
-          seasonId: instance.seasonId,
-          teamId: responseData.teamId
-        });
-
-        return Team.get(cachingId) || Team.buildFromServer(
-          responseData.team,
-          { leagueId: instance.leagueId, seasonId: instance.seasonId }
+        const cachingId = Team.getCacheId(
+          _.assign({}, constructorParams, { teamId: responseData.teamId })
         );
+        return Team.get(cachingId) || Team.buildFromServer(responseData.team, constructorParams);
       }
     },
 

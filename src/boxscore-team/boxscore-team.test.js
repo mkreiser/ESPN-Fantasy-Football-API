@@ -8,37 +8,22 @@ import BoxscoreTeam from './boxscore-team.js';
 import { localObject, serverResponse } from './boxscore-team.stubs.js';
 
 describe('BoxscoreTeam', () => {
-  let boxscoreTeam;
-
-  beforeEach(() => {
-    boxscoreTeam = new BoxscoreTeam({ leagueId: 234234, seasonId: 2017 });
-  });
-
-  afterEach(() => {
-    boxscoreTeam = null;
-  });
-
   test('extends BaseObject', () => {
-    expect(boxscoreTeam).toBeInstanceOf(BaseObject);
+    const instance = new BoxscoreTeam();
+    expect(instance).toBeInstanceOf(BaseObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      boxscoreTeam = BoxscoreTeam.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(boxscoreTeam).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = BoxscoreTeam.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      boxscoreTeam = new BoxscoreTeam(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(boxscoreTeam).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new BoxscoreTeam(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
@@ -70,70 +55,69 @@ describe('BoxscoreTeam', () => {
   });
 
   describe('responseMap', () => {
+    const buildBoxscoreTeam = (data, options) => BoxscoreTeam.buildFromServer(data, options);
+
     describe('team', () => {
       describe('manualParse', () => {
         describe('when the passed data is undefined', () => {
-          test('returns undefined', () => {
-            const returnedTeam = BoxscoreTeam.responseMap.team.manualParse();
-            expect(returnedTeam).toBeUndefined();
+          test('sets undefined', () => {
+            const boxscoreTeam = buildBoxscoreTeam({});
+            expect(boxscoreTeam.team).toBeUndefined();
           });
         });
 
         describe('when the passed data is empty', () => {
-          test('returns undefined', () => {
-            const returnedTeam = BoxscoreTeam.responseMap.team.manualParse({});
-            expect(returnedTeam).toBeUndefined();
+          test('sets undefined', () => {
+            const data = { teamBoxscore: undefined };
+
+            const boxscoreTeam = buildBoxscoreTeam(data);
+            expect(boxscoreTeam.team).toBeUndefined();
           });
         });
 
         describe('when the passed data is populated', () => {
-          let ids;
-          let responseData;
-          let teamId;
+          let options;
 
           beforeEach(() => {
-            Team.clearCache();
-
-            teamId = 10;
-            responseData = {
-              teamId,
-              team: { teamId }
-            };
-            ids = {
-              leagueId: boxscoreTeam.leagueId,
-              seasonId: boxscoreTeam.seasonId,
-              teamId
-            };
+            options = { leagueId: 123321, seasonId: 2017 };
           });
 
           afterEach(() => {
-            ids = null;
-            responseData = null;
-            teamId = null;
-
-            Team.clearCache();
+            options = null;
           });
 
           describe('when there is a cached team', () => {
             test('returns the cached team', () => {
-              const cachedTeam = Team.buildFromServer({}, ids);
+              const teamId = 9;
 
-              const returnedTeam = BoxscoreTeam.responseMap.team.manualParse(
-                responseData, undefined, boxscoreTeam
-              );
-              expect(returnedTeam).toBe(cachedTeam);
+              const cachedTeam = Team.buildFromServer({ teamId }, options);
+              const data = {
+                teamBoxscore: {
+                  teamId,
+                  team: { teamId }
+                }
+              };
+
+              const boxscoreTeam = buildBoxscoreTeam(data, options);
+              expect(boxscoreTeam.team).toBe(cachedTeam);
             });
           });
 
           describe('when there is not a cached team', () => {
             test('creates a new team', () => {
-              const cachingId = Team.getCacheId(ids);
+              const teamId = 9;
 
-              const returnedTeam = BoxscoreTeam.responseMap.team.manualParse(
-                responseData, undefined, boxscoreTeam
+              const data = {
+                teamBoxscore: {
+                  teamId,
+                  team: { teamId }
+                }
+              };
+
+              const boxscoreTeam = buildBoxscoreTeam(data, options);
+              expect(boxscoreTeam.team).toEqual(
+                Team.buildFromServer({ teamId }, options)
               );
-
-              expect(returnedTeam).toBe(Team.get(cachingId));
             });
           });
         });
