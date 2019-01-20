@@ -1,6 +1,5 @@
 import axios from 'axios';
 import _ from 'lodash';
-import q from 'q';
 
 import BaseAPIObject from './base-api-object.js';
 
@@ -76,24 +75,21 @@ describe('BaseAPIObject', () => {
     });
 
     describe('read', () => {
-      let deferred;
       let id;
       let instance;
       let params;
       let reload;
 
       beforeEach(() => {
-        deferred = q.defer();
         id = 121340;
         instance = new TestBaseAPIObject();
         params = { some: 'param' };
         reload = true;
 
-        jest.spyOn(axios, 'get').mockReturnValue(deferred.promise);
+        jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({}));
       });
 
       afterEach(() => {
-        deferred = null;
         id = null;
         instance = null;
         params = null;
@@ -129,28 +125,12 @@ describe('BaseAPIObject', () => {
           });
         });
 
-        test('returns a promise from axios.get', async () => {
-          const route = 'some-route';
-          const callback = jest.fn();
-          deferred.resolve({});
-
-          expect.assertions(1);
-          await TestBaseAPIObject.read({
-            instance, route, params, reload
-          }).then(
-            () => callback()
-          ).finally(() => {
-            expect(callback).toBeCalled();
-          });
-        });
-
         describe('when the read promise resolves', () => {
           test('calls _populateObject', async () => {
-            const response = { data: {} };
-
             jest.spyOn(TestBaseAPIObject, '_populateObject');
 
-            deferred.resolve(response);
+            const response = { data: {} };
+            axios.get.mockReturnValue(Promise.resolve(response));
 
             await TestBaseAPIObject.read({ instance, params, reload });
             expect(TestBaseAPIObject._populateObject).toBeCalledWith({
@@ -163,11 +143,8 @@ describe('BaseAPIObject', () => {
 
           test('returns built instance for chaining', async () => {
             const builtObject = new TestBaseAPIObject();
-            const response = { data: {} };
 
             jest.spyOn(TestBaseAPIObject, '_populateObject').mockReturnValue(builtObject);
-
-            deferred.resolve(response);
 
             const returnedObject = await TestBaseAPIObject.read({ instance, params, reload });
             expect(returnedObject).toBe(builtObject);
@@ -177,9 +154,8 @@ describe('BaseAPIObject', () => {
         describe('when the read errors', () => {
           test('throws error', async () => {
             const error = 'some error';
-            axios.get.mockReturnValue(q.reject(error));
+            axios.get.mockReturnValue(Promise.reject(error));
 
-            deferred.reject();
             expect.assertions(1);
 
             try {
@@ -220,26 +196,12 @@ describe('BaseAPIObject', () => {
           });
         });
 
-        test('returns a promise from axios.get', async () => {
-          const route = 'some-route';
-          const callback = jest.fn();
-          deferred.resolve({});
-
-          expect.assertions(1);
-          await TestBaseAPIObject.read({ route, params, reload }).then(
-            () => callback()
-          ).finally(() => {
-            expect(callback).toBeCalled();
-          });
-        });
-
         describe('when the read promise resolves', () => {
           test('calls buildFromServer', async () => {
-            const response = { data: {} };
-
             jest.spyOn(TestBaseAPIObject, 'buildFromServer');
 
-            deferred.resolve(response);
+            const response = { data: {} };
+            axios.get.mockReturnValue(Promise.resolve(response));
 
             await TestBaseAPIObject.read({ params, reload });
             expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data, params);
@@ -247,11 +209,8 @@ describe('BaseAPIObject', () => {
 
           test('returns built instance for chaining', async () => {
             const builtObject = new TestBaseAPIObject();
-            const response = { data: {} };
 
             jest.spyOn(TestBaseAPIObject, 'buildFromServer').mockReturnValue(builtObject);
-
-            deferred.resolve(response);
 
             const returnedObject = await TestBaseAPIObject.read({ params, reload });
             expect(returnedObject).toBe(builtObject);
@@ -261,9 +220,8 @@ describe('BaseAPIObject', () => {
         describe('when the read errors', () => {
           test('throws error', async () => {
             const error = 'some error';
-            axios.get.mockReturnValue(q.reject(error));
+            axios.get.mockReturnValue(Promise.reject(error));
 
-            deferred.reject();
             expect.assertions(1);
 
             try {
@@ -606,15 +564,8 @@ describe('BaseAPIObject', () => {
     });
 
     describe('read', () => {
-      let deferred;
-
       beforeEach(() => {
-        deferred = q.defer();
-        jest.spyOn(axios, 'get').mockReturnValue(deferred.promise);
-      });
-
-      afterEach(() => {
-        deferred = null;
+        jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({}));
       });
 
       describe('when no params are passed to the method', () => {
@@ -640,7 +591,6 @@ describe('BaseAPIObject', () => {
           const params = { some: 'params' };
           baseAPIObject.testId = 42;
 
-          deferred.resolve({});
 
           expect.assertions(1);
           const returnedResult = await baseAPIObject.read({ route, params });
@@ -672,7 +622,6 @@ describe('BaseAPIObject', () => {
           const params = { some: 'params' };
           baseAPIObject.testId = 42;
 
-          deferred.resolve({});
 
           expect.assertions(1);
           const returnedResult = await baseAPIObject.read({ route, params });
@@ -702,7 +651,6 @@ describe('BaseAPIObject', () => {
         const params = { some: 'params' };
         baseAPIObject.testId = 42;
 
-        deferred.resolve({});
 
         expect.assertions(1);
         const returnedResult = await baseAPIObject.read({ route, params });
