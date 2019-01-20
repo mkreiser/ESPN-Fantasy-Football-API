@@ -8,42 +8,22 @@ import Scoreboard from './scoreboard.js';
 import { localObject, serverResponse } from './scoreboard.stubs.js';
 
 describe('Scoreboard', () => {
-  let scoreboard;
-
-  beforeEach(() => {
-    scoreboard = new Scoreboard({
-      leagueId: 342342,
-      seasonId: 2018,
-      matchupPeriodId: 11,
-      scoringPeriodId: 11
-    });
-  });
-
-  afterEach(() => {
-    scoreboard = null;
-  });
-
   test('extends BaseAPIObject', () => {
-    expect(scoreboard).toBeInstanceOf(BaseAPIObject);
+    const instance = new Scoreboard();
+    expect(instance).toBeInstanceOf(BaseAPIObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      scoreboard = Scoreboard.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(scoreboard).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = Scoreboard.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      scoreboard = new Scoreboard(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(scoreboard).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new Scoreboard(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
@@ -79,41 +59,44 @@ describe('Scoreboard', () => {
   });
 
   describe('responseMap', () => {
+    const buildScoreboard = (data, options) => Scoreboard.buildFromServer(data, options);
+
     describe('matchups', () => {
       describe('manualParse', () => {
         describe('when there is no passed data', () => {
-          test('returns an empty array', () => {
-            const returnedMatchups = Scoreboard.responseMap.matchups.manualParse(
-              undefined, undefined, scoreboard
-            );
-
-            expect(returnedMatchups).toEqual([]);
+          test('sets undefined', () => {
+            const scoreboard = buildScoreboard({});
+            expect(scoreboard.matchups).toBeUndefined();
           });
         });
 
         describe('when the passed data is empty', () => {
-          test('returns an empty array', () => {
-            const returnedMatchups = Scoreboard.responseMap.matchups.manualParse(
-              [], undefined, scoreboard
-            );
+          test('sets an empty array', () => {
+            const data = {
+              scoreboard: { matchups: [] }
+            };
 
-            expect(returnedMatchups).toEqual([]);
+            const scoreboard = buildScoreboard(data);
+            expect(scoreboard.matchups).toEqual([]);
           });
         });
 
         describe('when the passed data is populated', () => {
-          test('returns an array of ScoreboardMatchups', () => {
-            const responseData = [{}, {}, {}];
+          test('sets an array of ScoreboardMatchups', () => {
+            const data = {
+              scoreboard: {
+                matchups: [{}, {}, {}]
+              }
+            };
+            const options = { leagueId: 123123, seasonId: 2017 };
 
-            const returnedMatchups = Scoreboard.responseMap.matchups.manualParse(
-              responseData, undefined, scoreboard
-            );
+            const scoreboard = buildScoreboard(data, options);
 
             expect.hasAssertions();
-            _.forEach(returnedMatchups, (matchup) => {
+            _.forEach(scoreboard.matchups, (matchup) => {
               expect(matchup).toBeInstanceOf(ScoreboardMatchup);
-              expect(matchup.leagueId).toBe(scoreboard.leagueId);
-              expect(matchup.seasonId).toBe(scoreboard.seasonId);
+              expect(matchup.leagueId).toBe(options.leagueId);
+              expect(matchup.seasonId).toBe(options.seasonId);
             });
           });
         });
@@ -313,8 +296,8 @@ describe('Scoreboard', () => {
       });
 
       describe('when params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with all id params', () => {
             const instance = new Scoreboard({
               leagueId: 4213,
               seasonId: 2018,
@@ -338,9 +321,34 @@ describe('Scoreboard', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
+        describe('when some id params are undefined on the instance', () => {
           test('calls super.read with only defined id params', () => {
+            const instance = new Scoreboard({
+              leagueId: 4213,
+              seasonId: 2018,
+              matchupPeriodId: 12
+            });
+
+            const params = { some: 'params' };
+            const route = 'some route';
+
+            instance.read({ params, route });
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: _.assign({}, params, {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                matchupPeriodId: instance.matchupPeriodId
+              }),
+              route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when all id params are undefined on the instance', () => {
+          test('calls super.read without id params', () => {
             const instance = new Scoreboard();
+
             const params = { some: 'params' };
             const route = 'some route';
 
@@ -355,8 +363,8 @@ describe('Scoreboard', () => {
       });
 
       describe('when no params are passed to the method', () => {
-        describe('when id params are defined on the instance', () => {
-          test('calls super.read with only defined id params', () => {
+        describe('when all id params are defined on the instance', () => {
+          test('calls super.read with all id params', () => {
             const instance = new Scoreboard({
               leagueId: 4213,
               seasonId: 2018,
@@ -378,8 +386,29 @@ describe('Scoreboard', () => {
           });
         });
 
-        describe('when id params are undefined on the instance', () => {
+        describe('when some id params are undefined on the instance', () => {
           test('calls super.read with only defined id params', () => {
+            const instance = new Scoreboard({
+              leagueId: 4213,
+              seasonId: 2018,
+              matchupPeriodId: 12
+            });
+
+            instance.read();
+            expect(BaseAPIObject.prototype.read).toBeCalledWith({
+              params: {
+                leagueId: instance.leagueId,
+                seasonId: instance.seasonId,
+                matchupPeriodId: instance.matchupPeriodId
+              },
+              route: Scoreboard.route,
+              reload: true
+            });
+          });
+        });
+
+        describe('when all id params are undefined on the instance', () => {
+          test('calls super.read without id params', () => {
             const instance = new Scoreboard();
 
             instance.read();

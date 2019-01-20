@@ -6,9 +6,9 @@ import ScoreboardMatchup from '../scoreboard-matchup/scoreboard-matchup.js';
 
 /**
  * Represents the scoreboard of a League for a given matchup period or a given scoring period. From
- * here, the score and winner of each matchup can be given.
+ * here, the score and winner of each matchup can be found.
  *
- * Scoreboard does not cache.
+ * Does not cache.
  *
  * @extends BaseAPIObject
  */
@@ -17,28 +17,26 @@ class Scoreboard extends BaseAPIObject {
     super(options);
 
     /**
-     * Id of the League to which the scoreboard belongs. Required to make reads on the Scoreboard
-     * instance.
+     * Id of the League to which the scoreboard belongs. Required to make reads.
      * @type {number}
      */
     this.leagueId = options.leagueId;
 
     /**
-     * Id of the season (i.e. the year) to which the scoreboard belongs. Required to make reads on
-     * the Scoreboard instance.
+     * Id of the season (i.e. the year) to which the scoreboard belongs. Required to make reads.
      * @type {number}
      */
     this.seasonId = options.seasonId;
 
     /**
-     * Id of the matchup period to which the scoreboard refers to. This or scoringPeriodId must be
+     * Id of the matchup period to which the scoreboard refers to. This or `scoringPeriodId` must be
      * defined to make valid read requests.
      * @type {number}
      */
     this.matchupPeriodId = options.matchupPeriodId;
 
     /**
-     * Id of the scoring period to which the scoreboard refers to. This or matchupPeriodId must be
+     * Id of the scoring period to which the scoreboard refers to. This or `matchupPeriodId` must be
      * defined to make valid read requests.
      * @type {number}
      */
@@ -51,14 +49,17 @@ class Scoreboard extends BaseAPIObject {
 
   /**
    * @typedef {object} ScoreboardObject
-   * @property {number} matchupPeriodId The id of the match-up the scoreboard represents.
-   * @property {number} scoringPeriodId The id of the scoring period the scoreboard represents.
+   *
+   * @property {number} matchupPeriodId
+   * @property {number} scoringPeriodId
    *
    * @property {string} dateOfFirstNFLGameInScoringPeriod A UTC timestamp of when the first NFL game
    *                                                      in the scoring period begins.
-   * @property {boolean} nflGamesInProgress Whether or not there are any NFL games being played.
+   * @property {boolean} nflGamesInProgress Whether or not there are any NFL games currently being
+   *                                        played.
    *
-   * @property {ScoreboardMatchupObject[]} matchups An array of the matchups on the scoreboard.
+   * @property {ScoreboardMatchupObject[]} matchups An array representing the matchups on the
+   *                                                scoreboard.
    */
 
   /**
@@ -73,10 +74,8 @@ class Scoreboard extends BaseAPIObject {
 
     matchups: {
       key: 'scoreboard.matchups',
-      manualParse: (responseData, response, instance) => _.map(responseData, (matchup) => (
-        ScoreboardMatchup.buildFromServer(
-          matchup, { leagueId: instance.leagueId, seasonId: instance.seasonId }
-        )
+      manualParse: (responseData, response, constructorParams) => _.map(responseData, (matchup) => (
+        ScoreboardMatchup.buildFromServer(matchup, constructorParams)
       ))
     }
   };
@@ -106,11 +105,11 @@ class Scoreboard extends BaseAPIObject {
     });
   }
 
-  read({
-    route = this.constructor.route, params, reload = true
-  } = {
-    route: this.constructor.route, reload: true
-  }) {
+  read(
+    {
+      route = this.constructor.route, params, reload = true
+    } = { route: this.constructor.route, reload: true }
+  ) {
     const idParams = _.pickBy({
       leagueId: this.leagueId,
       seasonId: this.seasonId,
