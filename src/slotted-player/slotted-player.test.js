@@ -10,63 +10,56 @@ import { localObject, serverResponse } from './slotted-player.stubs.js';
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
 describe('SlottedPlayer', () => {
-  let slottedPlayer;
-
-  beforeEach(() => {
-    slottedPlayer = new SlottedPlayer();
-  });
-
-  afterEach(() => {
-    slottedPlayer = null;
-  });
-
   test('extends BaseObject', () => {
+    const slottedPlayer = new SlottedPlayer();
     expect(slottedPlayer).toBeInstanceOf(BaseObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      slottedPlayer = SlottedPlayer.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const slottedPlayer = SlottedPlayer.buildFromServer(serverResponse);
       expect(slottedPlayer).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      slottedPlayer = new SlottedPlayer(localObject);
-    });
-
-    test('parses data correctly', () => {
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const slottedPlayer = new SlottedPlayer(localObject);
       expect(slottedPlayer).toMatchSnapshot();
     });
   });
+
 
   describe('responseMap', () => {
+    const buildSlottedPlayer = (data, options) => SlottedPlayer.buildFromServer(data, options);
+
     describe('player', () => {
       describe('manualParse', () => {
         describe('when the passed data is undefined', () => {
-          test('returns undefined', () => {
-            const returnedPlayer = SlottedPlayer.responseMap.player.manualParse();
-            expect(returnedPlayer).toBeUndefined();
+          test('sets undefined', () => {
+            const slottedPlayer = buildSlottedPlayer({});
+            expect(slottedPlayer.player).toBeUndefined();
           });
         });
 
         describe('when the passed data is empty', () => {
-          test('returns undefined', () => {
-            const returnedPlayer = SlottedPlayer.responseMap.player.manualParse({});
-            expect(returnedPlayer).toBeUndefined();
+          test('sets undefined', () => {
+            const data = { player: {} };
+
+            const slottedPlayer = buildSlottedPlayer(data);
+            expect(slottedPlayer.player).toBeUndefined();
           });
         });
 
         describe('when the passed data is populated', () => {
-          test('creates a new player', () => {
+          test('sets a new player', () => {
             const playerId = 10;
+            const data = {
+              player: { playerId }
+            };
 
-            const returnedPlayer = SlottedPlayer.responseMap.player.manualParse({ playerId });
-            expect(returnedPlayer).toEqual(Player.buildFromServer({ playerId }));
+            const slottedPlayer = buildSlottedPlayer(data);
+            expect(slottedPlayer.player).toEqual(Player.buildFromServer({ playerId }));
           });
         });
       });
@@ -74,11 +67,12 @@ describe('SlottedPlayer', () => {
 
     describe('position', () => {
       describe('manualParse', () => {
-        test('returns the mapped position', () => {
+        test('sets the mapped position', () => {
           const position = 2;
+          const data = { slotCategoryId: position };
 
-          const returnedPosition = SlottedPlayer.responseMap.position.manualParse(position);
-          expect(returnedPosition).toBe(_.get(slotCategoryIdToPositionMap, position));
+          const slottedPlayer = buildSlottedPlayer(data);
+          expect(slottedPlayer.position).toBe(_.get(slotCategoryIdToPositionMap, position));
         });
       });
     });
@@ -92,19 +86,22 @@ describe('SlottedPlayer', () => {
               4: true
             };
 
-            expect.hasAssertions();
             _.forEach(lockedStatuses, (value, key) => {
               const numKey = _.toNumber(key);
-              const isLocked = SlottedPlayer.responseMap.isLocked.manualParse(numKey);
-              expect(isLocked).toBe(value);
+              const data = { lockStatus: numKey };
+
+              const slottedPlayer = buildSlottedPlayer(data);
+              expect(slottedPlayer.isLocked).toBe(value);
             });
           });
         });
 
         describe('when invalid enum key is passed', () => {
-          test('returns error string', () => {
-            const isLocked = SlottedPlayer.responseMap.isLocked.manualParse(2);
-            expect(isLocked).toBeUndefined();
+          test('sets error string', () => {
+            const data = { lockStatus: 2 };
+
+            const slottedPlayer = buildSlottedPlayer(data);
+            expect(slottedPlayer.isLocked).toBeUndefined();
           });
         });
       });

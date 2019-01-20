@@ -7,6 +7,8 @@ import Player from '../player/player.js';
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
 /**
+ * Represents a Player slotted in a roster position.
+ *
  * @extends BaseObject
  */
 class SlottedPlayer extends BaseObject {
@@ -15,13 +17,13 @@ class SlottedPlayer extends BaseObject {
   /**
    * @typedef {object} SlottedPlayerObject
    *
-   * @property {Player} player A Player instance for generic player information.
+   * @property {Player} player A Player instance for abstracted player information.
    *
-   * @property {string} position The position (from `slotCategoryIdToPositionMap`) in which the
+   * @property {string} position The position (via `slotCategoryIdToPositionMap`) in which the
    *                             player is slotted. May be `bench`.
    *
    * @property {boolean} isKeeper Whether or not the player is designated as a kept player. Can only
-   *                              be `true` if the league is a keeper league.
+   *                              be `true` if and only if the league is a keeper league.
    * @property {boolean} isLocked Whether or not the player is locked and cannot be moved to another
    *                              position.
    */
@@ -32,8 +34,10 @@ class SlottedPlayer extends BaseObject {
   static responseMap = {
     player: {
       key: 'player',
-      manualParse: (responseData) => (
-        _.isEmpty(responseData) ? undefined : Player.buildFromServer(responseData)
+      manualParse: (responseData, response, constructorParams) => (
+        _.isEmpty(responseData) ?
+          undefined :
+          Player.buildFromServer(responseData, constructorParams)
       )
     },
 
