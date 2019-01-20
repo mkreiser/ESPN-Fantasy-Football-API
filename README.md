@@ -116,14 +116,14 @@ Scoreboard.read({
 
 #### 0.7.0
 
-- Improve passing of constructor params to nested classes - *#1 priority*
+- ✅ Improve passing of constructor params to nested classes - *#1 priority* 
 - Remove q dev dependency
 - Address CodeClimate feedback
 - ~~Research an axios `get` only package~~ - Not a thing
 - Test node versions for support
 - Player caching - *May be bumped*
 - Versioned documentation - *May be bumped*
-- Clean up test suites - *May be bumped, not required for version bump*
+- ✅ Clean up test suites - *May be bumped, not required for version bump*
 
 #### 0.8.0
 
