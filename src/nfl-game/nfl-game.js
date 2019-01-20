@@ -5,8 +5,8 @@ import BaseObject from '../base-object/base-object.js';
 import nflTeams from '../nfl-teams/nfl-teams.js';
 
 /**
- * Represents a NFL game. All NFL games for a given week can be found in a boxscore. Additionally,
- * a roster will have all games relevant to the players on the roster.
+ * Represents a NFL game.
+ *
  * @extends BaseObject
  */
 class NFLGame extends BaseObject {
@@ -16,6 +16,7 @@ class NFLGame extends BaseObject {
 
   /**
    * @typedef {object} NFLGameObject
+   *
    * @property {number} gameId Note: There is no known endpoint to do anything with this id.
    * @property {string} gameDate The timestamp of when the NFL game is scheduled for.
    * @property {string} gameStatus A string representing the state of the game. Returned on the
@@ -24,8 +25,8 @@ class NFLGame extends BaseObject {
    *                               2: Game in progress
    *                               3: Game finished
    *
-   * @property {NFLTeam} homeTeam The NFLTeam that is the home team in the game.
-   * @property {NFLTeam} awayTeam The NFLTeam that is the away team in the game.
+   * @property {NFLTeam} homeTeam The home team in the game.
+   * @property {NFLTeam} awayTeam The away team in the game.
    * @property {number} homeTeamScore The score of the home team.
    * @property {number} awayTeamScore The score of the away team.
    *

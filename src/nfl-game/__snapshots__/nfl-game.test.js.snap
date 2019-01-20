@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NFLGame attribute population from local object parses data correctly 1`] = `
+exports[`NFLGame when creating a team from a server response parses and assigns data correctly 1`] = `
 NFLGame {
   "awayTeam": NFLTeam {
     "abbreviation": "DET",
@@ -22,7 +22,7 @@ NFLGame {
 }
 `;
 
-exports[`NFLGame attribute population from server response parses data correctly 1`] = `
+exports[`NFLGame when creating a team locally parses and assigns data correctly 1`] = `
 NFLGame {
   "awayTeam": NFLTeam {
     "abbreviation": "DET",
