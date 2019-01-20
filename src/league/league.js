@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import BaseAPIObject from '../base-api-object/base-api-object.js';
+
 import Team from '../team/team.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
@@ -8,6 +9,7 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
 /**
  * Represents a fantasy football league. Due to ESPN's API routing, most information comes from the
  * league request. It's what we got ¯\\\_(ツ)_/¯.
+ *
  * @extends BaseAPIObject
  */
 class League extends BaseAPIObject {
@@ -20,15 +22,6 @@ class League extends BaseAPIObject {
   /**
    * @typedef {object} LeagueObject
    *
-   * On the ESPN API:
-   *
-   * `matchupPeriod` refers to an entire match-up, including if the match-up lasts
-   * multiple weeks (not rare in playoff settings for smaller leagues).
-   *
-   * `scoringPeriod` refers to a single NFL week. Since most match-ups are 1 week long, this will
-   * match up with the `matchupPeriod`. However, for multi-week match-ups, this allows one to get
-   * information about a specific week in the match-up (useful in multi-week playoff match-up).
-   *
    * @property {number} leagueId
    * @property {string} seasonId The season (year) of the league data.
    * @property {string} name The league's name.
@@ -38,9 +31,11 @@ class League extends BaseAPIObject {
    * @property {object[]} lineupPositionLimits An array of objects outlining the maximum amount of
    *                                           players that can be played in a position in a valid
    *                                           lineup.
+   *
    * @property {Team[]} draftOrder An array of Teams listed in order of their draft pick positions.
    * @property {Team[]} playoffSeedOrder An array of Teams listed in order of their playoff seeding.
    * @property {Team[]} finalRankings An array of Teams listed in order of their final rank.
+   *
    * @property {number} numTeams The number of teams in the league.
    * @property {number} numPlayoffTeams The number of teams that make the playoffs.
    * @property {number} scoringDecimalPlaces The number of decimals used in scoring.
@@ -57,6 +52,7 @@ class League extends BaseAPIObject {
    *                                      0: Total points for
    *                                      1: Intra-division record
    *                                      2: Total points against
+   *
    * @property {number} numRegularSeasonMatchups The number of regular season match-ups. If the
    *                                             league's regular season match-up length is 1, then
    *                                             this is also the number of weeks in the regular
@@ -65,6 +61,7 @@ class League extends BaseAPIObject {
    *                                                season. Usually 1 week.
    * @property {number} playoffMatchupLength The length of each match-up in the playoffs. This is
    *                                         typically 1 (week) or 2 (weeks).
+   *
    * @property {number} firstMatchupId The id of the first match-up period. Almost always 1.
    * @property {number} firstWeekId The first NFL week on which a match-up occurs. Almost always 1.
    * @property {number} lastMatchupId The id of the last match-up. Is a function of weeks played and
@@ -74,6 +71,7 @@ class League extends BaseAPIObject {
    *                                  is 14, and the last week played is 17, then `lastMatchupId` is
    *                                  15.
    * @property {number} lastWeekId The id of the last NFL week played.
+   *
    * @property {boolean} allowsTrades Whether or not trades are allow between teams.
    * @property {number} tradeRevisionHours The number of hours for a trade to be revised, including
    *                                       vetoes.
@@ -89,15 +87,8 @@ class League extends BaseAPIObject {
     divisions: 'leaguesettings.divisions',
     teams: {
       key: 'leaguesettings.teams',
-      manualParse: (responseData, response) => _.map(responseData, (team) => {
-        const leagueId = _.get(response, 'leaguesettings.id');
-        const seasonId = _.get(response, 'leaguesettings.season');
-
-        return Team.buildFromServer(team, {
-          leagueId: leagueId ? _.toNumber(leagueId) : undefined,
-          seasonId: seasonId ? _.toNumber(seasonId) : undefined
-        });
-      })
+      BaseObject: Team,
+      isArray: true
     },
 
     lineupPositionLimits: {
@@ -113,22 +104,22 @@ class League extends BaseAPIObject {
     draftOrder: {
       key: 'leaguesettings.draftOrder',
       defer: true,
-      manualParse: (responseData, response, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
       )
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
-      manualParse: (responseData, response, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
       )
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
-      manualParse: (responseData, response, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, instance })
+      manualParse: (responseData, response, constructorParams, instance) => (
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
       )
     },
 
@@ -178,22 +169,15 @@ class League extends BaseAPIObject {
    * Helper for deferred items in the `responseMap` that use cached Team instances.
    * @private
    */
-  static _parseUsingCachedTeam({ responseData, instance }) {
+  static _parseUsingCachedTeam({ responseData, constructorParams }) {
     return _.map(responseData, (teamId) => {
-      const cachingId = Team.getCacheId({
-        leagueId: instance.leagueId,
-        seasonId: instance.seasonId,
-        teamId
-      });
-
+      const cachingId = Team.getCacheId(_.assign({}, constructorParams, { teamId }));
       return Team.get(cachingId);
     });
   }
 
-  static getCacheId(params = {}) {
-    return (params.leagueId && params.seasonId) ?
-      `${params.leagueId}-${params.seasonId}` :
-      undefined;
+  static getCacheId({ leagueId, seasonId } = {}) {
+    return (leagueId && seasonId) ? `${leagueId}-${seasonId}` : undefined;
   }
 
   static read(

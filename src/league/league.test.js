@@ -1,7 +1,7 @@
 import _ from 'lodash';
 
 import BaseAPIObject from '../base-api-object/base-api-object.js';
-import Team from '../team/team.js';
+
 import League from './league.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
@@ -9,197 +9,121 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
 import { localObject, serverResponse } from './league.stubs.js';
 
 describe('League', () => {
-  let league;
-
-  beforeEach(() => {
-    league = new League();
-  });
-
-  afterEach(() => {
-    league = null;
-  });
-
   test('extends BaseAPIObject', () => {
-    expect(league).toBeInstanceOf(BaseAPIObject);
+    const instance = new League();
+    expect(instance).toBeInstanceOf(BaseAPIObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      league = League.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(league).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = League.buildFromServer(serverResponse, { leagueId: 336358, seasonId: 2017 });
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      league = new League(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(league).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new League(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
   describe('responseMap', () => {
-    const testUsesCachedTeamInstances = (method) => {
-      test('maps data to cached Team instances', () => {
-        jest.spyOn(Team, 'get');
-
-        const ids = [1, 2, 3];
-        const instance = new League({ leagueId: 242343, seasonId: 2015 });
-
-        expect.hasAssertions();
-        _.invoke(League.responseMap, `${method}.manualParse`, ids, undefined, instance);
-
-        _.forEach(ids, (id) => {
-          const cachingId = Team.getCacheId({
-            leagueId: instance.leagueId,
-            seasonId: instance.seasonId,
-            teamId: id
-          });
-          expect(Team.get).toBeCalledWith(cachingId);
-        });
-
-        Team.get.mockRestore();
-      });
-    };
-
-    describe('teams', () => {
-      describe('manualParse', () => {
-        test('maps teams data to Team instances', () => {
-          const responseData = {
-            1: { teamId: 1 },
-            2: { teamId: 2 },
-            3: { teamId: 3 }
-          };
-
-          const returnedTeams = League.responseMap.teams.manualParse(responseData);
-
-          expect.assertions(1 * 3);
-          _.forEach(returnedTeams, (team) => {
-            expect(team).toBeInstanceOf(Team);
-          });
-        });
-
-        describe('when leagueId is passed on the response', () => {
-          test('passes leagueId as a number', () => {
-            const leagueId = '123133';
-            const responseData = {
-              1: { teamId: 1 }
-            };
-            const response = {
-              leaguesettings: { id: leagueId }
-            };
-
-            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
-            expect.assertions(1 * 1);
-            _.forEach(returnedTeams, (team) => {
-              expect(team.leagueId).toBe(_.toNumber(leagueId));
-            });
-          });
-        });
-
-        describe('when leagueId is not passed on the response', () => {
-          test('passes undefined for leagueId', () => {
-            const leagueId = undefined;
-            const responseData = {
-              1: { teamId: 1 }
-            };
-            const response = {
-              leaguesettings: { id: leagueId }
-            };
-
-            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
-            expect.assertions(1 * 1);
-            _.forEach(returnedTeams, (team) => {
-              expect(team.leagueId).toBeUndefined();
-            });
-          });
-        });
-
-        describe('when seasonId is passed on the response', () => {
-          test('passes seasonId as a number', () => {
-            const seasonId = '123133';
-            const responseData = {
-              1: { teamId: 1 }
-            };
-            const response = {
-              leaguesettings: { season: seasonId }
-            };
-
-            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
-            expect.assertions(1 * 1);
-            _.forEach(returnedTeams, (team) => {
-              expect(team.seasonId).toBe(_.toNumber(seasonId));
-            });
-          });
-        });
-
-        describe('when seasonId is not passed on the response', () => {
-          test('passes seasonId as a number', () => {
-            const seasonId = undefined;
-            const responseData = {
-              1: { teamId: 1 }
-            };
-            const response = {
-              leaguesettings: { season: seasonId }
-            };
-
-            const returnedTeams = League.responseMap.teams.manualParse(responseData, response);
-            expect.assertions(1 * 1);
-            _.forEach(returnedTeams, (team) => {
-              expect(team.seasonId).toBeUndefined();
-            });
-          });
-        });
-      });
-    });
+    const buildLeague = (data, options) => League.buildFromServer(data, options);
 
     describe('positionLimits', () => {
       describe('manualParse', () => {
-        test('maps to limit and position using slotCategoryIdToPositionMap', () => {
-          const limitData = [{
-            num: 1,
-            slotCategoryId: 0
-          }, {
-            num: 0,
-            slotCategoryId: 1
-          }, {
-            num: 2,
-            slotCategoryId: 2
-          }];
+        describe('when no limit data is populated', () => {
+          test('sets an empty array', () => {
+            const data = { leaguesettings: {} };
 
-          const returnedLimits = League.responseMap.lineupPositionLimits.manualParse(limitData);
+            const league = buildLeague(data);
+            expect(league.lineupPositionLimits).toEqual([]);
+          });
+        });
 
-          expect.hasAssertions();
-          _.forEach(limitData, (value, index) => {
-            expect(returnedLimits[index].limit).toBe(limitData[index].num);
-            expect(returnedLimits[index].position).toBe(
-              _.get(slotCategoryIdToPositionMap, limitData[index].slotCategoryId)
-            );
+        describe('when limit data is an empty array', () => {
+          test('sets an empty array', () => {
+            const data = {
+              leaguesettings: { slotCategoryItems: [] }
+            };
+
+            const league = buildLeague(data);
+            expect(league.lineupPositionLimits).toEqual([]);
+          });
+        });
+
+        describe('when limit data is populated', () => {
+          test('maps to limit and position using slotCategoryIdToPositionMap', () => {
+            const slotCategoryItems = [
+              { num: 1, slotCategoryId: 0 },
+              { num: 0, slotCategoryId: 1 },
+              { num: 2, slotCategoryId: 2 }
+            ];
+            const data = {
+              leaguesettings: { slotCategoryItems }
+            };
+
+            const league = buildLeague(data);
+
+            expect.hasAssertions();
+            _.forEach(league.lineupPositionLimits, (limitData, index) => {
+              expect(limitData.limit).toBe(slotCategoryItems[index].num);
+              expect(limitData.position).toBe(
+                _.get(slotCategoryIdToPositionMap, slotCategoryItems[index].slotCategoryId)
+              );
+            });
           });
         });
       });
     });
 
+    const testUsesCachedTeamInstances = ({ dataKey, modelKey }) => {
+      test('maps data to cached Team instances', () => {
+        const teamIds = [1, 2, 3];
+        const teams = [
+          { teamId: 1, nickname: 'some team 1' },
+          { teamId: 2, nickname: 'some team 2' },
+          { teamId: 3, nickname: 'some team 3' }
+        ];
+
+        const data = { leaguesettings: { teams } };
+        _.set(data, dataKey, teamIds);
+
+        const league = buildLeague(data, { leagueId: 336358, seasonId: 2017 });
+
+        expect.hasAssertions();
+        _.forEach(league[modelKey], (team) => {
+          const initialTeam = _.find(league.teams, { teamId: team.teamId });
+          expect(team).toBe(initialTeam);
+        });
+      });
+    };
+
     describe('draftOrder', () => {
       describe('manualParse', () => {
-        testUsesCachedTeamInstances('draftOrder');
+        testUsesCachedTeamInstances({
+          dataKey: 'leaguesettings.draftOrder',
+          modelKey: 'draftOrder'
+        });
       });
     });
 
     describe('playoffSeedOrder', () => {
       describe('manualParse', () => {
-        testUsesCachedTeamInstances('playoffSeedOrder');
+        testUsesCachedTeamInstances({
+          dataKey: 'leaguesettings.playoffSeedings',
+          modelKey: 'playoffSeedOrder'
+        });
       });
     });
 
     describe('finalRankings', () => {
       describe('manualParse', () => {
-        testUsesCachedTeamInstances('finalRankings');
+        testUsesCachedTeamInstances({
+          dataKey: 'leaguesettings.finalCalculatedRanking',
+          modelKey: 'finalRankings'
+        });
       });
     });
 
@@ -215,19 +139,28 @@ describe('League', () => {
               4: 'Most RB points'
             };
 
-            expect.hasAssertions();
             _.forEach(tiebreakers, (value, key) => {
               const numKey = _.toNumber(key);
-              const tieString = League.responseMap.regularSeasonTiebreaker.manualParse(numKey);
-              expect(tieString).toBe(value);
+              const data = {
+                leaguesettings: { tieRule: numKey }
+              };
+
+              const league = buildLeague(data);
+              expect(league.regularSeasonTiebreaker).toBe(value);
             });
           });
         });
 
         describe('when invalid enum key is passed', () => {
           test('returns error string', () => {
-            const tieString = League.responseMap.regularSeasonTiebreaker.manualParse(-231);
-            expect(tieString).toBe('ERROR: regularSeasonTiebreaker not recognized');
+            const data = {
+              leaguesettings: { tieRule: -231 }
+            };
+
+            const league = buildLeague(data);
+            expect(league.regularSeasonTiebreaker).toBe(
+              'ERROR: regularSeasonTiebreaker not recognized'
+            );
           });
         });
       });
@@ -244,19 +177,26 @@ describe('League', () => {
               2: 'Total points against'
             };
 
-            expect.hasAssertions();
             _.forEach(tiebreakers, (value, key) => {
               const numKey = _.toNumber(key);
-              const tieString = League.responseMap.playoffTiebreaker.manualParse(numKey);
-              expect(tieString).toBe(value);
+              const data = {
+                leaguesettings: { playoffTieRuleRawStatId: numKey }
+              };
+
+              const league = buildLeague(data);
+              expect(league.playoffTiebreaker).toBe(value);
             });
           });
         });
 
         describe('when invalid enum key is passed', () => {
           test('returns error string', () => {
-            const tieString = League.responseMap.playoffTiebreaker.manualParse(-231);
-            expect(tieString).toBe('ERROR: playoffTiebreaker not recognized');
+            const data = {
+              leaguesettings: { playoffTieRuleRawStatId: -231 }
+            };
+
+            const league = buildLeague(data);
+            expect(league.playoffTiebreaker).toBe('ERROR: playoffTiebreaker not recognized');
           });
         });
       });
@@ -265,73 +205,38 @@ describe('League', () => {
 
   describe('class methods', () => {
     describe('getCacheId', () => {
-      let leagueId;
-      let seasonId;
-
-      afterEach(() => {
-        leagueId = null;
-        seasonId = null;
-      });
-
-      const testReturnsUndefined = () => {
+      const testReturnsUndefined = (params) => {
         test('returns undefined', () => {
-          const params = { leagueId, seasonId };
           expect(League.getCacheId(params)).toBeUndefined();
         });
       };
 
       describe('when called with no params', () => {
-        test('returns undefined', () => {
-          expect(League.getCacheId()).toBeUndefined();
-        });
+        testReturnsUndefined();
       });
 
       describe('when leagueId is defined', () => {
-        beforeEach(() => {
-          leagueId = 132123;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
           test('returns a valid caching id', () => {
-            const params = { leagueId, seasonId };
+            const params = { leagueId: 132123, seasonId: 2017 };
 
             const returnedCachingId = League.getCacheId(params);
-            expect(returnedCachingId).toBe(`${leagueId}-${seasonId}`);
+            expect(returnedCachingId).toBe(`${params.leagueId}-${params.seasonId}`);
           });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
-          testReturnsUndefined();
+          testReturnsUndefined({ leagueId: 132123 });
         });
       });
 
       describe('when leagueId is undefined', () => {
-        beforeEach(() => {
-          leagueId = undefined;
-        });
-
         describe('when seasonId is defined', () => {
-          beforeEach(() => {
-            seasonId = 2017;
-          });
-
-          testReturnsUndefined();
+          testReturnsUndefined({ seasonId: 2017 });
         });
 
         describe('when seasonId is undefined', () => {
-          beforeEach(() => {
-            seasonId = undefined;
-          });
-
-          testReturnsUndefined();
+          testReturnsUndefined({});
         });
       });
     });
@@ -381,13 +286,12 @@ describe('League', () => {
     describe('when params are passed', () => {
       test('adds seasonId to params passed to super read', () => {
         const seasonId = 2017;
-        league.seasonId = seasonId;
+        const league = new League({ seasonId });
 
         // Super lazy way to test
         jest.spyOn(BaseAPIObject.prototype, 'read').mockImplementation();
 
         league.read({ params: { some: 'params' } });
-
         expect(BaseAPIObject.prototype.read).toBeCalledWith({
           params: {
             seasonId,
@@ -404,13 +308,12 @@ describe('League', () => {
     describe('when not params are passed', () => {
       test('passes seasonId as params to super read', () => {
         const seasonId = 2017;
-        league.seasonId = seasonId;
+        const league = new League({ seasonId });
 
         // Super lazy way to test
         jest.spyOn(BaseAPIObject.prototype, 'read').mockImplementation();
 
         league.read();
-
         expect(BaseAPIObject.prototype.read).toBeCalledWith({
           params: { seasonId },
           route: League.route,
