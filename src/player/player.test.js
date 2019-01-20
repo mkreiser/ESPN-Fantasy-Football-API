@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
 import BaseObject from '../base-object/base-object.js';
+
 import Player from './player.js';
 
 import { localObject, serverResponse } from './player.stubs.js';
@@ -8,51 +9,41 @@ import { localObject, serverResponse } from './player.stubs.js';
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
 describe('Player', () => {
-  let player;
-
-  beforeEach(() => {
-    player = new Player();
-  });
-
-  afterEach(() => {
-    player = null;
-  });
-
   test('extends BaseObject', () => {
-    expect(player).toBeInstanceOf(BaseObject);
+    const instance = new Player();
+    expect(instance).toBeInstanceOf(BaseObject);
   });
 
-  describe('attribute population from server response', () => {
-    beforeEach(() => {
-      player = Player.buildFromServer(serverResponse);
-    });
-
-    test('parses data correctly', () => {
-      expect(player).toMatchSnapshot();
+  describe('when creating a team from a server response', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = Player.buildFromServer(serverResponse);
+      expect(instance).toMatchSnapshot();
     });
   });
 
-  describe('attribute population from local object', () => {
-    beforeEach(() => {
-      player = new Player(localObject);
-    });
-
-    test('parses data correctly', () => {
-      expect(player).toMatchSnapshot();
+  describe('when creating a team locally', () => {
+    test('parses and assigns data correctly', () => {
+      const instance = new Player(localObject);
+      expect(instance).toMatchSnapshot();
     });
   });
 
   describe('responseMap', () => {
+    const buildPlayer = (data, options) => Player.buildFromServer(data, options);
+
     describe('streakType', () => {
       describe('manualParse', () => {
         test('maps ids to positions', () => {
-          const ids = [0, 1, 2];
+          const eligibleSlotCategoryIds = [0, 1, 2];
+          const data = { eligibleSlotCategoryIds };
 
-          const returnedPositions = Player.responseMap.eligiblePositions.manualParse(ids);
+          const player = buildPlayer(data);
 
           expect.hasAssertions();
-          _.forEach(returnedPositions, (position, index) => {
-            expect(position).toBe(_.get(slotCategoryIdToPositionMap, ids[index]));
+          _.forEach(player.eligiblePositions, (position, index) => {
+            expect(position).toBe(
+              _.get(slotCategoryIdToPositionMap, eligibleSlotCategoryIds[index])
+            );
           });
         });
       });
