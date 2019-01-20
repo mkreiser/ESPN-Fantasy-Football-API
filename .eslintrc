@@ -12,6 +12,7 @@
   "rules": {
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
+    "no-else-return": ["error", { allowElseIf: true }],
     "no-underscore-dangle": "off",
     "operator-linebreak": ["error", "after"],
 
