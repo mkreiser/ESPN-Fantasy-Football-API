@@ -87,8 +87,13 @@ class League extends BaseAPIObject {
     divisions: 'leaguesettings.divisions',
     teams: {
       key: 'leaguesettings.teams',
-      BaseObject: Team,
-      isArray: true
+      manualParse: (responseData, response, constructorParams) => _.map(responseData, (team) => {
+        const options = constructorParams.seasonId ? constructorParams : _.assign(
+          {}, constructorParams, { seasonId: _.get(response, 'leaguesettings.season') }
+        );
+
+        return Team.buildFromServer(team, options);
+      })
     },
 
     lineupPositionLimits: {
@@ -105,21 +110,21 @@ class League extends BaseAPIObject {
       key: 'leaguesettings.draftOrder',
       defer: true,
       manualParse: (responseData, response, constructorParams, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams, instance })
       )
     },
     playoffSeedOrder: {
       key: 'leaguesettings.playoffSeedings',
       defer: true,
       manualParse: (responseData, response, constructorParams, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams, instance })
       )
     },
     finalRankings: {
       key: 'leaguesettings.finalCalculatedRanking',
       defer: true,
       manualParse: (responseData, response, constructorParams, instance) => (
-        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams })
+        instance.constructor._parseUsingCachedTeam({ responseData, constructorParams, instance })
       )
     },
 
@@ -169,9 +174,13 @@ class League extends BaseAPIObject {
    * Helper for deferred items in the `responseMap` that use cached Team instances.
    * @private
    */
-  static _parseUsingCachedTeam({ responseData, constructorParams }) {
+  static _parseUsingCachedTeam({ responseData, constructorParams, instance }) {
     return _.map(responseData, (teamId) => {
-      const cachingId = Team.getCacheId(_.assign({}, constructorParams, { teamId }));
+      const options = constructorParams.seasonId ? constructorParams : _.assign(
+        {}, constructorParams, { seasonId: instance.seasonId }
+      );
+
+      const cachingId = Team.getCacheId(_.assign({}, options, { teamId }));
       return Team.get(cachingId);
     });
   }

@@ -2,6 +2,8 @@ import _ from 'lodash';
 
 import BaseAPIObject from '../base-api-object/base-api-object.js';
 
+import Team from '../team/team.js';
+
 import League from './league.js';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
@@ -30,6 +32,60 @@ describe('League', () => {
 
   describe('responseMap', () => {
     const buildLeague = (data, options) => League.buildFromServer(data, options);
+
+    describe('teams', () => {
+      describe('when constructorParams includes seasonId', () => {
+        test('builds teams with constructorParams.seasonId', () => {
+          const data = {
+            leaguesettings: {
+              teams: [
+                { teamId: 4 },
+                { teamId: 5 },
+                { teamId: 6 }
+              ]
+            }
+          };
+          const options = { leagueId: 123213, seasonId: 2017 };
+
+          const league = buildLeague(data, options);
+
+          expect.hasAssertions();
+          _.forEach(league.teams, (team, index) => {
+            expect(team).toBeInstanceOf(Team);
+            expect(team.teamId).toBe(data.leaguesettings.teams[index].teamId);
+            expect(team.getCacheId()).toBe(
+              `${team.teamId}-${options.leagueId}-${options.seasonId}`
+            );
+          });
+        });
+      });
+
+      describe('when constructorParams does not include seasonId', () => {
+        test('builds teams with seasonId provided on response', () => {
+          const seasonId = 2015;
+          const data = {
+            leaguesettings: {
+              season: seasonId,
+              teams: [
+                { teamId: 4 },
+                { teamId: 5 },
+                { teamId: 6 }
+              ]
+            }
+          };
+          const options = { leagueId: 123213 };
+
+          const league = buildLeague(data, options);
+
+          expect.hasAssertions();
+          _.forEach(league.teams, (team, index) => {
+            expect(team).toBeInstanceOf(Team);
+            expect(team.teamId).toBe(data.leaguesettings.teams[index].teamId);
+            expect(team.getCacheId()).toBe(`${team.teamId}-${options.leagueId}-${seasonId}`);
+          });
+        });
+      });
+    });
 
     describe('positionLimits', () => {
       describe('manualParse', () => {
@@ -79,23 +135,53 @@ describe('League', () => {
     });
 
     const testUsesCachedTeamInstances = ({ dataKey, modelKey }) => {
-      test('maps data to cached Team instances', () => {
-        const teamIds = [1, 2, 3];
-        const teams = [
-          { teamId: 1, nickname: 'some team 1' },
-          { teamId: 2, nickname: 'some team 2' },
-          { teamId: 3, nickname: 'some team 3' }
-        ];
+      describe('when constructorParams has seasonId defined', () => {
+        test('maps data to cached Team instances', () => {
+          const teamIds = [1, 2, 3];
+          const teams = [
+            { teamId: 1, nickname: 'some team 1' },
+            { teamId: 2, nickname: 'some team 2' },
+            { teamId: 3, nickname: 'some team 3' }
+          ];
 
-        const data = { leaguesettings: { teams } };
-        _.set(data, dataKey, teamIds);
+          const data = { leaguesettings: { teams } };
+          _.set(data, dataKey, teamIds);
 
-        const league = buildLeague(data, { leagueId: 336358, seasonId: 2017 });
+          const league = buildLeague(data, { leagueId: 336358, seasonId: 2017 });
 
-        expect.hasAssertions();
-        _.forEach(league[modelKey], (team) => {
-          const initialTeam = _.find(league.teams, { teamId: team.teamId });
-          expect(team).toBe(initialTeam);
+          expect.hasAssertions();
+          _.forEach(league[modelKey], (team) => {
+            const initialTeam = _.find(league.teams, { teamId: team.teamId });
+            expect(team).toBe(initialTeam);
+          });
+        });
+      });
+
+      describe('when constructorParams does not have seasonId defined', () => {
+        test('maps data to cached Team instances', () => {
+          const seasonId = 2017;
+          const teamIds = [1, 2, 3];
+          const teams = [
+            { teamId: 1, nickname: 'some team 1' },
+            { teamId: 2, nickname: 'some team 2' },
+            { teamId: 3, nickname: 'some team 3' }
+          ];
+
+          const data = {
+            leaguesettings: {
+              season: seasonId,
+              teams
+            }
+          };
+          _.set(data, dataKey, teamIds);
+
+          const league = buildLeague(data, { leagueId: 336358 });
+
+          expect.hasAssertions();
+          _.forEach(league[modelKey], (team) => {
+            const initialTeam = _.find(league.teams, { teamId: team.teamId });
+            expect(team).toBe(initialTeam);
+          });
         });
       });
     };
