@@ -16,7 +16,9 @@ describe('Boxscore', () => {
 
   describe('when creating a team from a server response', () => {
     test('parses and assigns data correctly', () => {
-      const instance = Boxscore.buildFromServer(serverResponse);
+      const instance = Boxscore.buildFromServer(serverResponse, {
+        leagueId: 2234123, seasonId: 2017, teamId: 12, matchupPeriodId: 12
+      });
       expect(instance).toMatchSnapshot();
     });
   });

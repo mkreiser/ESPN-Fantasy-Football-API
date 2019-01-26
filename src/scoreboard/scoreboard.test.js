@@ -15,7 +15,9 @@ describe('Scoreboard', () => {
 
   describe('when creating a team from a server response', () => {
     test('parses and assigns data correctly', () => {
-      const instance = Scoreboard.buildFromServer(serverResponse);
+      const instance = Scoreboard.buildFromServer(serverResponse, {
+        leagueId: 2234123, seasonId: 2017, matchupPeriodId: 12, scoringPeriodId: 12
+      });
       expect(instance).toMatchSnapshot();
     });
   });
