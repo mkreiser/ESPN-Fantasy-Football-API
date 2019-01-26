@@ -16,6 +16,22 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
  * @extends BaseCacheableObject
  */
 class Player extends BaseCacheableObject {
+  constructor(options = {}) {
+    super(options);
+
+    /**
+     * Id of the league to which the player belongs.
+     * @type {number}
+     */
+    this.leagueId = options.leagueId;
+
+    /**
+     * Id of the season to which the player belongs.
+     * @type {number}
+     */
+    this.seasonId = options.seasonId;
+  }
+
   static displayName = 'Player';
 
   static idName = 'playerId';
@@ -70,8 +86,8 @@ class Player extends BaseCacheableObject {
     }
   };
 
-  static getCacheId() {
-    return undefined;
+  static getCacheId({ playerId, leagueId, seasonId } = {}) {
+    return (playerId && leagueId && seasonId) ? `${playerId}-${leagueId}-${seasonId}` : undefined;
   }
 }
 

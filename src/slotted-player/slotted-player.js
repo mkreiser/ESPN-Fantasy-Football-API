@@ -34,11 +34,16 @@ class SlottedPlayer extends BaseObject {
   static responseMap = {
     player: {
       key: 'player',
-      manualParse: (responseData, response, constructorParams) => (
-        _.isEmpty(responseData) ?
-          undefined :
-          Player.buildFromServer(responseData, constructorParams)
-      )
+      manualParse: (responseData, response, constructorParams) => {
+        if (_.isEmpty(responseData)) {
+          return undefined;
+        }
+
+        const cacheId = Player.getCacheId(
+          _.assign({}, constructorParams, { playerId: responseData.playerId })
+        );
+        return Player.get(cacheId) || Player.buildFromServer(responseData, constructorParams);
+      }
     },
 
     position: {

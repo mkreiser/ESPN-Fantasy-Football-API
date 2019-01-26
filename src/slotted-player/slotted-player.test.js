@@ -52,14 +52,39 @@ describe('SlottedPlayer', () => {
         });
 
         describe('when the passed data is populated', () => {
-          test('sets a new player', () => {
-            const playerId = 10;
-            const data = {
-              player: { playerId }
-            };
+          let options;
 
-            const slottedPlayer = buildSlottedPlayer(data);
-            expect(slottedPlayer.player).toEqual(Player.buildFromServer({ playerId }));
+          beforeEach(() => {
+            options = { leagueId: 123321, seasonId: 2017 };
+          });
+
+          afterEach(() => {
+            options = null;
+          });
+
+          describe('when there is a matching cached player', () => {
+            test('returns the cached player', () => {
+              const playerId = 10;
+              const data = {
+                player: { playerId }
+              };
+              const cachedPlayer = Player.buildFromServer({ playerId }, options);
+
+              const slottedPlayer = buildSlottedPlayer(data, options);
+              expect(slottedPlayer.player).toBe(cachedPlayer);
+            });
+          });
+
+          describe('when there is not a matching cached player', () => {
+            test('sets a new player', () => {
+              const playerId = 10;
+              const data = {
+                player: { playerId }
+              };
+
+              const slottedPlayer = buildSlottedPlayer(data, options);
+              expect(slottedPlayer.player).toEqual(Player.buildFromServer({ playerId }, options));
+            });
           });
         });
       });
