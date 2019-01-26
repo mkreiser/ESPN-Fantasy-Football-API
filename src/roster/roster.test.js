@@ -17,7 +17,9 @@ describe('Roster', () => {
 
   describe('when creating a team from a server response', () => {
     test('parses and assigns data correctly', () => {
-      const instance = Roster.buildFromServer(serverResponse, { teamId: 9 });
+      const instance = Roster.buildFromServer(serverResponse, {
+        leagueId: 2234123, seasonId: 2017, teamId: 9, scoringPeriodId: 12
+      });
       expect(instance).toMatchSnapshot();
     });
   });
