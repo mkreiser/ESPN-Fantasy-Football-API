@@ -115,39 +115,13 @@ Scoreboard.read({
 });
 ```
 
-## Roadmap
-
-#### 0.7.0
-
-- ✅ Improve passing of constructor params to nested classes - *#1 priority*
-- ✅ Remove q dev dependency
-- ✅ Address CodeClimate feedback
-- ✅ Test node versions for support
-- ✅ Clean up test suites - *May be bumped, not required for version bump*
-- ~~Research an axios `get` only package~~ - Not a thing
-- ~~Versioned documentation - *May be bumped*~~ -- Not enough info at this time
-
-#### 0.8.0
-
-- Player caching
-- Basic support for auction leagues
-
-#### 1.0.0
-
-- Satisfied with stable pre-1.0.0 package
-
-#### 1.1.0
-
-- Increased functional patterns, reduce data mutability
-- Introduce Flow or TypeScript
-
 ## Testing
 
 *How do you know it works?*
 
-This project includes an expansive unit test suite as well as a live integration test suite. The integration tests make live calls to the ESPN API, ensuring that the project will work in the real world.
+This project includes an expansive test suite. The unit tests ensure specific logic works as intended. The integration tests make live calls to the ESPN API, ensuring that the project will work in the real world.
 
-Travis CI is used to build and verify changes. Additionally, the master branch runs a weekly build on Travis.
+Travis CI is used to build and verify changes/pull requests in a clean environment. Additionally, the master branch runs a weekly build on Travis to catch any issues when development activity is sparse.
 
 ## Built With
 
@@ -165,7 +139,7 @@ Travis CI is used to build and verify changes. Additionally, the master branch r
 
 ## Versioning
 
-This project uses [Semantic Versioning](https://semver.org/).
+This project uses [Semantic Versioning](https://semver.org/). Until the 1.0.0 version is published, all major changes will be published with a minor version bump.
 
 ## License
 
@@ -202,3 +176,4 @@ Thanks to the following projects for their work and documentation of the ESPN AP
 [rbarton65/espnff](https://github.com/rbarton65/espnff)
 
 [Possardt/espn-ff-api](https://github.com/Possardt/espn-ff-api)
+
