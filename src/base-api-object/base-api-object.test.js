@@ -107,7 +107,7 @@ describe('BaseAPIObject', () => {
 
             TestBaseAPIObject.read({ instance, route, params });
             expect(axios.get).toBeCalledWith(route, {
-              params, headers: { Cookie: `espnS2:${espnS2};SWID${SWID};` }, withCredientials: true
+              params, headers: { Cookie: `espn_s2=${espnS2}; SWID=${SWID};` }, withCredentials: true
             });
 
             TestBaseAPIObject.setCookies({}); // Reset for later tests
@@ -120,7 +120,7 @@ describe('BaseAPIObject', () => {
 
             TestBaseAPIObject.read({ instance, route, params });
             expect(axios.get).toBeCalledWith(route, {
-              params, headers: undefined, withCredientials: false
+              params, headers: undefined, withCredentials: false
             });
           });
         });
@@ -178,7 +178,7 @@ describe('BaseAPIObject', () => {
 
             TestBaseAPIObject.read({ route, params });
             expect(axios.get).toBeCalledWith(route, {
-              params, headers: { Cookie: `espnS2:${espnS2};SWID${SWID};` }, withCredientials: true
+              params, headers: { Cookie: `espn_s2=${espnS2}; SWID=${SWID};` }, withCredentials: true
             });
 
             TestBaseAPIObject.setCookies({}); // Reset for later tests
@@ -191,7 +191,7 @@ describe('BaseAPIObject', () => {
 
             TestBaseAPIObject.read({ route, params });
             expect(axios.get).toBeCalledWith(route, {
-              params, headers: undefined, withCredientials: false
+              params, headers: undefined, withCredentials: false
             });
           });
         });
@@ -252,7 +252,7 @@ describe('BaseAPIObject', () => {
         test('defaults to static route', () => {
           expect(() => TestBaseAPIObject.read()).not.toThrowError();
           expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
-            params: undefined, headers: undefined, withCredientials: false
+            params: undefined, headers: undefined, withCredentials: false
           });
         });
       });
@@ -261,7 +261,7 @@ describe('BaseAPIObject', () => {
         test('defaults to static route and reloads', () => {
           expect(() => TestBaseAPIObject.read()).not.toThrowError();
           expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
-            params: undefined, headers: undefined, withCredientials: false
+            params: undefined, headers: undefined, withCredentials: false
           });
         });
       });
