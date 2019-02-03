@@ -63,9 +63,9 @@ class BaseAPIObject extends BaseCacheableObject {
     }
 
     const headers = (this._espnS2 && this._SWID) ?
-      { Cookie: `espnS2:${this._espnS2};SWID${this._SWID};` } :
+      { Cookie: `espn_s2=${this._espnS2}; SWID=${this._SWID};` } :
       undefined;
-    const axiosConfig = { params, headers, withCredientials: !_.isEmpty(headers) };
+    const axiosConfig = { params, headers, withCredentials: !_.isEmpty(headers) };
 
     return axios.get(route, axiosConfig).then((response) => (
       instance ? this._populateObject({
