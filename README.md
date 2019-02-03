@@ -10,7 +10,7 @@ A Javascript API client for both web and NodeJS that connects to ESPN's fantasy 
 
 * Supports leagues, matchups, boxscores, and rosters.
   * Get matchup details, player performances, league standings, historical data, and more.
-  * Private league support.
+  * Private league support (node version only, see [Important Notes](#important-notes)).
 * Highly documented.
 * Built for speed and efficiency with caching support.
 * Built for extensibility by using ES6 classes.
@@ -29,6 +29,22 @@ There are two files exported in the package:
 
 * `dist/index-web.js` - Production file built for web environments (**main/default file**).
 * `dist/index-node.js` - Production file built for node environments.
+
+## Important Notes
+
+### ESPN Databases
+
+This project simply retrieves data from ESPN and formats the responses in an easy to read and use format. ESPN is still responsible for maintaining and providing the data. Recently, many have noticed league data disappearing from previous years, including in other ESPN fantasy sports. This appears to be a result of ESPN deleting this data. While some data exists before 2017 (as of Feb. 1, 2019), some data (such as boxscores) is not longer available. 
+
+### ESPN API Changes
+
+Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. Other ESPN fantasy sports have changed their APIs recently, causing old tools to no longer work. These routes are denoted by a `v3` api route (whereas fantasy football is still `v2`). 
+
+I am confident in the core of this project. I believe the only changes that will be needed will be schema changes to each APIObject (`League`, etc). Once the `v3` routes are available, I will create and work on a feature branch to update this project for the new API.
+
+### Private Leagues
+
+Private leagues currently only work with the node version of this project. Since ESPN/Disney requires two auth cookies to make a valid request, we must provide those. However, modern web browsers forbid the setting of the `Cookie` header, causing authentication rejections in the web version, as the cookies are not passed on the request.
 
 ## How to use
 
@@ -82,8 +98,10 @@ league.read().then(() => console.log(league)); // Prints loaded league
 
 #### Loading a Private League
 
+NOTE: Only works in node.
+
 ```javascript
-import { BaseAPIObject, League } from 'espn-fantasy-football-api';
+import { BaseAPIObject, League } from 'espn-fantasy-football-api/dist/index-node.js';
 
 BaseAPIObject.setCookies({ espnS2: 'xxxxx', SWID: '{xxxxxxxxxx}' }); // fire and forget
 
