@@ -6,6 +6,12 @@
 
 A Javascript API client for both web and NodeJS that connects to ESPN's fantasy football API. Available as an npm package.
 
+## Converting to v3 API
+
+In February 2019, ESPN deprecated and removed their `v2` fantasy football API and upgraded their site to a new `v3` API. ESPN had already made this change for their baseball and basketball fantasy APIs as well. This change broke every project running on the `v2` API, including this project. This project will not work until the code is converted to consume the `v3` API.
+
+Work for converting this project is being tracked in #95. 
+
 ## Features
 
 * Supports leagues, matchups, boxscores, and rosters.
@@ -37,6 +43,8 @@ There are two files exported in the package:
 This project simply retrieves data from ESPN and formats the responses in an easy to read and use format. ESPN is still responsible for maintaining and providing the data. Recently, many have noticed league data disappearing from previous years, including in other ESPN fantasy sports. This appears to be a result of ESPN deleting this data. While some data exists before 2017 (as of Feb. 1, 2019), some data (such as boxscores) is not longer available. 
 
 ### ESPN API Changes
+
+**UPDATE**: This happened in February 2019.
 
 Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. Other ESPN fantasy sports have changed their APIs recently, causing old tools to no longer work. These routes are denoted by a `v3` api route (whereas fantasy football is still `v2`). 
 
