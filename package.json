@@ -28,7 +28,9 @@
     "test": "jest",
     "test:all": "npm run test:unit && npm run test:integration",
     "test:integration": "jest integration-tests/ --maxWorkers=2 --coverage=false",
-    "test:unit": "jest src/ --maxWorkers=2"
+    "test:unit": "jest src/ --maxWorkers=2",
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
   },
   "repository": {
     "type": "git",
@@ -73,6 +75,8 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "lodash": "^4.17.11"
-  }
+    "lodash": "^4.17.11",
+    "snyk": "^1.161.1"
+  },
+  "snyk": true
 }
