@@ -6,7 +6,8 @@ import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.
 /**
  * The base class for all project objects that can communicate with the ESPN API. Provides `read`
  * functionality. Can connect to private leagues when cookies are set on this class.
- * @extends BaseCacheableObject
+ *
+ * @extends {BaseCacheableObject}
  */
 class BaseAPIObject extends BaseCacheableObject {
   static displayName = 'BaseAPIObject';
@@ -15,9 +16,9 @@ class BaseAPIObject extends BaseCacheableObject {
    * Sets ESPN cookies to allow access to private leagues. Not required to be set for public
    * leagues. By setting cookies on this class, every subclass (League, Boxscore, etc) will use the
    * cookies when making read calls.
-   * @param {string} options.espnS2 Found at "Application > Cookies > espn.com > espn_s2" via Chrome
+   * @param {String} options.espnS2 Found at "Application > Cookies > espn.com > espn_s2" via Chrome
    *                                devtools.
-   * @param {string} options.SWID Found at "Application > Cookies > espn.com > SWID" via Chrome
+   * @param {String} options.SWID Found at "Application > Cookies > espn.com > SWID" via Chrome
    *                              devtools.
    */
   static setCookies({ espnS2, SWID }) {
@@ -43,9 +44,9 @@ class BaseAPIObject extends BaseCacheableObject {
    * @throws {Error} If route is not defined
    * @param  {BaseAPIObject} options.instance The instance to populate rather than creating a new
    *                                       instance.
-   * @param  {string} options.route The route on the API to call.
-   * @param  {object} options.params Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
+   * @param  {String} options.route The route on the API to call.
+   * @param  {Object} options.params Params to pass on the GET call.
+   * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
   static read(
@@ -83,9 +84,9 @@ class BaseAPIObject extends BaseCacheableObject {
    * error handling of proper parameters (i.e. necessary `id`s)  to `static read` implementations.
    *
    * @async
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {object} options.params  Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
+   * @param  {String} options.route   The route on the API to call.
+   * @param  {Object} options.params  Params to pass on the GET call.
+   * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise}
    */
   read({

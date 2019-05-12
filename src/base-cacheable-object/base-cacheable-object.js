@@ -15,7 +15,7 @@ import BaseObject from '../base-object/base-object.js';
  * from `getCacheId` is valid (see `_populateObject` for an example). Otherwise the cache will not
  * be in the correct state.
  *
- * @extends BaseObject
+ * @extends {BaseObject}
  */
 class BaseCacheableObject extends BaseObject {
   static displayName = 'BaseCacheableObject';
@@ -29,7 +29,7 @@ class BaseCacheableObject extends BaseObject {
    * the `getCacheId` method. In either of the previous cases, the class's `constructor` should be
    * overridden to accept these parameters.
    *
-   * @type {string}
+   * @type {String}
    */
   static idName = 'id';
 
@@ -85,7 +85,7 @@ class BaseCacheableObject extends BaseObject {
   /**
    * Returns a cached instance matching the passed caching id if it exists. Otherwise, returns
    * undefined.
-   * @param  {number} id This id must match the form of the caching id provided by `getCacheId`.
+   * @param  {Number} id This id must match the form of the caching id provided by `getCacheId`.
    * @return {BaseCacheableObject|undefined}
    */
   static get(id) {
@@ -95,7 +95,7 @@ class BaseCacheableObject extends BaseObject {
   /**
    * Constructs and returns an id for the cache if possible from the passed params. If construction
    * is not possible, returns undefined.
-   * @param  {object} params
+   * @param  {Object} params
    * @return {string|undefined}
    */
   static getCacheId(params) {
@@ -104,7 +104,7 @@ class BaseCacheableObject extends BaseObject {
 
   /**
    * Gets the instance's id, using `static idName` to get the correct attribute.
-   * @return {number}
+   * @return {Number}
    */
   getId() {
     return _.get(this, this.constructor.idName);
@@ -112,7 +112,7 @@ class BaseCacheableObject extends BaseObject {
 
   /**
    * Gets the instance's id, using `static idName` to set the correct attribute.
-   * @param {number} id
+   * @param {Number} id
    */
   setId(id) {
     _.set(this, this.constructor.idName, id);
@@ -122,7 +122,7 @@ class BaseCacheableObject extends BaseObject {
    * Returns the id used for caching. Important for classes that have multiple identifiers. Example:
    * League is identified by its `leagueId` and its `seasonId`. This method prevents separate
    * seasons from overriding each other's data.
-   * @return {string}
+   * @return {String}
    */
   getCacheId() {
     return this.constructor.getCacheId(this);
