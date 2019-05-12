@@ -23,10 +23,10 @@
     "clean:dist": "rm -rf dist",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
-    "lint": "eslint index.js integration-tests/**/*.js src/**/*.js",
+    "lint": "eslint index.js src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest",
-    "test:all": "npm run test:unit && npm run test:integration",
+    "test:all": "npm run test:unit",
     "test:integration": "jest integration-tests/ --maxWorkers=2 --coverage=false",
     "test:unit": "jest src/ --maxWorkers=2"
   },
