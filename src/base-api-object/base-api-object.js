@@ -14,6 +14,7 @@ class BaseAPIObject extends BaseCacheableObject {
 
   /**
    * The "view" params passed to the main monoroute to populate the response with desired data.
+   * This is NOT dynamic params, such as league or season id.
    * @type {String}
    */
   static routeParams = '';
@@ -63,21 +64,26 @@ class BaseAPIObject extends BaseCacheableObject {
    * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise<BaseAPIObject>}
    */
-  static read({ instance, reload = true } = { reload: true }) {
+  static read({ instance, requestParams, reload = true } = { reload: true }) {
     // Return cached instance if appropriate
-    const cachingId = _.invoke(instance, 'getCacheId');
-    if (!reload && _.get(this.cache, cachingId)) {
-      return Promise.resolve(_.get(this.cache, cachingId));
+    if (!reload) {
+      const cachingId = _.invoke(instance, 'getCacheId') || this.getCacheId(requestParams);
+      if (_.get(this.cache, cachingId)) {
+        return Promise.resolve(_.get(this.cache, cachingId));
+      }
     }
 
     // Build headers if appropriate
-    const headers = (this._espnS2 && this._SWID) ?
-      { Cookie: `espn_s2=${this._espnS2}; SWID=${this._SWID};` } :
-      undefined;
-    const axiosConfig = { headers, withCredentials: !_.isEmpty(headers) };
+    const axiosConfig = (this._espnS2 && this._SWID) ? {
+      headers: { Cookie: `espn_s2=${this._espnS2}; SWID=${this._SWID};` },
+      withCredentials: true
+    } : undefined;
+
+    // Construct the route to call, allowing for direct call of class method
+    const route = _.invoke(instance, 'getRoute') || this.getRoute(requestParams);
 
     // Make request
-    return axios.get(instance.getRoute(), axiosConfig).then((response) => (
+    return axios.get(route, axiosConfig).then((response) => (
       instance ? this._populateObject({
         data: response.data,
         instance,
@@ -92,7 +98,7 @@ class BaseAPIObject extends BaseCacheableObject {
    * @throws {Error} If class method is not overridden
    */
   getRoute() {
-    return this.constructor.getRoute();
+    return this.constructor.getRoute(this);
   }
 
   /**
@@ -102,8 +108,12 @@ class BaseAPIObject extends BaseCacheableObject {
    * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
    * @return {Promise<BaseAPIObject>}
    */
-  read({ reload = true } = { reload: true }) {
-    return this.constructor.read({ instance: this, reload });
+  read({ requestParams, reload = true } = { reload: true }) {
+    return this.constructor.read({
+      instance: this,
+      requestParams: _.merge({}, this.getIDParams(), requestParams),
+      reload
+    });
   }
 }
 
