@@ -1,61 +1,9 @@
-import _ from 'lodash';
-
 import BaseObject from '../base-object/base-object.js';
 
 import BaseCacheableObject from './base-cacheable-object.js';
 
-class MappingTestBaseObject extends BaseCacheableObject {
-  static responseMap = {
-    mappingId: 'mapping_id',
-    someValue: 'some_value',
-    someNestedData: 'nested.item'
-  };
-
-  static displayName = 'MappingTestBaseObject';
-
-  static idName = 'mappingId';
-}
-
 class TestBaseCacheableObject extends BaseCacheableObject {
-  constructor(options = {}) {
-    super(options);
-
-    this.constructorOption = options.constructorOption;
-  }
-
-  static responseMap = {
-    testId: 'testId',
-    someValue: 'some_value',
-    someNestedData: 'nested.item',
-    someObject: {
-      key: 'map_object',
-      BaseObject: MappingTestBaseObject
-    },
-    someObjects: {
-      key: 'map_objects',
-      BaseObject: MappingTestBaseObject,
-      isArray: true
-    },
-    someManualObject: {
-      key: 'manual',
-      manualParse: jest.fn()
-    },
-    someManualAndBaseObject: {
-      key: 'both',
-      BaseObject: MappingTestBaseObject,
-      manualParse: jest.fn()
-    },
-    someDeferredObject: {
-      key: 'deferred',
-      BaseObject: MappingTestBaseObject,
-      defer: true,
-      manualParse: jest.fn()
-    }
-  };
-
   static displayName = 'TestBaseCacheableObject';
-
-  static idName = 'testId';
 }
 
 describe('BaseCacheableObject', () => {
@@ -71,17 +19,11 @@ describe('BaseCacheableObject', () => {
         instance = new TestBaseCacheableObject();
       });
 
-      afterEach(() => {
-        data = null;
-        isDataFromServer = null;
-        instance = null;
-      });
-
       test('defers to BaseObject\'s _populateObject for data mapping functionality', () => {
         // Super lazy way to test
         jest.spyOn(BaseObject, '_populateObject');
 
-        BaseCacheableObject._populateObject({ data, instance, isDataFromServer });
+        TestBaseCacheableObject._populateObject({ data, instance, isDataFromServer });
 
         expect(BaseObject._populateObject).toBeCalledWith({ data, instance, isDataFromServer });
 
@@ -241,28 +183,26 @@ describe('BaseCacheableObject', () => {
       });
     });
 
+    describe('getIDParams', () => {
+      test('returns empty object', () => {
+        expect(TestBaseCacheableObject.getIDParams()).toEqual({});
+      });
+    });
+
     describe('getCacheId', () => {
-      describe('when the passed params includes the id', () => {
-        test('returns the id', () => {
-          const id = 'someId';
-          const params = { [TestBaseCacheableObject.idName]: id };
+      describe('when getIDParams returns a non-empty object', () => {
+        test('returns a key-value string', () => {
+          jest.spyOn(TestBaseCacheableObject, 'getIDParams').mockReturnValue({ a: 1, b: 2 });
 
-          const cacheId = TestBaseCacheableObject.getCacheId(params);
-          expect(cacheId).toBe(id);
+          expect(TestBaseCacheableObject.getCacheId()).toBe('a=1;b=2;');
         });
       });
 
-      describe('when the passed params does not include the id', () => {
+      describe('when getIDParams returns an empty object', () => {
         test('returns undefined', () => {
-          const cacheId = TestBaseCacheableObject.getCacheId({});
-          expect(cacheId).toBeUndefined();
-        });
-      });
+          jest.spyOn(TestBaseCacheableObject, 'getIDParams').mockReturnValue({});
 
-      describe('when the params are undefined', () => {
-        test('returns undefined', () => {
-          const cacheId = TestBaseCacheableObject.getCacheId();
-          expect(cacheId).toBeUndefined();
+          expect(TestBaseCacheableObject.getCacheId()).toBeUndefined();
         });
       });
     });
@@ -279,22 +219,19 @@ describe('BaseCacheableObject', () => {
       baseCachableObject = null;
     });
 
-    describe('getId', () => {
-      test('returns the id defined at static idName', () => {
-        const id = 'some id';
-        _.set(baseCachableObject, TestBaseCacheableObject.idName, id);
+    describe('getIDParams', () => {
+      test('calls static getIDParams with the instance', () => {
+        jest.spyOn(TestBaseCacheableObject, 'getIDParams');
 
-        expect(baseCachableObject.getId()).toBe(id);
+        baseCachableObject.getIDParams();
+        expect(TestBaseCacheableObject.getIDParams).toBeCalledWith(baseCachableObject);
       });
-    });
 
-    describe('setId', () => {
-      test('returns the id defined at static idName', () => {
-        const id = 'some id';
-        _.set(baseCachableObject, TestBaseCacheableObject.idName, null);
+      test('returns the result of static getIDParams', () => {
+        const idParams = {};
+        jest.spyOn(TestBaseCacheableObject, 'getIDParams').mockReturnValue(idParams);
 
-        baseCachableObject.setId(id);
-        expect(_.get(baseCachableObject, TestBaseCacheableObject.idName)).toBe(id);
+        expect(baseCachableObject.getIDParams()).toBe(idParams);
       });
     });
 
@@ -307,10 +244,10 @@ describe('BaseCacheableObject', () => {
       });
 
       test('returns the result of static getCacheId', () => {
-        const id = 'some id';
-        _.set(baseCachableObject, TestBaseCacheableObject.idName, id);
+        const cacheId = 'some cache id';
+        jest.spyOn(TestBaseCacheableObject, 'getCacheId').mockReturnValue(cacheId);
 
-        expect(baseCachableObject.getCacheId()).toBe(id);
+        expect(baseCachableObject.getCacheId()).toBe(cacheId);
       });
     });
   });
