@@ -4,7 +4,7 @@ import BaseObject from '../base-object/base-object.js';
 
 /**
  * The base class for all project objects that can be cached. This class is extremely useful for
- * classes which have identifiers but cannot make API calls (e.g. Team, Player).
+ * classes which have unique identifiers but cannot make API calls.
  *
  * Note: The id used for caching may be different than any id used by the response from the wire.
  * This allows for caching of an instance with the same id but different season data. Example:
@@ -15,23 +15,10 @@ import BaseObject from '../base-object/base-object.js';
  * from `getCacheId` is valid (see `_populateObject` for an example). Otherwise the cache will not
  * be in the correct state.
  *
- * @extends BaseObject
+ * @extends {BaseObject}
  */
 class BaseCacheableObject extends BaseObject {
   static displayName = 'BaseCacheableObject';
-
-  /**
-   * Denotes which attribute the identifier of the object is defined on. In this project, this is
-   * typically the object name appended by 'id' (e.g. 'leagueId', 'teamId').
-   *
-   * Note: When multiple ids or parameters are needed for `read`s, override the `read` method to
-   * ensure all necessary parameters are passed. When multiple ids are needed for caching, override
-   * the `getCacheId` method. In either of the previous cases, the class's `constructor` should be
-   * overridden to accept these parameters.
-   *
-   * @type {string}
-   */
-  static idName = 'id';
 
   /**
    * Defers to `BaseObject._populateObject` and then caches the instance using the caching id from
@@ -57,7 +44,7 @@ class BaseCacheableObject extends BaseObject {
    * created. This implementation ensures each class has a unique cache of only instances of the
    * BaseCacheableObject that does not overlap with other BaseCacheableObject classes. The keys of
    * the cache should use the caching id implemented in `getCacheId`.
-   * @return {object.<string, BaseCacheableObject>} The cache of BaseAPIObjects.
+   * @return {Object.<String, BaseCacheableObject>} The cache of BaseAPIObjects.
    */
   static get cache() {
     if (!this._cache) {
@@ -69,7 +56,7 @@ class BaseCacheableObject extends BaseObject {
 
   /**
    * Sets the cache object.
-   * @param {object.<string, BaseCacheableObject>} cache
+   * @param {Object.<String, BaseCacheableObject>} cache
    */
   static set cache(cache) {
     this._cache = cache;
@@ -85,7 +72,7 @@ class BaseCacheableObject extends BaseObject {
   /**
    * Returns a cached instance matching the passed caching id if it exists. Otherwise, returns
    * undefined.
-   * @param  {number} id This id must match the form of the caching id provided by `getCacheId`.
+   * @param  {Number} id This id must match the form of the caching id provided by `getCacheId`.
    * @return {BaseCacheableObject|undefined}
    */
   static get(id) {
@@ -93,36 +80,38 @@ class BaseCacheableObject extends BaseObject {
   }
 
   /**
+   * Should be overridden by each subclass. Returns an object containing all IDs used for API
+   * requests and caching.
+   * @return {Object}
+   */
+  static getIDParams() {
+    return {};
+  }
+
+  /**
    * Constructs and returns an id for the cache if possible from the passed params. If construction
    * is not possible, returns undefined.
-   * @param  {object} params
+   * @param  {Object} idParams
    * @return {string|undefined}
    */
-  static getCacheId(params) {
-    return _.get(params, this.idName);
+  static getCacheId(idParams) {
+    const cacheId = _.map(this.getIDParams(idParams), (value, key) => `${key}=${value};`).join('');
+    return _.isEmpty(cacheId) ? undefined : cacheId;
   }
 
   /**
-   * Gets the instance's id, using `static idName` to get the correct attribute.
-   * @return {number}
+   * Returns an object containing all IDs used for API requests and caching for the instance.
+   * @return {Object}
    */
-  getId() {
-    return _.get(this, this.constructor.idName);
-  }
-
-  /**
-   * Gets the instance's id, using `static idName` to set the correct attribute.
-   * @param {number} id
-   */
-  setId(id) {
-    _.set(this, this.constructor.idName, id);
+  getIDParams() {
+    return this.constructor.getIDParams(this);
   }
 
   /**
    * Returns the id used for caching. Important for classes that have multiple identifiers. Example:
    * League is identified by its `leagueId` and its `seasonId`. This method prevents separate
    * seasons from overriding each other's data.
-   * @return {string}
+   * @return {String|undefined}
    */
   getCacheId() {
     return this.constructor.getCacheId(this);

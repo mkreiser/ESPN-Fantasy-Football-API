@@ -3,60 +3,12 @@ import _ from 'lodash';
 
 import BaseAPIObject from './base-api-object.js';
 
-class MappingTestBaseObject extends BaseAPIObject {
-  static responseMap = {
-    mappingId: 'mapping_id',
-    someValue: 'some_value',
-    someNestedData: 'nested.item'
-  };
-
-  static displayName = 'MappingTestBaseObject';
-
-  static idName = 'mappingId';
-}
-
 class TestBaseAPIObject extends BaseAPIObject {
-  constructor(options = {}) {
-    super(options);
-
-    this.constructorOption = options.constructorOption;
-  }
-
-  static responseMap = {
-    testId: 'testId',
-    someValue: 'some_value',
-    someNestedData: 'nested.item',
-    someObject: {
-      key: 'map_object',
-      BaseAPIObject: MappingTestBaseObject
-    },
-    someObjects: {
-      key: 'someObjects',
-      BaseAPIObject: MappingTestBaseObject,
-      isArray: true
-    },
-    someManualObject: {
-      key: 'manual',
-      manualParse: jest.fn()
-    },
-    someManualAndBaseObject: {
-      key: 'both',
-      BaseAPIObject: MappingTestBaseObject,
-      manualParse: jest.fn()
-    },
-    someDeferredObject: {
-      key: 'deferred',
-      BaseAPIObject: MappingTestBaseObject,
-      defer: true,
-      manualParse: jest.fn()
-    }
-  };
-
-  static route = 'fake/route';
+  static routeParams = 'view=mRoster&view=mWhyESPN';
 
   static displayName = 'TestBaseAPIObject';
 
-  static idName = 'testId';
+  static getRoute = jest.fn().mockReturnValue('some-route');
 }
 
 describe('BaseAPIObject', () => {
@@ -74,477 +26,448 @@ describe('BaseAPIObject', () => {
       });
     });
 
+    describe('getRoute', () => {
+      test('throws error', () => {
+        expect(() => BaseAPIObject.getRoute()).toThrowError(
+          'BaseAPIObject: getRoute must be overridden!'
+        );
+      });
+    });
+
     describe('read', () => {
-      let id;
-      let instance;
-      let params;
-      let reload;
-
       beforeEach(() => {
-        id = 121340;
-        instance = new TestBaseAPIObject();
-        params = { some: 'param' };
-        reload = true;
-
         jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({}));
       });
 
-      afterEach(() => {
-        id = null;
-        instance = null;
-        params = null;
-        reload = null;
+      describe('cookie behavior', () => {
+        let route;
+
+        beforeEach(() => {
+          route = 'some-route';
+          jest.spyOn(TestBaseAPIObject, 'getRoute').mockReturnValue(route);
+        });
+
+        const testDoesNotSetHeaders = () => {
+          test('calls axios.get without axiosConfig', () => {
+            TestBaseAPIObject.read();
+            expect(axios.get).toBeCalledWith(route, undefined);
+          });
+        };
+
+        describe('when _espnS2 is set', () => {
+          describe('when _SWID is set', () => {
+            test('calls axios.get with the correct axiosConfig', () => {
+              const espnS2 = 'some-ESPN-S2';
+              const SWID = 'some-SWID';
+
+              TestBaseAPIObject.setCookies({ espnS2, SWID });
+
+              TestBaseAPIObject.read();
+              expect(axios.get).toBeCalledWith(route, {
+                headers: { Cookie: `espn_s2=${espnS2}; SWID=${SWID};` },
+                withCredentials: true
+              });
+            });
+          });
+
+          describe('when _SWID is not set', () => {
+            beforeEach(() => {
+              TestBaseAPIObject.setCookies({ espnS2: 'some-ESPN-S2' });
+            });
+
+            afterEach(() => {
+              TestBaseAPIObject.setCookies({}); // Reset for other tests
+            });
+
+            testDoesNotSetHeaders();
+          });
+        });
+
+        describe('when _espnS2 not is set', () => {
+          describe('when _SWID is set', () => {
+            beforeEach(() => {
+              TestBaseAPIObject.setCookies({ SWID: 'some-SWID' });
+            });
+
+            afterEach(() => {
+              TestBaseAPIObject.setCookies({}); // Reset for other tests
+            });
+
+            testDoesNotSetHeaders();
+          });
+
+          describe('when _SWID is not set', () => {
+            beforeEach(() => {
+              TestBaseAPIObject.setCookies({});
+            });
+
+            testDoesNotSetHeaders();
+          });
+        });
       });
 
-      const testReadBehaviorWithObject = () => {
-        describe('when cookies are set', () => {
-          test('calls axios.get with route, params, headers, and the correct config', () => {
-            const route = 'some-route';
-            const espnS2 = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx';
-            const SWID = '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxx}';
+      const testAxiosReadWithoutInstance = (getMethodParams, setupCache) => {
+        test('calls getRoute', () => {
+          if (setupCache) {
+            setupCache();
+          }
 
-            TestBaseAPIObject.setCookies({ espnS2, SWID });
-
-            TestBaseAPIObject.read({ instance, route, params });
-            expect(axios.get).toBeCalledWith(route, {
-              params, headers: { Cookie: `espn_s2=${espnS2}; SWID=${SWID};` }, withCredentials: true
-            });
-
-            TestBaseAPIObject.setCookies({}); // Reset for later tests
-          });
+          const methodParams = getMethodParams();
+          TestBaseAPIObject.read(methodParams);
+          expect(TestBaseAPIObject.getRoute).toBeCalledWith(_.get(methodParams, 'requestParams'));
         });
 
-        describe('when cookies are not set', () => {
-          test('calls axios.get with route, params, and the correct config', () => {
-            const route = 'some-route';
+        test('calls axios.get with the route from getRoute', () => {
+          if (setupCache) {
+            setupCache();
+          }
 
-            TestBaseAPIObject.read({ instance, route, params });
-            expect(axios.get).toBeCalledWith(route, {
-              params, headers: undefined, withCredentials: false
-            });
-          });
+          TestBaseAPIObject.read(getMethodParams());
+          expect(axios.get).toBeCalledWith(TestBaseAPIObject.getRoute(), undefined);
         });
 
-        describe('when the read promise resolves', () => {
-          test('calls _populateObject', async () => {
-            jest.spyOn(TestBaseAPIObject, '_populateObject');
+        describe('when axios.get resolves', () => {
+          test('calls buildFromServer with the response', async () => {
+            if (setupCache) {
+              setupCache();
+            }
 
             const response = { data: {} };
-            axios.get.mockReturnValue(Promise.resolve(response));
 
-            await TestBaseAPIObject.read({ instance, params, reload });
+            axios.get.mockReturnValue(Promise.resolve(response));
+            jest.spyOn(TestBaseAPIObject, 'buildFromServer');
+
+            await TestBaseAPIObject.read(getMethodParams());
+            expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data);
+          });
+
+          test('returns result of buildFromServer', async () => {
+            if (setupCache) {
+              setupCache();
+            }
+
+            const response = { data: {} };
+            const builtData = new TestBaseAPIObject();
+
+            axios.get.mockReturnValue(Promise.resolve(response));
+            jest.spyOn(TestBaseAPIObject, 'buildFromServer').mockReturnValue(builtData);
+
+            const result = await TestBaseAPIObject.read(getMethodParams());
+            expect(result).toBe(builtData);
+          });
+        });
+      };
+
+      const testAxiosReadWithInstance = (getMethodParams, setupCache) => {
+        test('calls getRoute on the passed instance', () => {
+          if (setupCache) {
+            setupCache();
+          }
+
+          const methodParams = getMethodParams();
+          jest.spyOn(methodParams.instance, 'getRoute');
+
+          TestBaseAPIObject.read(methodParams);
+          expect(methodParams.instance.getRoute).toBeCalled();
+        });
+
+        test('calls axios.get with the result of getRoute', () => {
+          if (setupCache) {
+            setupCache();
+          }
+
+          const methodParams = getMethodParams();
+          const route = 'some-route';
+          jest.spyOn(methodParams.instance, 'getRoute').mockReturnValue(route);
+
+          TestBaseAPIObject.read(methodParams);
+          expect(axios.get).toBeCalledWith(route, undefined);
+        });
+
+        describe('when axios.get resolves', () => {
+          test('calls _populateObject with the passed instance and response data', async () => {
+            if (setupCache) {
+              setupCache();
+            }
+
+            const methodParams = getMethodParams();
+            const response = { data: {} };
+
+            axios.get.mockReturnValue(Promise.resolve(response));
+            jest.spyOn(TestBaseAPIObject, '_populateObject');
+
+            await TestBaseAPIObject.read(methodParams);
             expect(TestBaseAPIObject._populateObject).toBeCalledWith({
               data: response.data,
-              constructorParams: params,
-              instance,
+              instance: methodParams.instance,
               isDataFromServer: true
             });
           });
 
-          test('returns built instance for chaining', async () => {
-            const builtObject = new TestBaseAPIObject();
-
-            jest.spyOn(TestBaseAPIObject, '_populateObject').mockReturnValue(builtObject);
-
-            const returnedObject = await TestBaseAPIObject.read({ instance, params, reload });
-            expect(returnedObject).toBe(builtObject);
-          });
-        });
-
-        describe('when the read errors', () => {
-          test('throws error', async () => {
-            const error = 'some error';
-            axios.get.mockReturnValue(Promise.reject(error));
-
-            expect.assertions(1);
-
-            try {
-              await TestBaseAPIObject.read({ params });
-            } catch (e) {
-              expect(e).toBe(error);
+          test('returns the result of _populateObject', async () => {
+            if (setupCache) {
+              setupCache();
             }
-          });
-        });
-      };
-
-      const testReadBehaviorWithoutObject = () => {
-        describe('when cookies are set', () => {
-          test('calls axios.get with route, params, headers, and the correct config', () => {
-            const route = 'some-route';
-            const espnS2 = 'xxxxxxxxxxxxxxxxxxxxxxxxxxx';
-            const SWID = '{xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxxxxxxxx}';
-
-            TestBaseAPIObject.setCookies({ espnS2, SWID });
-
-            TestBaseAPIObject.read({ route, params });
-            expect(axios.get).toBeCalledWith(route, {
-              params, headers: { Cookie: `espn_s2=${espnS2}; SWID=${SWID};` }, withCredentials: true
-            });
-
-            TestBaseAPIObject.setCookies({}); // Reset for later tests
-          });
-        });
-
-        describe('when cookies are not set', () => {
-          test('calls axios.get with route, params, and the correct config', () => {
-            const route = 'some-route';
-
-            TestBaseAPIObject.read({ route, params });
-            expect(axios.get).toBeCalledWith(route, {
-              params, headers: undefined, withCredentials: false
-            });
-          });
-        });
-
-        describe('when the read promise resolves', () => {
-          test('calls buildFromServer', async () => {
-            jest.spyOn(TestBaseAPIObject, 'buildFromServer');
 
             const response = { data: {} };
+            const builtData = new TestBaseAPIObject();
+
             axios.get.mockReturnValue(Promise.resolve(response));
+            jest.spyOn(TestBaseAPIObject, '_populateObject').mockReturnValue(builtData);
 
-            await TestBaseAPIObject.read({ params, reload });
-            expect(TestBaseAPIObject.buildFromServer).toBeCalledWith(response.data, params);
-          });
-
-          test('returns built instance for chaining', async () => {
-            const builtObject = new TestBaseAPIObject();
-
-            jest.spyOn(TestBaseAPIObject, 'buildFromServer').mockReturnValue(builtObject);
-
-            const returnedObject = await TestBaseAPIObject.read({ params, reload });
-            expect(returnedObject).toBe(builtObject);
-          });
-        });
-
-        describe('when the read errors', () => {
-          test('throws error', async () => {
-            const error = 'some error';
-            axios.get.mockReturnValue(Promise.reject(error));
-
-            expect.assertions(1);
-
-            try {
-              await TestBaseAPIObject.read({ params, reload });
-            } catch (e) {
-              expect(e).toBe(error);
-            }
+            const result = await TestBaseAPIObject.read(getMethodParams());
+            expect(result).toBe(builtData);
           });
         });
       };
 
-      const testCacheBehavior = () => {
-        test('returns cached instance', async () => {
-          const returnedObject = await TestBaseAPIObject.read({ instance, params, reload });
-          expect(returnedObject).toBe(TestBaseAPIObject.cache[id]);
-        });
-      };
+      const testCacheFunctionalityWithClassID = (getMethodParams, withInstance) => {
+        test('calls getCacheId on the class', async () => {
+          jest.spyOn(TestBaseAPIObject, 'getCacheId');
 
-      describe('when route is null', () => {
-        test('throws error via static read', () => {
-          expect(() => TestBaseAPIObject.read({ route: null })).toThrowError(
-            `${TestBaseAPIObject.displayName}: static read: cannot read without route`
+          const methodParams = getMethodParams();
+
+          await TestBaseAPIObject.read(methodParams);
+          expect(TestBaseAPIObject.getCacheId).toBeCalledWith(
+            methodParams.requestParams ? methodParams.requestParams : undefined
           );
         });
+
+        describe('when there is a matching item in the cache', () => {
+          test('does not call axios.get', async () => {
+            const cacheId = 'some-cache-id';
+
+            TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+            jest.spyOn(TestBaseAPIObject, 'getCacheId').mockReturnValue(cacheId);
+
+            await TestBaseAPIObject.read(getMethodParams());
+            expect(axios.get).not.toBeCalled();
+          });
+
+          test('returns cached item', async () => {
+            const cacheId = 'some-cache-id';
+
+            TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+            jest.spyOn(TestBaseAPIObject, 'getCacheId').mockReturnValue(cacheId);
+
+            const item = await TestBaseAPIObject.read(getMethodParams());
+            expect(item).toBe(_.get(TestBaseAPIObject.cache, cacheId));
+          });
+        });
+
+        describe('when there is not a matching item in the cache', () => {
+          if (withInstance) {
+            testAxiosReadWithInstance(
+              getMethodParams,
+              () => {
+                const cacheId = 'some-cache-id';
+
+                delete TestBaseAPIObject.cache[cacheId];
+                jest.spyOn(TestBaseAPIObject, 'getCacheId').mockReturnValue(cacheId);
+              }
+            );
+          } else {
+            testAxiosReadWithoutInstance(
+              getMethodParams,
+              () => {
+                const cacheId = 'some-cache-id';
+
+                delete TestBaseAPIObject.cache[cacheId];
+                jest.spyOn(TestBaseAPIObject, 'getCacheId').mockReturnValue(cacheId);
+              }
+            );
+          }
+        });
+      };
+
+      describe('when no method parameters are passed', () => {
+        test('does not call getCacheId on the class', () => {
+          jest.spyOn(TestBaseAPIObject, 'getCacheId');
+
+          TestBaseAPIObject.read();
+          expect(TestBaseAPIObject.getCacheId).not.toBeCalled();
+        });
+
+        testAxiosReadWithoutInstance(() => undefined);
       });
 
-      describe('when route is not passed', () => {
-        test('defaults to static route', () => {
-          expect(() => TestBaseAPIObject.read()).not.toThrowError();
-          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
-            params: undefined, headers: undefined, withCredentials: false
-          });
-        });
-      });
+      describe('when method parameters are passed', () => {
+        describe('when instance is passed', () => {
+          let instance;
 
-      describe('when no parameters are passed', () => {
-        test('defaults to static route and reloads', () => {
-          expect(() => TestBaseAPIObject.read()).not.toThrowError();
-          expect(axios.get).toBeCalledWith(TestBaseAPIObject.route, {
-            params: undefined, headers: undefined, withCredentials: false
-          });
-        });
-      });
-
-      describe('when instance is passed', () => {
-        beforeEach(() => {
-          instance = new TestBaseAPIObject();
-        });
-
-        describe('when idName is defined on the passed params', () => {
           beforeEach(() => {
-            params.testId = id;
+            instance = new TestBaseAPIObject();
           });
 
-          describe('when reload is true', () => {
+          describe('when requestParams is passed', () => {
+            let requestParams;
+
             beforeEach(() => {
-              reload = true;
+              requestParams = { some: 'requestParams' };
             });
 
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = instance;
+            describe('when reload is true', () => {
+              test('does not call getCacheId on the passed instance', () => {
+                jest.spyOn(instance, 'getCacheId');
+
+                TestBaseAPIObject.read({ instance, requestParams, reload: true });
+                expect(instance.getCacheId).not.toBeCalled();
               });
 
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithObject();
+              testAxiosReadWithInstance(() => ({ instance, requestParams, reload: true }));
             });
 
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = undefined;
+            describe('when reload is false', () => {
+              test('calls getCacheId on the passed instance', async () => {
+                jest.spyOn(instance, 'getCacheId');
+
+                await TestBaseAPIObject.read({ instance, requestParams, reload: false });
+                expect(instance.getCacheId).toBeCalled();
               });
 
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
+              describe('when getCacheId from the passed instance returns an id', () => {
+                describe('when there is a matching item in the cache', () => {
+                  test('does not call axios.get', async () => {
+                    const cacheId = 'some-cache-id';
+
+                    TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+                    jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+
+                    await TestBaseAPIObject.read({ instance, requestParams, reload: false });
+                    expect(axios.get).not.toBeCalled();
+                  });
+
+                  test('returns cached item', async () => {
+                    const cacheId = 'some-cache-id';
+
+                    TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+                    jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+
+                    const item = await TestBaseAPIObject.read({
+                      instance, requestParams, reload: false
+                    });
+                    expect(item).toBe(_.get(TestBaseAPIObject.cache, cacheId));
+                  });
+                });
+
+                describe('when there is not a matching item in the cache', () => {
+                  testAxiosReadWithInstance(
+                    () => ({ instance, requestParams, reload: false }),
+                    () => {
+                      const cacheId = 'some-cache-id';
+
+                      delete TestBaseAPIObject.cache[cacheId];
+                      jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+                    }
+                  );
+                });
               });
 
-              testReadBehaviorWithObject();
+              describe('when getCacheId from the passed instance does not return an id', () => {
+                beforeEach(() => {
+                  jest.spyOn(instance, 'getCacheId').mockReturnValue(undefined);
+                });
+
+                testCacheFunctionalityWithClassID(
+                  () => ({ instance, requestParams, reload: false }), true
+                );
+              });
             });
           });
 
-          describe('when reload is false', () => {
-            beforeEach(() => {
-              reload = false;
+          describe('when requestParams is not passed', () => {
+            describe('when reload is true', () => {
+              test('does not call getCacheId on the passed instance', () => {
+                jest.spyOn(instance, 'getCacheId');
+
+                TestBaseAPIObject.read({ instance, reload: true });
+                expect(instance.getCacheId).not.toBeCalled();
+              });
+
+              testAxiosReadWithInstance(() => ({ instance, reload: true }));
             });
 
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = instance;
+            describe('when reload is false', () => {
+              test('calls getCacheId on the passed instance', async () => {
+                jest.spyOn(instance, 'getCacheId');
+
+                await TestBaseAPIObject.read({ instance, reload: false });
+                expect(instance.getCacheId).toBeCalled();
               });
 
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
+              describe('when getCacheId from the passed instance returns an id', () => {
+                describe('when there is a matching item in the cache', () => {
+                  test('does not call axios.get', async () => {
+                    const cacheId = 'some-cache-id';
+
+                    TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+                    jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+
+                    await TestBaseAPIObject.read({ instance, reload: false });
+                    expect(axios.get).not.toBeCalled();
+                  });
+
+                  test('returns cached item', async () => {
+                    const cacheId = 'some-cache-id';
+
+                    TestBaseAPIObject.cache[cacheId] = new TestBaseAPIObject();
+                    jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+
+                    const item = await TestBaseAPIObject.read({
+                      instance, reload: false
+                    });
+                    expect(item).toBe(_.get(TestBaseAPIObject.cache, cacheId));
+                  });
+                });
+
+                describe('when there is not a matching item in the cache', () => {
+                  testAxiosReadWithInstance(
+                    () => ({ instance, reload: false }),
+                    () => {
+                      const cacheId = 'some-cache-id';
+
+                      delete TestBaseAPIObject.cache[cacheId];
+                      jest.spyOn(instance, 'getCacheId').mockReturnValue(cacheId);
+                    }
+                  );
+                });
               });
 
-              testCacheBehavior();
-            });
+              describe('when getCacheId from the passed instance does not return an id', () => {
+                beforeEach(() => {
+                  jest.spyOn(instance, 'getCacheId').mockReturnValue(undefined);
+                });
 
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = undefined;
+                testCacheFunctionalityWithClassID(() => ({ instance, reload: false }), true);
               });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithObject();
             });
           });
         });
 
-        describe('when idName is not defined on the passed params', () => {
-          beforeEach(() => {
-            delete params.testId;
-          });
+        describe('when instance is not passed', () => {
+          describe('when requestParams is passed', () => {
+            let requestParams;
 
-          describe('when reload is true', () => {
             beforeEach(() => {
-              reload = true;
+              requestParams = { some: 'requestParams' };
             });
 
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = instance;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithObject();
+            describe('when reload is true (*via default*)', () => {
+              testAxiosReadWithoutInstance(() => ({ requestParams }));
             });
 
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithObject();
+            describe('when reload is false', () => {
+              testCacheFunctionalityWithClassID(() => ({ requestParams, reload: false }), false);
             });
           });
 
-          describe('when reload is false', () => {
-            beforeEach(() => {
-              reload = false;
+          describe('when requestParams is not passed', () => {
+            describe('when reload is true', () => {
+              testAxiosReadWithoutInstance(() => ({ reload: true }));
             });
 
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = instance;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testCacheBehavior();
-            });
-
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                instance.testId = id;
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithObject();
-            });
-          });
-        });
-      });
-
-      describe('when instance is not passed', () => {
-        beforeEach(() => {
-          instance = undefined;
-        });
-
-        describe('when idName is defined on the passed params', () => {
-          beforeEach(() => {
-            params.testId = id;
-          });
-
-          describe('when reload is true', () => {
-            beforeEach(() => {
-              reload = true;
-            });
-
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-          });
-
-          describe('when reload is false', () => {
-            beforeEach(() => {
-              reload = false;
-            });
-
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testCacheBehavior();
-            });
-
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-          });
-        });
-
-        describe('when idName is not defined on the passed params', () => {
-          beforeEach(() => {
-            delete params.testId;
-          });
-
-          describe('when reload is true', () => {
-            beforeEach(() => {
-              reload = true;
-            });
-
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-          });
-
-          describe('when reload is false', () => {
-            beforeEach(() => {
-              reload = false;
-            });
-
-            describe('when a cached instance has a matching id', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = new TestBaseAPIObject({ testId: id });
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
-            });
-
-            describe('when no matching instance is found in the cache', () => {
-              beforeEach(() => {
-                TestBaseAPIObject.cache[id] = undefined;
-              });
-
-              afterEach(() => {
-                TestBaseAPIObject.clearCache();
-              });
-
-              testReadBehaviorWithoutObject();
+            describe('when reload is false', () => {
+              testCacheFunctionalityWithClassID(() => ({ reload: false }), false);
             });
           });
         });
@@ -559,102 +482,87 @@ describe('BaseAPIObject', () => {
       baseAPIObject = new TestBaseAPIObject();
     });
 
-    afterEach(() => {
-      baseAPIObject = null;
+    describe('getRoute', () => {
+      test('calls static getRoute with the instance', () => {
+        jest.spyOn(TestBaseAPIObject, 'getRoute').mockImplementation();
+
+        baseAPIObject.getRoute();
+        expect(TestBaseAPIObject.getRoute).toBeCalledWith(baseAPIObject);
+      });
+
+      test('returns the result of static getRoute', () => {
+        const route = 'some route';
+        jest.spyOn(TestBaseAPIObject, 'getRoute').mockReturnValue(route);
+
+        expect(baseAPIObject.getRoute()).toBe(route);
+      });
     });
 
     describe('read', () => {
       beforeEach(() => {
-        jest.spyOn(axios, 'get').mockReturnValue(Promise.resolve({}));
+        jest.spyOn(TestBaseAPIObject, 'read').mockReturnValue(new TestBaseAPIObject());
       });
 
-      describe('when no params are passed to the method', () => {
-        test('calls static read with idName merged into params', () => {
-          jest.spyOn(TestBaseAPIObject, 'read');
+      const testReturnsReadResult = (methodParams) => {
+        test('returns result of static read', async () => {
+          expect.assertions(1);
+          const returnedResult = await baseAPIObject.read(methodParams);
+          expect(returnedResult).toBeInstanceOf(TestBaseAPIObject);
+        });
+      };
 
-          const id = 1232;
-          baseAPIObject.testId = id;
+      describe('when no method parameters are passed', () => {
+        testReturnsReadResult();
 
-          const expectedParams = _.assign({}, { testId: id });
+        test('calls static read with the instance\'s ID params and reload: true', () => {
+          const idParams = {};
+
+          jest.spyOn(baseAPIObject, 'getIDParams').mockReturnValue(idParams);
 
           baseAPIObject.read();
           expect(TestBaseAPIObject.read).toBeCalledWith({
-            route: TestBaseAPIObject.route,
             instance: baseAPIObject,
-            params: expectedParams,
+            requestParams: idParams,
             reload: true
           });
         });
-
-        test('returns result of static read', async () => {
-          const route = 'some-route';
-          const params = { some: 'params' };
-          baseAPIObject.testId = 42;
-
-
-          expect.assertions(1);
-          const returnedResult = await baseAPIObject.read({ route, params });
-          expect(returnedResult).toBeInstanceOf(TestBaseAPIObject);
-        });
       });
 
-      describe('when route is not passed', () => {
-        test('calls static read with idName merged into params', () => {
-          jest.spyOn(TestBaseAPIObject, 'read');
+      describe('when method params are passed', () => {
+        describe('when requestParams is passed', () => {
+          testReturnsReadResult({ requestParams: {} });
 
-          const id = 1232;
-          baseAPIObject.testId = id;
+          test('calls static read with requestParams merged into the instance\'s ID params', () => {
+            const idParams = { leagueId: 123 };
+            const requestParams = { notId: 'something', leagueId: 456 };
 
-          const params = { some: 'params' };
-          const expectedParams = _.assign({}, params, { testId: id });
+            jest.spyOn(baseAPIObject, 'getIDParams').mockReturnValue(idParams);
 
-          baseAPIObject.read({ params });
-          expect(TestBaseAPIObject.read).toBeCalledWith({
-            route: TestBaseAPIObject.route,
-            instance: baseAPIObject,
-            params: expectedParams,
-            reload: true
+            baseAPIObject.read({ requestParams });
+            expect(TestBaseAPIObject.read).toBeCalledWith({
+              instance: baseAPIObject,
+              requestParams: _.merge({}, idParams, requestParams),
+              reload: true
+            });
           });
         });
 
-        test('returns result of static read', async () => {
-          const route = 'some-route';
-          const params = { some: 'params' };
-          baseAPIObject.testId = 42;
+        describe('when reload is passed', () => {
+          testReturnsReadResult({ reload: false });
 
+          test('calls static read with the passed reload and the instance\'s ID params', () => {
+            const idParams = { leagueId: 123 };
 
-          expect.assertions(1);
-          const returnedResult = await baseAPIObject.read({ route, params });
-          expect(returnedResult).toBeInstanceOf(TestBaseAPIObject);
+            jest.spyOn(baseAPIObject, 'getIDParams').mockReturnValue(idParams);
+
+            baseAPIObject.read({ reload: false });
+            expect(TestBaseAPIObject.read).toBeCalledWith({
+              instance: baseAPIObject,
+              requestParams: idParams,
+              reload: false
+            });
+          });
         });
-      });
-
-      test('calls static read with idName merged into params', () => {
-        jest.spyOn(TestBaseAPIObject, 'read');
-        const id = 1232;
-        baseAPIObject.testId = id;
-
-        const params = { some: 'params' };
-        const expectedParams = _.assign({}, params, { testId: id });
-
-        baseAPIObject.read({ params });
-        expect(TestBaseAPIObject.read).toBeCalledWith({
-          route: TestBaseAPIObject.route,
-          instance: baseAPIObject,
-          params: expectedParams,
-          reload: true
-        });
-      });
-
-      test('returns result of static read', async () => {
-        const route = 'some-route';
-        const params = { some: 'params' };
-        baseAPIObject.testId = 42;
-
-
-        expect.assertions(1);
-        const returnedResult = await baseAPIObject.read({ route, params });
-        expect(returnedResult).toBeInstanceOf(TestBaseAPIObject);
       });
     });
   });

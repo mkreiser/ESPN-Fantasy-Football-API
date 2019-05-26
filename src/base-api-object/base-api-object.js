@@ -6,18 +6,26 @@ import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.
 /**
  * The base class for all project objects that can communicate with the ESPN API. Provides `read`
  * functionality. Can connect to private leagues when cookies are set on this class.
- * @extends BaseCacheableObject
+ *
+ * @extends {BaseCacheableObject}
  */
 class BaseAPIObject extends BaseCacheableObject {
   static displayName = 'BaseAPIObject';
 
   /**
+   * The "view" params passed to the main monoroute to populate the response with desired data.
+   * This is NOT dynamic params, such as league or season id.
+   * @type {String}
+   */
+  static routeParams = '';
+
+  /**
    * Sets ESPN cookies to allow access to private leagues. Not required to be set for public
    * leagues. By setting cookies on this class, every subclass (League, Boxscore, etc) will use the
    * cookies when making read calls.
-   * @param {string} options.espnS2 Found at "Application > Cookies > espn.com > espn_s2" via Chrome
+   * @param {String} options.espnS2 Found at "Application > Cookies > espn.com > espn_s2" via Chrome
    *                                devtools.
-   * @param {string} options.SWID Found at "Application > Cookies > espn.com > SWID" via Chrome
+   * @param {String} options.SWID Found at "Application > Cookies > espn.com > SWID" via Chrome
    *                              devtools.
    */
   static setCookies({ espnS2, SWID }) {
@@ -26,84 +34,84 @@ class BaseAPIObject extends BaseCacheableObject {
   }
 
   /**
-   * Makes a call to the passed route with the passed params.
+   * Must be overridden by subclasses. Constructs and returns an API route to which a request will
+   * be made.
+   * @throws {Error}
+   */
+  static getRoute() {
+    throw new Error(`${this.displayName}: getRoute must be overridden!`);
+  }
+
+  /**
+   * Makes a read request to get data to populate an instance. Uses `static getRoute` to get the
+   * properly constructed route (including params) to call.
    *
    * If reload is true, then any matching cached instance is ignored and overridden on successful
    * read.
    * If reload is false and a matching instance is found in the cache, the cached instance is
    * returned in
-   * an immediately resolving promise. If reload is false but no cached instance is found, the
-   * request will be made to load the instance for the first time.
+   * an immediately resolving promise.
+   * If reload is false but no cached instance is found, the request will be made to load the
+   * instance for the first time.
    *
    * Populated instances are cached on succesful reads.
    *
    * Consumers of this project are responsible for catching errors.
    *
    * @async
-   * @throws {Error} If route is not defined
    * @param  {BaseAPIObject} options.instance The instance to populate rather than creating a new
-   *                                       instance.
-   * @param  {string} options.route The route on the API to call.
-   * @param  {object} options.params Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
-   * @return {Promise}
+   *                                          instance.
+   * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
+   * @return {Promise<BaseAPIObject>}
    */
-  static read(
-    {
-      instance, route = this.route, params, reload = true
-    } = { route: this.route, reload: true }
-  ) {
-    if (!route) {
-      throw new Error(`${this.displayName}: static read: cannot read without route`);
+  static read({ instance, requestParams, reload = true } = { reload: true }) {
+    // Return cached instance if appropriate
+    if (!reload) {
+      const cachingId = _.invoke(instance, 'getCacheId') || this.getCacheId(requestParams);
+      if (_.get(this.cache, cachingId)) {
+        return Promise.resolve(_.get(this.cache, cachingId));
+      }
     }
 
-    const cachingId = _.invoke(instance, 'getCacheId') || this.getCacheId(params);
-    if (cachingId && !reload && _.get(this.cache, cachingId)) {
-      return Promise.resolve(_.get(this.cache, cachingId));
-    }
+    // Build headers if appropriate
+    const axiosConfig = (this._espnS2 && this._SWID) ? {
+      headers: { Cookie: `espn_s2=${this._espnS2}; SWID=${this._SWID};` },
+      withCredentials: true
+    } : undefined;
 
-    const headers = (this._espnS2 && this._SWID) ?
-      { Cookie: `espn_s2=${this._espnS2}; SWID=${this._SWID};` } :
-      undefined;
-    const axiosConfig = { params, headers, withCredentials: !_.isEmpty(headers) };
+    // Construct the route to call, allowing for direct call of class method
+    const route = _.invoke(instance, 'getRoute') || this.getRoute(requestParams);
 
+    // Make request
     return axios.get(route, axiosConfig).then((response) => (
       instance ? this._populateObject({
         data: response.data,
-        constructorParams: params,
         instance,
         isDataFromServer: true
-      }) : this.buildFromServer(response.data, params)
+      }) : this.buildFromServer(response.data)
     ));
   }
 
   /**
-   * Makes a call to the passed route with the passed params. Automatically includes the id of the
-   * instance in the params. Defers actual GET call and data population to `static read`. Defers
-   * error handling of proper parameters (i.e. necessary `id`s)  to `static read` implementations.
+   * Must be overridden by subclasses. Defers to class method to construct and return an API route.
+   * @returns {String} The constructed API route
+   * @throws {Error} If class method is not overridden
+   */
+  getRoute() {
+    return this.constructor.getRoute(this);
+  }
+
+  /**
+   * Defers to `static read`.
    *
    * @async
-   * @param  {string} options.route   The route on the API to call.
-   * @param  {object} options.params  Params to pass on the GET call.
-   * @param  {boolean} options.reload Whether or not to bypass the cache and force a GET call.
-   * @return {Promise}
+   * @param  {Boolean} options.reload Whether or not to bypass the cache and force a GET call.
+   * @return {Promise<BaseAPIObject>}
    */
-  read({
-    route = this.constructor.route, params, reload = true
-  } = {
-    route: this.constructor.route, reload: true
-  }) {
-    // This implementation does not set key if value is `undefined`, `NaN`, or `Infinity`. ESPN API
-    // will throw an error if an `undefined` value is passed on `params`.
-    const idParams = _.pickBy({
-      [this.constructor.idName]: this.getId()
-    }, (value) => _.isFinite(value));
-    const paramsWithId = _.assign({}, params, idParams);
-
+  read({ requestParams, reload = true } = { reload: true }) {
     return this.constructor.read({
-      route,
       instance: this,
-      params: paramsWithId,
+      requestParams: _.merge({}, this.getIDParams(), requestParams),
       reload
     });
   }
