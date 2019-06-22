@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { flattenObject } from '../../utils.js';
+
 import BaseObject from './base-object.js';
 
 class MapObjectErrorBaseObject extends BaseObject {
@@ -584,17 +586,67 @@ describe('BaseObject', () => {
     });
 
     describe('buildFromServer', () => {
-      test('calls _populateObject with isDataFromServer true', () => {
-        jest.spyOn(TestBaseObject, '_populateObject');
-        const data = { some: 'data' };
-        const constructorParams = { more: 'params' };
+      describe('when the class specifies to flattenResponse', () => {
+        let classFlattenResponse;
 
-        TestBaseObject.buildFromServer(data, constructorParams);
-        expect(TestBaseObject._populateObject).toBeCalledWith({
-          data,
-          constructorParams,
-          instance: expect.any(TestBaseObject),
-          isDataFromServer: true
+        beforeEach(() => {
+          classFlattenResponse = TestBaseObject.flattenResponse;
+          TestBaseObject.flattenResponse = true;
+        });
+
+        afterEach(() => {
+          TestBaseObject.flattenResponse = classFlattenResponse;
+        });
+
+        test('calls _populateObject with flat data and isDataFromServer true', () => {
+          jest.spyOn(TestBaseObject, '_populateObject');
+          const constructorParams = { more: 'params' };
+          const data = {
+            some: 'data',
+            nested: {
+              stuff: 'isFlat'
+            }
+          };
+
+          TestBaseObject.buildFromServer(data, constructorParams);
+          expect(TestBaseObject._populateObject).toBeCalledWith({
+            data: flattenObject(data),
+            constructorParams,
+            instance: expect.any(TestBaseObject),
+            isDataFromServer: true
+          });
+        });
+      });
+
+      describe('when the class does not specify to flattenResponse', () => {
+        let classFlattenResponse;
+
+        beforeEach(() => {
+          classFlattenResponse = TestBaseObject.flattenResponse;
+          TestBaseObject.flattenResponse = false;
+        });
+
+        afterEach(() => {
+          TestBaseObject.flattenResponse = classFlattenResponse;
+        });
+
+        test('calls _populateObject with flat data and isDataFromServer true', () => {
+          jest.spyOn(TestBaseObject, '_populateObject');
+          const constructorParams = { more: 'params' };
+          const data = {
+            some: 'data',
+            nested: {
+              stuff: 'isFlat'
+            }
+          };
+
+          TestBaseObject.buildFromServer(data, constructorParams);
+          expect(TestBaseObject._populateObject).toBeCalledWith({
+            data,
+            constructorParams,
+            instance: expect.any(TestBaseObject),
+            isDataFromServer: true
+          });
         });
       });
 

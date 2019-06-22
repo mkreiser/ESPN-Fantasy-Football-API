@@ -1,5 +1,7 @@
 import _ from 'lodash';
 
+import { flattenObject } from '../../utils.js';
+
 /**
  * The base class for all project objects. Provides data mapping functionality.
  */
@@ -199,9 +201,12 @@ class BaseObject {
    */
   static buildFromServer(data, constructorParams) {
     const instance = new this(constructorParams);
+
+    const dataToUse = this.flattenResponse ? flattenObject(data) : data;
     this._populateObject({
-      data, constructorParams, instance, isDataFromServer: true
+      data: dataToUse, constructorParams, instance, isDataFromServer: true
     });
+
     return instance;
   }
 }
