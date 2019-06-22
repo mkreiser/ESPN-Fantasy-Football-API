@@ -121,7 +121,7 @@ class BaseObject {
      *   manualTeams: {
      *     key: 'manual_teams_on_response',
      *     BaseObject: Team,
-     *     manualParse: (responseData, response, constructorParams instance) => (
+     *     manualParse: (responseData, response, constructorParams, instance) => (
      *       Team.buildFromServer(responseData)
      *     )
      *   }
