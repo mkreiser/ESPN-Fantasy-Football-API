@@ -39,12 +39,16 @@ describe('Boxscore', () => {
         home: {
           totalPoints: 123,
           teamId: 3,
-          rosterForCurrentScoringPeriod: [playerData]
+          rosterForCurrentScoringPeriod: {
+            entries: [playerData]
+          }
         },
         away: {
           totalPoints: 324,
           teamId: 2,
-          rosterForCurrentScoringPeriod: [playerData]
+          rosterForCurrentScoringPeriod: {
+            entries: [playerData]
+          }
         }
       };
     });
