@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 import BaseObject from '../base-classes/base-object/base-object';
 
-import PlayerStats from './player-stats';
+import PlayerStats, { parsePlayerStats } from './player-stats';
 
 describe('PlayerStats', () => {
   test('extends BaseObject', () => {
@@ -32,6 +32,72 @@ describe('PlayerStats', () => {
       };
 
       testPropIsSetFromOptions('usesPoints');
+    });
+  });
+});
+
+describe('parsePlayerStats', () => {
+  let data;
+
+  beforeEach(() => {
+    data = {
+      player: {
+        stats: [{
+          appliedStats: {
+            24: 23,
+            25: 46
+          },
+          seasonId: 2018,
+          stats: {
+            24: 318,
+            25: 63
+          },
+          statSourceId: 0,
+          statSplitTypeId: 1
+        }, {
+          appliedStats: {
+            24: 2.3,
+            25: 6
+          },
+          seasonId: 2017,
+          stats: {
+            24: 3,
+            25: 6.4
+          },
+          statSourceId: 0,
+          statSplitTypeId: 1
+        }]
+      }
+    };
+  });
+
+  test('maps stats to a PlayerStats instance', () => {
+    const stats = parsePlayerStats({
+      responseData: data,
+      constructorParams: {},
+      usesPoints: false,
+      statKey: 'stats',
+      statSourceId: 0,
+      statSplitTypeId: 1
+    });
+
+    expect(stats).toBeInstanceOf(PlayerStats);
+  });
+
+  describe('when seasonId is passed', () => {
+    test('filters based on seasonId in addition to stat ids', () => {
+      const stats = parsePlayerStats({
+        responseData: data,
+        constructorParams: {},
+        usesPoints: false,
+        seasonId: 2018,
+        statKey: 'stats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      });
+
+      expect(stats).toBeInstanceOf(PlayerStats);
+      expect(stats.rushingYards).toBe(318);
     });
   });
 });
