@@ -44,7 +44,7 @@ class BaseCacheableObject extends BaseObject {
    * created. This implementation ensures each class has a unique cache of only instances of the
    * BaseCacheableObject that does not overlap with other BaseCacheableObject classes. The keys of
    * the cache should use the caching id implemented in `getCacheId`.
-   * @return {Object.<String, BaseCacheableObject>} The cache of BaseAPIObjects.
+   * @return {Object.<String, BaseCacheableObject>} The cache of BaseCacheableObjects.
    */
   static get cache() {
     if (!this._cache) {
