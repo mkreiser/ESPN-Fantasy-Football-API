@@ -33,7 +33,7 @@ class Boxscore extends BaseObject {
     homeScore: 'home.totalPoints',
     homeTeamId: 'home.teamId',
     homeRoster: {
-      key: 'home.rosterForCurrentScoringPeriod',
+      key: 'home.rosterForCurrentScoringPeriod.entries',
       isArray: true,
       manualParse: (responseData, data, constructorParams) => _.map(
         responseData,
@@ -44,7 +44,7 @@ class Boxscore extends BaseObject {
     awayScore: 'away.totalPoints',
     awayTeamId: 'away.teamId',
     awayRoster: {
-      key: 'away.rosterForCurrentScoringPeriod',
+      key: 'away.rosterForCurrentScoringPeriod.entries',
       isArray: true,
       manualParse: (responseData, data, constructorParams) => _.map(
         responseData,
