@@ -1,13 +1,17 @@
-import BaseObject from './src/base-classes/base-object/base-object.js';
-import BaseCacheableObject from './src/base-classes/base-cacheable-object/base-cacheable-object.js';
-import BaseAPIObject from './src/base-classes/base-api-object/base-api-object.js';
-
+import Boxscore from './src/boxscore/boxscore';
+import BoxscorePlayer from './src/boxscore-player/boxscore-player';
+import Client from './src/client/client';
+import FreeAgentPlayer from './src/free-agent-player/free-agent-player';
 import Player from './src/player/player';
+import PlayerStats from './src/player-stats/player-stats';
+import Team from './src/team/team';
 
 export {
-  BaseObject,
-  BaseCacheableObject,
-  BaseAPIObject,
-
-  Player
+  Boxscore,
+  BoxscorePlayer,
+  Client,
+  FreeAgentPlayer,
+  Player,
+  PlayerStats,
+  Team
 };
