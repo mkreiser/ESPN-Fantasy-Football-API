@@ -3,7 +3,7 @@ import _ from 'lodash';
 import BaseObject from '../base-classes/base-object/base-object';
 
 import Player from '../player/player';
-import PlayerStats from '../player-stats/player-stats';
+import { parsePlayerStats } from '../player-stats/player-stats';
 
 import { slotCategoryIdToPositionMap } from '../constants';
 
@@ -42,19 +42,47 @@ class BoxscorePlayer extends BaseObject {
     totalPoints: 'playerPoolEntry.appliedStatTotal',
     pointBreakdown: {
       key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => {
-        const statData = _.find(responseData.player.stats, { statSourceId: 0, statSplitTypeId: 1 });
-        const params = _.assign({}, constructorParams, { usesPoints: true });
-        return PlayerStats.buildFromServer(statData.appliedStats, params);
-      }
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: true,
+        statKey: 'appliedStats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      })
+    },
+    projectedPointBreakdown: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: true,
+        statKey: 'appliedStats',
+        statSourceId: 1,
+        statSplitTypeId: 1
+      })
     },
     rawStats: {
       key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => {
-        const statData = _.find(responseData.player.stats, { statSourceId: 0, statSplitTypeId: 1 });
-        const params = _.assign({}, constructorParams, { usesPoints: false });
-        return PlayerStats.buildFromServer(statData.stats, params);
-      }
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        statKey: 'stats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      })
+    },
+    projectedRawStats: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        statKey: 'stats',
+        statSourceId: 1,
+        statSplitTypeId: 1
+      })
     }
   };
 }

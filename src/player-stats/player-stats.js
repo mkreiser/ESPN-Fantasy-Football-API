@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 import BaseObject from '../base-classes/base-object/base-object';
 
 /**
@@ -150,5 +152,19 @@ class PlayerStats extends BaseObject {
     defensiveOver550YardsAllowed: '136'
   };
 }
+
+export const parsePlayerStats = ({
+  responseData, constructorParams, usesPoints, seasonId, statKey, statSourceId, statSplitTypeId
+}) => {
+  const filters = { statSourceId, statSplitTypeId };
+
+  if (seasonId) {
+    filters.seasonId = seasonId;
+  }
+
+  const statData = _.find(responseData.player.stats, filters);
+  const params = _.assign({}, constructorParams, { usesPoints });
+  return PlayerStats.buildFromServer(_.get(statData, statKey), params);
+};
 
 export default PlayerStats;
