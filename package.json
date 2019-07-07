@@ -2,10 +2,12 @@
   "name": "espn-fantasy-football-api",
   "version": "0.8.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
-  "main": "dist/index-web.js",
+  "main": "web.js",
   "files": [
-    "dist/index-web.js",
-    "dist/index-node.js"
+    "web.js",
+    "node.js",
+    "web-dev.js",
+    "node-dev.js"
   ],
   "author": {
     "name": "Mike Kreiser",
@@ -13,20 +15,20 @@
     "url": "http://mikekreiser.com/"
   },
   "engines": {
-    "node": ">=6.0.0"
+    "node": ">=8.0.0"
   },
   "license": "LGPL-3.0-only",
   "scripts": {
     "build": "npm run clean:dist && webpack",
     "build:docs": "npm run clean:docs && jsdoc -c .jsdoc.json",
     "clean": "npm run clean:dist && npm run clean:docs",
-    "clean:dist": "rm -rf dist",
+    "clean:dist": "rm -rf web.js web.js.map node.js node.js.map web-dev.js web-dev.js.map node-dev.js node-dev.js.map",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
-    "lint": "eslint index.js integration-tests/**/*.js src/**/*.js",
+    "lint": "eslint src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest",
-    "test:all": "npm run test:unit && npm run test:integration",
+    "test:all": "npm run test:unit",
     "test:integration": "jest integration-tests/ --maxWorkers=2 --coverage=false",
     "test:unit": "jest src/ --maxWorkers=2"
   },
@@ -51,28 +53,29 @@
     "football api"
   ],
   "devDependencies": {
-    "@babel/core": "^7.1.6",
-    "@babel/plugin-proposal-class-properties": "^7.1.0",
-    "@babel/preset-env": "^7.1.6",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-proposal-class-properties": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
     "@pixi/jsdoc-template": "^2.4.2",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
-    "babel-loader": "^8.0.4",
+    "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^10.0.2",
+    "babel-jest": "23.6.0",
+    "babel-loader": "^8.0.6",
     "babel-plugin-lodash": "^3.3.4",
-    "eslint": "^5.9.0",
+    "eslint": "^6.0.0",
     "eslint-config-airbnb": "^17.1.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-jsx-a11y": "^6.1.2",
-    "eslint-plugin-react": "^7.11.1",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-jsx-a11y": "^6.2.1",
+    "eslint-plugin-react": "^7.14.0",
     "http-server": "^0.11.1",
-    "jest": "^23.6.0",
-    "jsdoc": "^3.5.5",
-    "webpack": "^4.26.1",
-    "webpack-cli": "^3.1.2"
+    "jest": "23.6.0",
+    "jsdoc": "^3.6.2",
+    "q": "^1.5.1",
+    "webpack": "^4.35.0",
+    "webpack-cli": "^3.3.5"
   },
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.19.0",
     "lodash": "^4.17.11"
   }
 }

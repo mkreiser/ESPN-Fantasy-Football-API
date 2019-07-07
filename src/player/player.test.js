@@ -1,33 +1,19 @@
 import _ from 'lodash';
 
-import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
+import BaseCacheableObject from '../base-classes/base-cacheable-object/base-cacheable-object.js';
+
+import {
+  nflTeamIdToNFLTeam,
+  nflTeamIdToNFLTeamAbbreviation,
+  slotCategoryIdToPositionMap
+} from '../constants.js';
 
 import Player from './player.js';
-
-import { localObject, serverResponse } from './player.stubs.js';
-
-import { slotCategoryIdToPositionMap } from '../constants.js';
 
 describe('Player', () => {
   test('extends BaseCacheableObject', () => {
     const instance = new Player();
     expect(instance).toBeInstanceOf(BaseCacheableObject);
-  });
-
-  describe('when creating a team from a server response', () => {
-    test('parses and assigns data correctly', () => {
-      const instance = Player.buildFromServer(serverResponse, {
-        leagueId: 2234123, seasonId: 2017
-      });
-      expect(instance).toMatchSnapshot();
-    });
-  });
-
-  describe('when creating a team locally', () => {
-    test('parses and assigns data correctly', () => {
-      const instance = new Player(localObject);
-      expect(instance).toMatchSnapshot();
-    });
   });
 
   describe('constructor', () => {
@@ -39,7 +25,6 @@ describe('Player', () => {
         });
       };
 
-      testPropIsUndefined('leagueId');
       testPropIsUndefined('seasonId');
     });
 
@@ -52,7 +37,6 @@ describe('Player', () => {
         });
       };
 
-      testPropIsSetFromOptions('leagueId');
       testPropIsSetFromOptions('seasonId');
     });
   });
@@ -60,19 +44,92 @@ describe('Player', () => {
   describe('responseMap', () => {
     const buildPlayer = (data, options) => Player.buildFromServer(data, options);
 
-    describe('streakType', () => {
+    describe('jerseyNumber', () => {
+      describe('manualParse', () => {
+        test('converts response to a number', () => {
+          const data = { jersey: '23' };
+          const player = buildPlayer(data);
+
+          expect(player.jerseyNumber).toBe(23);
+        });
+      });
+    });
+
+    describe('proTeam', () => {
+      describe('manualParse', () => {
+        test('maps team id to human readable string', () => {
+          const proTeamId = 22;
+          const data = { proTeamId };
+
+          const player = buildPlayer(data);
+          expect(player.proTeam).toBe(_.get(nflTeamIdToNFLTeam, proTeamId));
+        });
+      });
+    });
+
+    describe('proTeamAbbreviation', () => {
+      describe('manualParse', () => {
+        test('maps team id to human readable abbreviation', () => {
+          const proTeamId = 22;
+          const data = { proTeamId };
+
+          const player = buildPlayer(data);
+          expect(player.proTeamAbbreviation).toBe(_.get(nflTeamIdToNFLTeamAbbreviation, proTeamId));
+        });
+      });
+    });
+
+    describe('defaultPosition', () => {
+      describe('manualParse', () => {
+        test('maps id to human readable position', () => {
+          const defaultPositionId = 2;
+          const data = { defaultPositionId };
+
+          const player = buildPlayer(data);
+          expect(player.defaultPosition).toBe(
+            _.get(slotCategoryIdToPositionMap, defaultPositionId)
+          );
+        });
+      });
+    });
+
+    describe('eligiblePositions', () => {
       describe('manualParse', () => {
         test('maps ids to positions', () => {
-          const eligibleSlotCategoryIds = [0, 1, 2];
-          const data = { eligibleSlotCategoryIds };
+          const eligibleSlots = [0, 1, 2];
+          const data = { eligibleSlots };
 
           const player = buildPlayer(data);
 
           expect.hasAssertions();
           _.forEach(player.eligiblePositions, (position, index) => {
             expect(position).toBe(
-              _.get(slotCategoryIdToPositionMap, eligibleSlotCategoryIds[index])
+              _.get(slotCategoryIdToPositionMap, eligibleSlots[index])
             );
+          });
+        });
+      });
+    });
+
+    describe('acquiredDate', () => {
+      describe('manualParse', () => {
+        describe('when data is passed', () => {
+          test('returns a Date', () => {
+            const acquisitionDate = 1545432134218;
+            const data = { acquisitionDate };
+
+            const player = buildPlayer(data);
+            expect(player.acquiredDate).toEqual(new Date(acquisitionDate));
+          });
+        });
+
+        describe('when data is not passed', () => {
+          test('returns undefined', () => {
+            const acquisitionDate = undefined;
+            const data = { acquisitionDate };
+
+            const player = buildPlayer(data);
+            expect(player.acquiredDate).toBeUndefined();
           });
         });
       });
@@ -80,68 +137,42 @@ describe('Player', () => {
   });
 
   describe('class methods', () => {
-    describe('getCacheId', () => {
-      const testReturnsUndefined = ({ leagueId, seasonId, playerId }) => {
+    describe('getIDParams', () => {
+      const testReturnsUndefined = ({ id, seasonId }) => {
         test('returns undefined', () => {
-          const params = { leagueId, seasonId, playerId };
-          expect(Player.getCacheId(params)).toBeUndefined();
+          const params = { id, seasonId };
+          expect(Player.getIDParams(params)).toBeUndefined();
         });
       };
 
       describe('when called with no params', () => {
         test('returns undefined', () => {
-          expect(Player.getCacheId()).toBeUndefined();
+          expect(Player.getIDParams()).toBeUndefined();
         });
       });
 
-      describe('when leagueId is defined', () => {
+      describe('when id is defined', () => {
         describe('when seasonId is defined', () => {
-          describe('when playerId is defined', () => {
-            test('returns a valid caching id', () => {
-              const params = { leagueId: 341243, seasonId: 2017, playerId: 9 };
+          test('returns a valid caching id', () => {
+            const params = { id: 341243, seasonId: 2017 };
 
-              const returnedCachingId = Player.getCacheId(params);
-              expect(returnedCachingId).toBe(
-                `${params.playerId}-${params.leagueId}-${params.seasonId}`
-              );
-            });
-          });
-
-          describe('when playerId is undefined', () => {
-            testReturnsUndefined({ leagueId: 341243, seasonId: 2017 });
+            const returnedCachingId = Player.getIDParams(params);
+            expect(returnedCachingId).toEqual(params);
           });
         });
 
         describe('when seasonId is undefined', () => {
-          describe('when playerId is defined', () => {
-            testReturnsUndefined({ leagueId: 341243, playerId: 9 });
-          });
-
-          describe('when playerId is undefined', () => {
-            testReturnsUndefined({ leagueId: 341243 });
-          });
+          testReturnsUndefined({ id: 341243 });
         });
       });
 
-      describe('when leagueId is undefined', () => {
+      describe('when id is undefined', () => {
         describe('when seasonId is defined', () => {
-          describe('when playerId is defined', () => {
-            testReturnsUndefined({ seasonId: 2017, playerId: 9 });
-          });
-
-          describe('when playerId is undefined', () => {
-            testReturnsUndefined({ seasonId: 2017 });
-          });
+          testReturnsUndefined({ seasonId: 2017 });
         });
 
         describe('when seasonId is undefined', () => {
-          describe('when playerId is defined', () => {
-            testReturnsUndefined({ playerId: 9 });
-          });
-
-          describe('when playerId is undefined', () => {
-            testReturnsUndefined({});
-          });
+          testReturnsUndefined({});
         });
       });
     });

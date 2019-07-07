@@ -108,7 +108,36 @@ const nflTeamIdToNFLTeamAbbreviation = {
   30: 'JAX',
   33: 'BAL',
   34: 'HOU'
-}
+};
+
+/**
+ * All possible injury statuses for a Player returned by the API
+ * @typedef {
+ *   'ACTIVE' |
+ *   'BEREAVEMENT' |
+ *   'DAY_TO_DAY' |
+ *   'DOUBTFUL' |
+ *   'FIFTEEN_DAY_DL' |
+ *   'INJURY_RESERVE' |
+ *   'OUT' |
+ *   'PATERNITY' |
+ *   'PROBABLE' |
+ *   'QUESTIONABLE' |
+ *   'SEVEN_DAY_DL' |
+ *   'SIXTY_DAY_DL' |
+ *   'SUSPENSION' |
+ *   'TEN_DAY_DL'
+ * } INJURY_STATUSES
+ */
+
+/**
+ * The status of a player for fantasy rostering purposes.
+ * @typedef {
+ * 'FREEAGENT' |
+ * 'ONTEAM' |
+ * 'WAIVERS'
+ * } PLAYER_AVAILABILITY_STATUSES
+ */
 
 export {
   nflTeamIdToNFLTeam,

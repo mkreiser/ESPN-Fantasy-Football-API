@@ -4,19 +4,18 @@
 [![Build Status](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API) [![Maintainability](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API?type=dev) [![Known Vulnerabilities](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API/badge.svg?targetFile=package.json)](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API?targetFile=package.json)
 
 
-A Javascript API client for both web and NodeJS that connects to ESPN's fantasy football API. Available as an npm package.
+A Javascript API client for both web and NodeJS that connects to the updated/v3 ESPN fantasy football API. Available as an npm package.
 
 ## Converting to v3 API
 
 In February 2019, ESPN deprecated and removed their `v2` fantasy football API and upgraded their site to a new `v3` API. ESPN had already made this change for their baseball and basketball fantasy APIs as well. This change broke every project running on the `v2` API, including this project. This project will not work until the code is converted to consume the `v3` API.
 
-Work for converting this project is being tracked in #95. 
+Work for converting this project is being tracked in #95.
 
 ## Features
 
-* Supports leagues, matchups, boxscores, and rosters.
-  * Get matchup details, player performances, league standings, historical data, and more.
-  * Private league support (node version only, see [Important Notes](#important-notes)).
+* Supports pulling data from ESPN.
+* Private league support (NodeJS version only, see [Important Notes](#important-notes)).
 * Highly documented.
 * Built for speed and efficiency with caching support.
 * Built for extensibility by using ES6 classes.
@@ -31,121 +30,98 @@ Hosted documentation available at http://espn-fantasy-football-api.s3-website.us
 npm install --save espn-fantasy-football-api
 ```
 
-There are two files exported in the package:
+There are four files exported in the package:
 
-* `dist/index-web.js` - Production file built for web environments (**main/default file**).
-* `dist/index-node.js` - Production file built for node environments.
+* `web.js` - Production file built for web environments (**main/default file**).
+* `node.js` - Production file built for NodeJS environments.
+* `web-dev.js` - Same as web, but not minified/obfused to make debugging/developing easier.
+* `node-dev.js` - Same as node, but not minified/obfused to make debugging/developing easier.
 
 ## Important Notes
 
-### ESPN Databases
+### ESPN Databases and Data Storage
 
-This project simply retrieves data from ESPN and formats the responses in an easy to read and use format. ESPN is still responsible for maintaining and providing the data. Recently, many have noticed league data disappearing from previous years, including in other ESPN fantasy sports. This appears to be a result of ESPN deleting this data. While some data exists before 2017 (as of Feb. 1, 2019), some data (such as boxscores) is not longer available. 
+This project simply retrieves data from ESPN and formats the responses in an easy to read and use format. ESPN is still responsible for maintaining and providing the data. Recently, many have noticed league data disappearing from previous years, including in other ESPN fantasy sports. This appears to be a result of ESPN deleting this data. While some data exists before 2017 (as of Feb. 1, 2019), some data (such as boxscores) is not longer available.
 
 ### ESPN API Changes
 
-**UPDATE**: This happened in February 2019.
-
-Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. Other ESPN fantasy sports have changed their APIs recently, causing old tools to no longer work. These routes are denoted by a `v3` api route (whereas fantasy football is still `v2`). 
-
-I am confident in the core of this project. I believe the only changes that will be needed will be schema changes to each APIObject (`League`, etc). Once the `v3` routes are available, I will create and work on a feature branch to update this project for the new API.
+Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. This occurred in February 2019 when ESPN migrated from their v2 API to a new v3 API (the original version of this project was completed in Janurary 2019). This project has since been updated to consume ESPN's v3 API.
 
 ### Private Leagues
 
-Private leagues currently only work with the node version of this project. Since ESPN/Disney requires two auth cookies to make a valid request, we must provide those. However, modern web browsers forbid the setting of the `Cookie` header, causing authentication rejections in the web version, as the cookies are not passed on the request.
+Private leagues currently only work with the NodeJS version of this project. Since ESPN/Disney requires two auth cookies to make a valid request, we must provide those. However, modern web browsers forbid the setting of the `Cookie` header, causing authentication rejections in the web version, as the cookies are not passed on the request. Therefore, the only way to support private league requests is via NodeJS.
 
 ## How to use
 
 ### ESPN API Conventions
 
-`seasonId` matches the year in which the season was played.
+* `leagueId` is the id for your league.
+  * Example: `387659`
+* `seasonId` matches the year in which the season was played.
+  * Example: `2018`
+* `matchupPeriod` refers to an entire match-up, including if the match-up lasts multiple weeks (not rare in playoff settings for smaller leagues).
+  * Example: `3` refers to the third matchup in your league.
+* `scoringPeriod` refers to a single NFL week. Since most matchups are 1 week long, the `scoringPeriod` will typically match the `matchupPeriod`. However, for multi-week matchups, `scoringPeriod` allows one to get information about a specific week in the match-up (useful in multi-week playoff match-up).
+  * Example: `3` refers to the third week of the NFL season.
+  * **Note**: A `scoringPeriodId` of `0` refers to the preseason before any games are played. A `scoringPeriodId` of `18` refers to the end of the season.
 
-`matchupPeriod` refers to an entire match-up, including if the match-up lasts multiple weeks (not rare in playoff settings for smaller leagues).
+* If both a `matchupPeriod` and a `scoringPeriod` are used, the `scoringPeriod` takes precedence.
 
-`scoringPeriod` refers to a single NFL week. Since most matchups are 1 week long, the `scoringPeriod` will typically match the `matchupPeriod`. However, for multi-week matchups, `scoringPeriod` allows one to get information about a specific week in the match-up (useful in multi-week playoff match-up).
-
-If both a `matchupPeriod` and a `scoringPeriod` are used, the `scoringPeriod` takes precedence.
-
-### How to get data
-
-*See documentation reference for more detail.*
-
-**League** provides league information and settings. Great for league info and team data.
-
-**Boxscore** provides detailed scoring information on a matchup. Great for getting scoring breakdowns by player.
-
-**Scoreboard** provides a summary of each matchup. Great for matchup summary data (e.g. team scores).
-
-**Roster** provides a detailed breakdown of a team's roster. Great for player information.
-
-### Examples
-
-NOTE: The NodeJS REPL does not work with `async`/`await`, so the following examples are written with Promises.
-
-#### Importing
+### Importing ESPN Fantasy Football API
 
 ```javascript
-// Web
-import { League, Team } from 'espn-fantasy-football-api';
-
-// Node
-import { League, Team } from 'espn-fantasy-football-api/dist/index-node.js';
-
-// From local build
-import { League, Team } from './dist/index-node.js';
+import { ... } from 'espn-fantasy-football-api'; // web
+import { ... } from 'espn-fantasy-football-api/node'; // node
+import { ... } from 'espn-fantasy-football-api/web-dev'; // web development build
+import { ... } from 'espn-fantasy-football-api/node-dev'; // node development build
 ```
 
-#### Loading a League
+### How to Get Data
+
+#### Creating a Client
+
+This will allow you to call the various methods on the `Client` class to grab data for the passed league. For working with multiple leagues, create multiple `Client` instances.
 
 ```javascript
-import { League } from 'espn-fantasy-football-api';
-
-const league = new League({ leagueId: 336358, seasonId: 2018 });
-league.read().then(() => console.log(league)); // Prints loaded league
+import { Client } from 'espn-fantasy-football-api';
+const myClient = new Client({ leagueId: 432132 });
 ```
 
-#### Loading a Private League
+#### Working with Private Leagues
 
-NOTE: Only works in node.
+You'll need two cookies from ESPN: `espn_s2` and `SWID`. These are found at "Application > Cookies > espn.com" in the Chrome DevTools when on espn.com.
+
+**Note**: As specified before, this functionality only works in NodeJS.
 
 ```javascript
-import { BaseAPIObject, League } from 'espn-fantasy-football-api/dist/index-node.js';
-
-BaseAPIObject.setCookies({ espnS2: 'xxxxx', SWID: '{xxxxxxxxxx}' }); // fire and forget
-
-const league = new League({ leagueId: 336358, seasonId: 2018 });
-league.read().then(() => console.log(league)); // Prints loaded league
+myClient.setCookies({ espnS2: 'YOUR_ESPN_S2', SWID: 'YOUR_SWID' });
 ```
 
-#### Loading all Boxscores for a week
+#### Getting Boxscores
 
-To prevent loading duplicate Boxscores, load the week's Scoreboard first and use each matchup to load the matching Boxscore.
+This will retrieve all boxscores for a week in a season.
+
+**Note**: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are required and must correspond with each other correctly.
 
 ```javascript
-import { Boxscore, Scoreboard } from 'espn-fantasy-football-api';
+myClient.getBoxscoreForWeek({ seasonId: 2018, scoringPeriodId: 1, matchupPeriodId: 1 }).then((boxscores) => {
+  // Do whatever with boxscores
+});
+```
 
-const leagueId = 336358;
-const seasonId = 2018;
-const scoringPeriodId = 10; // Some week
+#### Getting a List of Free Agents
 
-Scoreboard.read({
-    params: { leagueId, seasonId, scoringPeriodId }
-}).then((scoreboard) => {
-    const boxscorePromises = scoreboard.matchups.map((matchup) => Boxscore.read({
-        params: { leagueId, seasonId, teamId: matchup.homeTeam.teamId, scoringPeriodId }
-    }));
+This will retrieve all free agents for a week in a season.
 
-    return Promise.all(boxscorePromises)
-}).then((boxscores) => {
-    console.log(boxscores); // Prints all loaded Boxscores
+```javascript
+myClient.getFreeAgents({ seasonId: 2018, scoringPeriodId: 1 }).then((freeAgents) => {
+  // Do whatever with free agents
 });
 ```
 
 ## Testing
 
-*How do you know it works?*
-
-This project includes an expansive test suite. The unit tests ensure specific logic works as intended. The integration tests make live calls to the ESPN API, ensuring that the project will work in the real world.
+This project includes an expansive test suite. The unit tests ensure specific logic works as intended. The integration tests (**TODO for v3**) make live calls to the ESPN API, ensuring that the project will work in the real world.
 
 Travis CI is used to build and verify changes/pull requests in a clean environment. Additionally, the master branch runs a weekly build on Travis to catch any issues when development activity is sparse.
 

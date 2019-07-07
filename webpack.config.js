@@ -2,7 +2,7 @@ const _ = require('lodash');
 const path = require('path');
 
 const baseConfig = {
-  entry: './index.js',
+  entry: './src/index.js',
   module: {
     rules: [
       {
@@ -13,8 +13,7 @@ const baseConfig = {
     ]
   },
   output: {
-    filename: 'index.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: __dirname,
     library: 'espn-fantasy-football-api',
     libraryTarget: 'umd'
   },
@@ -26,19 +25,19 @@ const baseConfig = {
 module.exports = [
   _.merge({}, baseConfig, {
     output: {
-      filename: 'index-web.js'
+      filename: 'web.js'
     },
     mode: 'production',
     devtool: undefined,
   }),
   _.merge({}, baseConfig, {
     output: {
-      filename: 'index-web-dev.js'
+      filename: 'web-dev.js'
     }
   }),
   _.merge({}, baseConfig, {
     output: {
-      filename: 'index-node.js'
+      filename: 'node.js'
     },
     mode: 'production',
     devtool: undefined,
@@ -46,7 +45,7 @@ module.exports = [
   }),
   _.merge({}, baseConfig, {
     output: {
-      filename: 'index-node-dev.js'
+      filename: 'node-dev.js'
     },
     target: 'node'
   })

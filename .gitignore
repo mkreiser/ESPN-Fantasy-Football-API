@@ -1,5 +1,3 @@
-dist
-
 # Logs
 logs
 *.log
@@ -19,3 +17,11 @@ node_modules/
 
 # dotenv environment variables file
 .env
+
+.DS_Store
+
+web.js*
+web-dev.js*
+node.js*
+node-dev.js*
+*.map

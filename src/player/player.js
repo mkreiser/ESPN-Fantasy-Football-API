@@ -1,94 +1,126 @@
 import _ from 'lodash';
 
-import BaseCacheableObject from '../base-cacheable-object/base-cacheable-object.js';
+import BaseCacheableObject from '../base-classes/base-cacheable-object/base-cacheable-object.js';
 
-import { slotCategoryIdToPositionMap } from '../constants.js';
+import {
+  nflTeamIdToNFLTeam,
+  nflTeamIdToNFLTeamAbbreviation,
+  slotCategoryIdToPositionMap
+} from '../constants.js';
 
 /**
- * Represents an NFL player that can be rostered on a fantasy football team.
+ * Represents an NFL player. This model is not directly associated with any fantasy team.
  *
- * Player data is always up to date in the season to which the player belongs. There is no
- * intra-season historic data for a Player.
- *
- * There is currently not a discovered route to directly get player information. However, player
- * information can be retrieved from a boxscore and a team roster.
- *
- * @extends BaseCacheableObject
+ * @extends {BaseCacheableObject}
  */
 class Player extends BaseCacheableObject {
   constructor(options = {}) {
     super(options);
 
-    /**
-     * Id of the league to which the player belongs.
-     * @type {number}
-     */
-    this.leagueId = options.leagueId;
-
-    /**
-     * Id of the season to which the player belongs.
-     * @type {number}
-     */
     this.seasonId = options.seasonId;
   }
 
   static displayName = 'Player';
 
-  static idName = 'playerId';
+  static flattenResponse = true;
 
   /**
-   * @typedef {object} PlayerObject
+   * Returns valid id params when 'id' and 'seasonId' are passed.
+   * @param  {Object} params
+   * @return {Object|undefined}
+   */
+  static getIDParams(params = {}) {
+    if (params.id && params.seasonId) {
+      return {
+        id: params.id,
+        seasonId: params.seasonId
+      };
+    }
+
+    return undefined;
+  }
+
+  /**
+   * @typedef {object} Player~PlayerMap
    *
-   * @property {number} playerId
+   * @property {number} id
+   * @property {string} firstName The first name of the player.
+   * @property {string} lastName The last name of the player.
+   * @property {string} fullName The full name of the player.
+   * @property {number} jerseyNumber The jersey number the player wears.
+   * @property {string} proTeam The NFL team the player is rostered on.
+   * @property {string} proTeamAbbreviation The NFL team abbreviation the player is rostered on.
+   * @property {string} defaultPosition The default position in a fantasy roster for the player.
+   * @property {string[]} eligiblePositions A list of the eligible positions in a fantasy roster the
+   *                                        player may be slotted in.
    *
-   * @property {string} firstName First name of the player.
-   * @property {string} lastName Last name of the player.
-   * @property {string} jerseyNumber The jersey number the player wears.
-   *
-   * @property {number} percentOwned The percentage of ESPN leagues in which this player is owned.
-   * @property {number} percentOwnedChange The change in player ownership percentage in the last
-   *                                       week across all ESPN.
+   * @property {number} averageDraftPosition The average position the player was drafted at in ESPN
+   *                                         snake drafts.
+   * @property {number} averageAuctionValue The average auction price the player fetched in ESPN
+   *                                         auction drafts.
+   * @property {number} percentChange The change in player ownership percentage in the last
+   *                                  week across all ESPN leagues.
    * @property {number} percentStarted The percentage of ESPN league in which this player is/was
    *                                   started.
+   * @property {number} percentOwned The percentage of ESPN leagues in which this player is owned.
    *
+   * @property {Date} acquiredDate The datetime the player was acquired by their current fantasy
+   *                               team.
+   *
+   * @property {PLAYER_AVAILABILITY_STATUSES} availabilityStatus The fantasy roster status of the
+   *                                                             player.
    * @property {boolean} isDroppable Whether or not the player can be dropped from a team.
-   * @property {boolean} isActive Whether or not the player is active? TOOD: Improve knowledge.
-   * @property {boolean} isIREligible Whether or not the player is eligible to be placed in an IR
-   *                                  roster slot.
-   *
-   * @property {string[]} eligiblePositions A list of the eligible position slots the player may be
-   *                                        played in.
+   * @property {boolean} isInjuried Whether or not the player is injuried.
+   * @property {INJURY_STATUSES} injuryStatus The specific injury status/timeline of the player.
    */
 
   /**
-    * @type {PlayerObject}
-    */
+   * @type {Player~PlayerMap}
+   */
   static responseMap = {
-    playerId: 'playerId',
-
+    id: 'id',
     firstName: 'firstName',
+    fullName: 'fullName',
     lastName: 'lastName',
-    jerseyNumber: 'jersey',
-
-    percentOwned: 'percentOwned',
-    percentOwnedChange: 'percentChange',
-    percentStarted: 'percentStarted',
-
-    isDroppable: 'isDroppable',
-    isActive: 'isActive',
-    isIREligible: 'isIREligible',
-
+    jerseyNumber: {
+      key: 'jersey',
+      manualParse: (responseData) => _.toNumber(responseData)
+    },
+    proTeam: {
+      key: 'proTeamId',
+      manualParse: (responseData) => _.get(nflTeamIdToNFLTeam, responseData)
+    },
+    proTeamAbbreviation: {
+      key: 'proTeamId',
+      manualParse: (responseData) => _.get(nflTeamIdToNFLTeamAbbreviation, responseData)
+    },
+    defaultPosition: {
+      key: 'defaultPositionId',
+      manualParse: (responseData) => _.get(slotCategoryIdToPositionMap, responseData)
+    },
     eligiblePositions: {
-      key: 'eligibleSlotCategoryIds',
+      key: 'eligibleSlots',
       manualParse: (responseData) => _.map(
         responseData, (posId) => _.get(slotCategoryIdToPositionMap, posId)
       )
-    }
-  };
+    },
 
-  static getCacheId({ playerId, leagueId, seasonId } = {}) {
-    return (playerId && leagueId && seasonId) ? `${playerId}-${leagueId}-${seasonId}` : undefined;
-  }
+    averageDraftPosition: 'averageDraftPosition',
+    auctionValueAverage: 'auctionValueAverage',
+    percentChange: 'percentChange',
+    percentStarted: 'percentStarted',
+    percentOwned: 'percentOwned',
+
+    acquiredDate: {
+      key: 'acquisitionDate',
+      manualParse: (responseData) => (responseData ? new Date(responseData) : undefined)
+    },
+
+    availabilityStatus: 'status',
+    isDroppable: 'droppable',
+    isInjured: 'injured',
+    injuryStatus: 'injuryStatus'
+  };
 }
 
 export default Player;

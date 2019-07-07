@@ -3,13 +3,13 @@ module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
     'src/**/*.js',
+    '!src/index.js',
     '!src/**/*.test.js',
     '!src/**/*.stubs.js',
     '!**/node_modules/**'
   ],
   coverageDirectory: 'coverage',
   restoreMocks: true,
-  setupTestFrameworkScriptFile: '<rootDir>/jest.setup.js',
   transform: {
     '^.+\\.js$': 'babel-jest'
   }

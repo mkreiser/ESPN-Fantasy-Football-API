@@ -1,52 +1,90 @@
 import _ from 'lodash';
 
-import SlottedPlayer from '../slotted-player/slotted-player.js';
+import BaseObject from '../base-classes/base-object/base-object';
 
-import BoxscorePlayerPointStats
-  from '../boxscore-player-point-stats/boxscore-player-point-stats.js';
+import Player from '../player/player';
+import { parsePlayerStats } from '../player-stats/player-stats';
+
+import { slotCategoryIdToPositionMap } from '../constants';
 
 /**
- * Represents a player on a team in a boxscore. Summarizes the player's stats and status.
- * @extends SlottedPlayer
+ * Represents a player and their stats on a boxscore.
+ *
+ * @extends {BaseObject}
  */
-class BoxscorePlayer extends SlottedPlayer {
+class BoxscorePlayer extends BaseObject {
   static displayName = 'BoxscorePlayer';
 
   /**
-   * @typedef {object} BoxscorePlayerObject
+   * @typedef {object} BoxscorePlayer~BoxscorePlayerMap
    *
-   * @property {Player} player A Player instance for generic player information.
-   * @property {string} position The position (from `slotCategoryIdToPositionMap`) in which the
-   *                             player is slotted in the boxscore. May be `bench`.
-   * @property {boolean} isLocked Whether or not the player is locked and cannot be moved to another
-   *                              position.
-   *
-   * @property {number} totalPoints The total of points the player has scored in the scoring period
-   *                                across all stats.
-   * @property {number} projectedPoints The total of points the player is projected to score in the
-   *                                    scoring period across all stats.
-   *
-   * @property {BoxscorePlayerPointStats} stats A breakdown of the player's points scored by stat.
-   * @property {BoxscorePlayerPointStats} projectedStats A breakdown of the player's projected
-   *                                                     points scored by stat.
+   * @property {Player} player The player model representing the NFL player.
+   * @property {string} position The position the player is slotted at in the fantasy lineup.
+   * @property {number} totalPoints The total points scored by the player.
+   * @property {PlayerStats} pointBreakdown The PlayerStats model with the points scored by the
+   *                                        player.
+   * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
+   *                                  the player.
    */
 
   /**
-    * @type {BoxscorePlayerObject}
-    */
-  static responseMap = _.assign({}, SlottedPlayer.responseMap, {
-    totalPoints: 'currentPeriodRealStats.appliedStatTotal',
-    projectedPoints: 'currentPeriodProjectedStats.appliedStatTotal',
-
-    stats: {
-      key: 'currentPeriodRealStats.appliedStats',
-      BaseObject: BoxscorePlayerPointStats
+   * @type {BoxscorePlayer~BoxscorePlayerMap}
+   */
+  static responseMap = {
+    player: {
+      key: 'playerPoolEntry',
+      BaseObject: Player
     },
-    projectedStats: {
-      key: 'currentPeriodProjectedStats.appliedStats',
-      BaseObject: BoxscorePlayerPointStats
+    position: {
+      key: 'lineupSlotId',
+      manualParse: (responseData) => _.get(slotCategoryIdToPositionMap, responseData)
+    },
+    totalPoints: 'playerPoolEntry.appliedStatTotal',
+    pointBreakdown: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: true,
+        statKey: 'appliedStats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      })
+    },
+    projectedPointBreakdown: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: true,
+        statKey: 'appliedStats',
+        statSourceId: 1,
+        statSplitTypeId: 1
+      })
+    },
+    rawStats: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        statKey: 'stats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      })
+    },
+    projectedRawStats: {
+      key: 'playerPoolEntry',
+      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        statKey: 'stats',
+        statSourceId: 1,
+        statSplitTypeId: 1
+      })
     }
-  });
+  };
 }
 
 export default BoxscorePlayer;
