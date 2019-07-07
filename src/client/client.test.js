@@ -77,7 +77,7 @@ describe('Client', () => {
   });
 
   describe('instance methods', () => {
-    describe('buildAxiosConfig', () => {
+    describe('_buildAxiosConfig', () => {
       describe('when espnS2 is set on the instance', () => {
         describe('when SWID is set on the instance', () => {
           test('returns an axiosConfig with Cookie merged onto headers', () => {
@@ -92,7 +92,7 @@ describe('Client', () => {
             const cookieConfig = { headers: cookieHeaders, withCredentials: true };
 
             const client = new Client({ espnS2, SWID });
-            const axiosConfig = client.buildAxiosConfig(passedConfig);
+            const axiosConfig = client._buildAxiosConfig(passedConfig);
             expect(axiosConfig).toEqual(_.merge({}, passedConfig, cookieConfig));
           });
         });
@@ -106,7 +106,7 @@ describe('Client', () => {
             };
 
             const client = new Client({ espnS2 });
-            const axiosConfig = client.buildAxiosConfig(passedConfig);
+            const axiosConfig = client._buildAxiosConfig(passedConfig);
             expect(axiosConfig).toEqual(passedConfig);
           });
         });
@@ -122,7 +122,7 @@ describe('Client', () => {
             };
 
             const client = new Client({ SWID });
-            const axiosConfig = client.buildAxiosConfig(passedConfig);
+            const axiosConfig = client._buildAxiosConfig(passedConfig);
             expect(axiosConfig).toEqual(passedConfig);
           });
         });
@@ -135,7 +135,7 @@ describe('Client', () => {
             };
 
             const client = new Client();
-            const axiosConfig = client.buildAxiosConfig(passedConfig);
+            const axiosConfig = client._buildAxiosConfig(passedConfig);
             expect(axiosConfig).toEqual(passedConfig);
           });
         });
@@ -219,7 +219,7 @@ describe('Client', () => {
         const route = `${routeBase}${routeParams}`;
 
         const config = {};
-        jest.spyOn(client, 'buildAxiosConfig').mockReturnValue(config);
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
         axios.get.mockReturnValue(q());
 
         client.getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId });
@@ -296,7 +296,7 @@ describe('Client', () => {
         const route = `${routeBase}${routeParams}`;
 
         const config = {};
-        jest.spyOn(client, 'buildAxiosConfig').mockReturnValue(config);
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
         axios.get.mockReturnValue(q());
 
         client.getFreeAgents({ seasonId, scoringPeriodId });

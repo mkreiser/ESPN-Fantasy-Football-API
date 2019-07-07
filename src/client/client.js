@@ -13,7 +13,13 @@ class Client {
     this.setCookies({ espnS2: options.espnS2, SWID: options.SWID });
   }
 
-  buildAxiosConfig(config) {
+  /**
+   * Correctly builds an axios config with cookies, if set on the instance
+   * @param  {object} config An axios config.
+   * @return {object}        An axios config with cookies added if set on instance
+   * @private
+   */
+  _buildAxiosConfig(config) {
     if ((this.espnS2 && this.SWID)) {
       const headers = { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` };
       return _.merge({}, config, { headers, withCredentials: true });
