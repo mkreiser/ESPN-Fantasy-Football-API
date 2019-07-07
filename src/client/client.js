@@ -28,6 +28,12 @@ class Client {
     return config;
   }
 
+  /**
+   * Set cookies from ESPN for interacting with private leagues in NodeJS. Both cookie smust be
+   * provided to be set.
+   * @param {string} options.espnS2
+   * @param {string} options.SWID
+   */
   setCookies({ espnS2, SWID }) {
     if (espnS2 && SWID) {
       this.espnS2 = espnS2;
@@ -35,12 +41,21 @@ class Client {
     }
   }
 
+  /**
+   * Returns all boxscores for a week.
+   * NOTE: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are
+   * required and must correspond with each other correctly.
+   * @param  {number} options.seasonId The season in which the boxscores occur.
+   * @param  {number} options.matchupPeriodId
+   * @param  {number} options.scoringPeriodId
+   * @return {Boxscore[]}
+   */
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
     const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
     const routeParams = `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`;
     const route = `${routeBase}${routeParams}`;
 
-    return axios.get(route, this.buildAxiosConfig()).then((response) => {
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const schedule = _.get(response.data, 'schedule');
       const data = _.filter(schedule, { matchupPeriodId });
 
@@ -50,12 +65,19 @@ class Client {
     });
   }
 
+  /**
+   * Returns all free agents (in terms of the league's rosters) for a given week.
+   * NOTE: `scoringPeriodId` of 0 corresponds to the preseason; `18` for after the season ends.
+   * @param  {number} options.seasonId
+   * @param  {number} options.scoringPeriodId
+   * @return {FreeAgentPlayer[]}
+   */
   getFreeAgents({ seasonId, scoringPeriodId }) {
     const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
     const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;
     const route = `${routeBase}${routeParams}`;
 
-    return axios.get(route, this.buildAxiosConfig()).then((response) => {
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'players');
       return _.map(data, (player) => (
         FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
