@@ -2,10 +2,12 @@
   "name": "espn-fantasy-football-api",
   "version": "0.8.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
-  "main": "dist/index-web.js",
+  "main": "web.js",
   "files": [
-    "dist/index-web.js",
-    "dist/index-node.js"
+    "web.js",
+    "node.js",
+    "web-dev.js",
+    "node-dev.js"
   ],
   "author": {
     "name": "Mike Kreiser",
@@ -20,10 +22,10 @@
     "build": "npm run clean:dist && webpack",
     "build:docs": "npm run clean:docs && jsdoc -c .jsdoc.json",
     "clean": "npm run clean:dist && npm run clean:docs",
-    "clean:dist": "rm -rf dist",
+    "clean:dist": "rm -rf web.js web.js.map node.js node.js.map web-dev.js web-dev.js.map node-dev.js node-dev.js.map",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
-    "lint": "eslint index.js src/**/*.js",
+    "lint": "eslint src/**/*.js",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest",
     "test:all": "npm run test:unit",

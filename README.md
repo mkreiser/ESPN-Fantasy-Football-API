@@ -24,10 +24,12 @@ Hosted documentation available at http://espn-fantasy-football-api.s3-website.us
 npm install --save espn-fantasy-football-api
 ```
 
-There are two files exported in the package:
+There are four files exported in the package:
 
-* `dist/index-web.js` - Production file built for web environments (**main/default file**).
-* `dist/index-node.js` - Production file built for node environments.
+* `web.js` - Production file built for web environments (**main/default file**).
+* `node.js` - Production file built for NodeJS environments.
+* `web-dev.js` - Same as web, but not minified/obfused to make debugging/developing easier.
+* `node-dev.js` - Same as node, but not minified/obfused to make debugging/developing easier.
 
 ## Important Notes
 
@@ -58,6 +60,15 @@ Private leagues currently only work with the NodeJS version of this project. Sin
   * **Note**: A `scoringPeriodId` of `0` refers to the preseason before any games are played. A `scoringPeriodId` of `18` refers to the end of the season.
 
 * If both a `matchupPeriod` and a `scoringPeriod` are used, the `scoringPeriod` takes precedence.
+
+### Importing ESPN Fantasy Football API
+
+```javascript
+import { ... } from 'espn-fantasy-football-api'; // web
+import { ... } from 'espn-fantasy-football-api/node'; // node
+import { ... } from 'espn-fantasy-football-api/web-dev'; // web development build
+import { ... } from 'espn-fantasy-football-api/node-dev'; // node development build
+```
 
 ### How to Get Data
 
