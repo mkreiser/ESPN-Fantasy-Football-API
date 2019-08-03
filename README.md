@@ -124,7 +124,7 @@ myClient.getFreeAgents({ seasonId: 2018, scoringPeriodId: 1 }).then((freeAgents)
 This will retrieve all teams in your league at a given week in a season.
 
 ```javascript
-myClient.getTeams({ seasonId: 2018, scoringPeriodId: 1 }).then((teams) => {
+myClient.getTeamsAtWeek({ seasonId: 2018, scoringPeriodId: 1 }).then((teams) => {
   // Do whatever with teams
 });
 ```
