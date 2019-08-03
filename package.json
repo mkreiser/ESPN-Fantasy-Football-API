@@ -26,6 +26,7 @@
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test:all && npm run build && npm run build:docs",
     "lint": "eslint src/**/*.js",
+    "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest",
     "test:all": "npm run test:unit",
