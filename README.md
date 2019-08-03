@@ -119,6 +119,16 @@ myClient.getFreeAgents({ seasonId: 2018, scoringPeriodId: 1 }).then((freeAgents)
 });
 ```
 
+#### Getting a List of FF Teams in your FF League
+
+This will retrieve all teams in your league at a given week in a season.
+
+```javascript
+myClient.getTeams({ seasonId: 2018, scoringPeriodId: 1 }).then((teams) => {
+  // Do whatever with teams
+});
+```
+
 ## Testing
 
 This project includes an expansive test suite. The unit tests ensure specific logic works as intended. The integration tests (**TODO for v3**) make live calls to the ESPN API, ensuring that the project will work in the real world.

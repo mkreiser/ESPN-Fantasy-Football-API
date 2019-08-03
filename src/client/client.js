@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
+import Team from '../team/team';
 
 axios.defaults.baseURL = 'http://fantasy.espn.com/apis/v3/games/ffl/seasons/';
 
@@ -81,6 +82,25 @@ class Client {
       const data = _.get(response.data, 'players');
       return _.map(data, (player) => (
         FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
+   * Returns an array of Team object representing each fantasy football team in the FF league.
+   * @param  {number} options.seasonId
+   * @param  {number} options.scoringPeriodId
+   * @return {Team[]}
+   */
+  getTeamsAtWeek({ seasonId, scoringPeriodId }) {
+    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
+    const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`;
+    const route = `${routeBase}${routeParams}`;
+
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
+      const data = _.get(response.data, 'teams');
+      return _.map(data, (team) => (
+        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
     });
   }
