@@ -70,7 +70,7 @@ class Player extends BaseCacheableObject {
    * @property {PLAYER_AVAILABILITY_STATUSES} availabilityStatus The fantasy roster status of the
    *                                                             player.
    * @property {boolean} isDroppable Whether or not the player can be dropped from a team.
-   * @property {boolean} isInjuried Whether or not the player is injuried.
+   * @property {boolean} isInjured Whether or not the player is injured.
    * @property {INJURY_STATUSES} injuryStatus The specific injury status/timeline of the player.
    */
 
