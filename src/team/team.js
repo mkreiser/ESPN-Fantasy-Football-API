@@ -43,6 +43,7 @@ class Team extends BaseCacheableObject {
    * @property {number} id
    * @property {stirng} abbreviation The team's abbreviation.
    * @property {string} name The team's name.
+   * @property {string} logoURL The URL for the team's uploaded logo.
    * @property {number} wavierRank The team's position in the current wavier order.
    *
    * @property {Player[]} roster The team's roster of players.
@@ -87,6 +88,7 @@ class Team extends BaseCacheableObject {
       key: 'location',
       manualParse: (responseData, data) => `${_.trim(data.location)} ${_.trim(data.nickname)}`
     },
+    logoURL: 'logo',
     wavierRank: 'wavierRank',
 
     roster: {
