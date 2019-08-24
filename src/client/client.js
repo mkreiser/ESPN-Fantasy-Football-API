@@ -5,7 +5,7 @@ import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import Team from '../team/team';
 
-axios.defaults.baseURL = 'http://fantasy.espn.com/apis/v3/games/ffl/seasons/';
+axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
 
 class Client {
   constructor(options = {}) {
