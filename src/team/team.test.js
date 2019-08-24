@@ -46,13 +46,13 @@ describe('Team', () => {
       describe('manualParse', () => {
         test('interpolates location and nickname into a single string', () => {
           const data = {
-            location: 'First ',
-            nickname: ' Last',
+            location: ' First ',
+            nickname: ' Last ',
             name: 'This is not used'
           };
           const team = buildTeam(data);
 
-          expect(team.name).toBe(`${data.location}${data.nickname}`);
+          expect(team.name).toBe(`${_.trim(data.location)} ${_.trim(data.nickname)}`);
         });
       });
     });
