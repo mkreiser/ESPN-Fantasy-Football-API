@@ -4,6 +4,7 @@ import q from 'q';
 
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
+import NFLGame from '../nfl-game/nfl-game';
 import Player from '../player/player';
 import Team from '../team/team';
 
@@ -489,6 +490,65 @@ describe('Client', () => {
             expect(team.roster[0].firstName).toBe(
               response.data.teams[index].roster.entries[0].playerPoolEntry.firstName
             );
+          });
+        });
+      });
+    });
+
+    describe('getNFLGamesForPeriod', () => {
+      let client;
+      let endDate;
+      let startDate;
+
+      beforeEach(() => {
+        startDate = '20190912';
+        endDate = '20190917';
+
+        client = new Client({ leagueId: 213213 });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = 'apis/fantasy/v2/games/ffl/games';
+        const routeParams = `?dates=${startDate}-${endDate}&pbpOnly=true`;
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getNFLGamesForPeriod({ startDate, endDate });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(NFLGame, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getNFLGamesForPeriod({ startDate, endDate });
+          expect(NFLGame.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Teams', async () => {
+          const response = {
+            data: {
+              events: [{}, {}, {}]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const games = await client.getNFLGamesForPeriod({ startDate, endDate });
+
+          expect.hasAssertions();
+          expect(games.length).toBe(3);
+          _.forEach(games, (game) => {
+            expect(game).toBeInstanceOf(NFLGame);
           });
         });
       });
