@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
+import NFLGame from '../nfl-game/nfl-game';
 import Team from '../team/team';
 
 axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
@@ -102,6 +103,25 @@ class Client {
       return _.map(data, (team) => (
         Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
+    });
+  }
+
+  /**
+   * Returns all NFL games that occur in the passed timeframe. NOTE: Date format must be "YYYYMMDD".
+   * @param  {string} options.startDate Must be in "YYYYMMDD" format.
+   * @param  {string} options.endDate   Must be in "YYYYMMDD" format.
+   * @return {NFLGame[]}
+   */
+  getNFLGamesForPeriod({ startDate, endDate }) {
+    const routeBase = 'apis/fantasy/v2/games/ffl/games';
+    const routeParams = `?dates=${startDate}-${endDate}&pbpOnly=true`;
+    const route = `${routeBase}${routeParams}`;
+
+    const axiosConfig = this._buildAxiosConfig({ baseURL: 'https://site.api.espn.com/' });
+
+    return axios.get(route, axiosConfig).then((response) => {
+      const data = _.get(response.data, 'events');
+      return _.map(data, (game) => NFLGame.buildFromServer(game));
     });
   }
 }
