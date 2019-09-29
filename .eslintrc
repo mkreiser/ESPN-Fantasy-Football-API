@@ -1,5 +1,8 @@
 {
-  "extends": "airbnb-base",
+  "extends": [
+    "plugin:jest/recommended",
+    "airbnb-base"
+  ],
   "env": {
     es6: true,
     node: true,
@@ -9,6 +12,7 @@
   "parserOptions": {
     "ecmaVersion": 6
   },
+  "plugins": ["jest"],
   "rules": {
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
@@ -16,6 +20,8 @@
     "no-underscore-dangle": "off",
     "operator-linebreak": ["error", "after"],
 
-    "import/extensions": "off"
+    "import/extensions": "off",
+
+    "jest/no-alias-methods": "off"
   }
 }
