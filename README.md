@@ -4,13 +4,7 @@
 [![Build Status](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API.svg?branch=master)](https://travis-ci.org/mkreiser/ESPN-Fantasy-Football-API) [![Maintainability](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/maintainability)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/548bae8930b5efad0418/test_coverage)](https://codeclimate.com/github/mkreiser/ESPN-Fantasy-Football-API/test_coverage) [![dependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API) [![devDependencies Status](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API/dev-status.svg)](https://david-dm.org/mkreiser/ESPN-Fantasy-Football-API?type=dev) [![Known Vulnerabilities](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API/badge.svg?targetFile=package.json)](https://snyk.io/test/github/mkreiser/ESPN-Fantasy-Football-API?targetFile=package.json)
 
 
-A Javascript API client for both web and NodeJS that connects to the updated/v3 ESPN fantasy football API. Available as an npm package.
-
-## Converting to v3 API
-
-In February 2019, ESPN deprecated and removed their `v2` fantasy football API and upgraded their site to a new `v3` API. ESPN had already made this change for their baseball and basketball fantasy APIs as well. This change broke every project running on the `v2` API, including this project. This project will not work until the code is converted to consume the `v3` API.
-
-Work for converting this project is being tracked in #95.
+A Javascript API client for both web and NodeJS that connects to the updated v3 ESPN fantasy football API. Available as an npm package.
 
 ## Features
 
@@ -45,11 +39,11 @@ This project simply retrieves data from ESPN and formats the responses in an eas
 
 ### ESPN API Changes
 
-Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. This occurred in February 2019 when ESPN migrated from their v2 API to a new v3 API (the original version of this project was completed in Janurary 2019). This project has since been updated to consume ESPN's v3 API.
+Since this project wraps the ESPN API, any breaking changes to the ESPN API will break this project. This occurred in February 2019 when ESPN migrated from their v2 API to a new v3 API (the original version of this project was completed in Janurary 2019). This project has been updated to consume ESPN's v3 API.
 
 ### Private Leagues
 
-Private leagues currently only work with the NodeJS version of this project. Since ESPN/Disney requires two auth cookies to make a valid request, we must provide those. However, modern web browsers forbid the setting of the `Cookie` header, causing authentication rejections in the web version, as the cookies are not passed on the request. Therefore, the only way to support private league requests is via NodeJS.
+Private leagues currently only work with the NodeJS version of this project, due to limitations in setting headers in browsers.
 
 ## How to use
 
@@ -70,10 +64,17 @@ Private leagues currently only work with the NodeJS version of this project. Sin
 ### Importing ESPN Fantasy Football API
 
 ```javascript
+// ES6
 import { ... } from 'espn-fantasy-football-api'; // web
 import { ... } from 'espn-fantasy-football-api/node'; // node
 import { ... } from 'espn-fantasy-football-api/web-dev'; // web development build
 import { ... } from 'espn-fantasy-football-api/node-dev'; // node development build
+
+// ES5
+const { ... } = require('espn-fantasy-football-api'); // web
+const { ... } = require('espn-fantasy-football-api/node'); // node
+const { ... } = require('espn-fantasy-football-api/web-dev'); // web development build
+const { ... } = require('espn-fantasy-football-api/node-dev'); // node development build
 ```
 
 ### How to Get Data
@@ -96,44 +97,6 @@ You'll need two cookies from ESPN: `espn_s2` and `SWID`. These are found at "App
 ```javascript
 myClient.setCookies({ espnS2: 'YOUR_ESPN_S2', SWID: 'YOUR_SWID' });
 ```
-
-#### Getting Boxscores
-
-This will retrieve all boxscores for a week in a season.
-
-**Note**: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are required and must correspond with each other correctly.
-
-```javascript
-myClient.getBoxscoreForWeek({ seasonId: 2018, scoringPeriodId: 1, matchupPeriodId: 1 }).then((boxscores) => {
-  // Do whatever with boxscores
-});
-```
-
-#### Getting a List of Free Agents
-
-This will retrieve all free agents for a week in a season.
-
-```javascript
-myClient.getFreeAgents({ seasonId: 2018, scoringPeriodId: 1 }).then((freeAgents) => {
-  // Do whatever with free agents
-});
-```
-
-#### Getting a List of FF Teams in your FF League
-
-This will retrieve all teams in your league at a given week in a season.
-
-```javascript
-myClient.getTeamsAtWeek({ seasonId: 2018, scoringPeriodId: 1 }).then((teams) => {
-  // Do whatever with teams
-});
-```
-
-## Testing
-
-This project includes an expansive test suite. The unit tests ensure specific logic works as intended. The integration tests (**TODO for v3**) make live calls to the ESPN API, ensuring that the project will work in the real world.
-
-Travis CI is used to build and verify changes/pull requests in a clean environment. Additionally, the master branch runs a weekly build on Travis to catch any issues when development activity is sparse.
 
 ## Built With
 
@@ -159,11 +122,6 @@ This project is licensed under [LGPL-3.0](https://choosealicense.com/licenses/lg
 
 This is my first time writing OSS and picking a license. Feel free to reach out with questions and/or concerns.
 
-
-## Contributing
-
-See [CONTRIBUTING.MD](https://github.com/mkreiser/ESPN-Fantasy-Football-API/blob/master/CONTRIBUTING.md)
-
 ## npm scripts
 
 | Script           | Description                                                  |
@@ -180,12 +138,3 @@ See [CONTRIBUTING.MD](https://github.com/mkreiser/ESPN-Fantasy-Football-API/blob
 | test:all         | Runs the unit tests then the integration tests.              |
 | test:integration | Runs the integration tests.                                  |
 | test:unit        | Runs the unit tests.                                         |
-
-## Acknowledgements
-
-Thanks to the following projects for their work and documentation of the ESPN API. They served as the inspiration for this project.
-
-[rbarton65/espnff](https://github.com/rbarton65/espnff)
-
-[Possardt/espn-ff-api](https://github.com/Possardt/espn-ff-api)
-
