@@ -111,6 +111,17 @@ const nflTeamIdToNFLTeamAbbreviation = {
 };
 
 /**
+ * All possible draft types for a league.
+ * @typedef {
+ *   'OFFLINE' |
+ *   'SNAKE' |
+ *   'AUTOPICK' |
+ *   'SNAIL' |
+ *   'AUCTION'
+ * } DRAFT_TYPE
+ */
+
+/**
  * All possible injury statuses for a Player returned by the API
  * @typedef {
  *   'ACTIVE' |
@@ -128,6 +139,25 @@ const nflTeamIdToNFLTeamAbbreviation = {
  *   'SUSPENSION' |
  *   'TEN_DAY_DL'
  * } INJURY_STATUSES
+ */
+
+/**
+ * All possible times at which a strating lineup may be locked and no further changes may be made.
+ * @typedef {
+ *   'INDIVIDUAL_GAME' |
+ *   'FIRSTGAME_SCORINGPERIOD'
+ * } LINEUP_LOCK_TIMES
+ */
+
+/**
+ * All possible draft types for FF league drafts.
+ * @typedef {
+ *   'OFFLINE' |
+ *   'SNAKE' |
+ *   'AUTOPICK' |
+ *   'SNAIL' |
+ *   'AUCTION'
+ * } DRAFT_TYPE
  */
 
 /**

@@ -4,6 +4,7 @@ import q from 'q';
 
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
+import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
 import Player from '../player/player';
 import Team from '../team/team';
@@ -550,6 +551,63 @@ describe('Client', () => {
           _.forEach(games, (game) => {
             expect(game).toBeInstanceOf(NFLGame);
           });
+        });
+      });
+    });
+
+    describe('getLeagueInfo', () => {
+      let client;
+      let seasonId;
+
+      beforeEach(() => {
+        seasonId = 2018;
+
+        client = new Client({ leagueId: 213213 });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${seasonId}/segments/0/leagues/${client.leagueId}`;
+        const routeParams = '?view=mSettings';
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getLeagueInfo({ seasonId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(League, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getLeagueInfo({ seasonId });
+          expect(League.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Teams', async () => {
+          const response = {
+            data: {
+              settings: {
+                name: 'some league',
+                draftSettings: {},
+                rosterSettings: {},
+                scheduleSettings: {}
+              }
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const league = await client.getLeagueInfo({ seasonId });
+          expect(league).toBeInstanceOf(League);
         });
       });
     });

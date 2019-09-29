@@ -3,6 +3,7 @@ import _ from 'lodash';
 
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
+import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
 import Team from '../team/team';
 
@@ -122,6 +123,22 @@ class Client {
     return axios.get(route, axiosConfig).then((response) => {
       const data = _.get(response.data, 'events');
       return _.map(data, (game) => NFLGame.buildFromServer(game));
+    });
+  }
+
+  /**
+   * Returns info on an ESPN fantasy football league
+   * @param  {number} options.seasonId
+   * @return {League}
+   */
+  getLeagueInfo({ seasonId }) {
+    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
+    const routeParams = '?view=mSettings';
+    const route = `${routeBase}${routeParams}`;
+
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
+      const data = _.get(response.data, 'settings');
+      return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
     });
   }
 }
