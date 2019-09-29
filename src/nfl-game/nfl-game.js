@@ -65,33 +65,27 @@ class NFLGame extends BaseObject {
     },
     homeTeam: {
       key: 'competitors',
-      manualParse: (responseData) => {
-        const homeTeam = _.find(responseData, { homeAway: 'home' });
-
-        return {
-          id: _.toSafeInteger(homeTeam.id),
-          team: _.get(nflTeamIdToNFLTeam, homeTeam.id),
-          teamAbbrev: _.get(nflTeamIdToNFLTeamAbbreviation, homeTeam.id),
-          record: homeTeam.record,
-          score: _.toSafeInteger(homeTeam.score)
-        };
-      }
+      manualParse: (responseData) => this._buildTeamAttribute(
+        _.find(responseData, { homeAway: 'home' })
+      )
     },
     awayTeam: {
       key: 'competitors',
-      manualParse: (responseData) => {
-        const awayTeam = _.find(responseData, { homeAway: 'away' });
-
-        return {
-          id: _.toSafeInteger(awayTeam.id),
-          team: _.get(nflTeamIdToNFLTeam, awayTeam.id),
-          teamAbbrev: _.get(nflTeamIdToNFLTeamAbbreviation, awayTeam.id),
-          record: awayTeam.record,
-          score: _.toSafeInteger(awayTeam.score)
-        };
-      }
+      manualParse: (responseData) => this._buildTeamAttribute(
+        _.find(responseData, { homeAway: 'away' })
+      )
     }
   };
+
+  static _buildTeamAttribute(teamResponseData) {
+    return {
+      id: _.toSafeInteger(teamResponseData.id),
+      team: _.get(nflTeamIdToNFLTeam, teamResponseData.id),
+      teamAbbrev: _.get(nflTeamIdToNFLTeamAbbreviation, teamResponseData.id),
+      record: teamResponseData.record,
+      score: _.toSafeInteger(teamResponseData.score)
+    };
+  }
 }
 
 

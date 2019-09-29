@@ -17,21 +17,6 @@ class Client {
   }
 
   /**
-   * Correctly builds an axios config with cookies, if set on the instance
-   * @param  {object} config An axios config.
-   * @return {object}        An axios config with cookies added if set on instance
-   * @private
-   */
-  _buildAxiosConfig(config) {
-    if ((this.espnS2 && this.SWID)) {
-      const headers = { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` };
-      return _.merge({}, config, { headers, withCredentials: true });
-    }
-
-    return config;
-  }
-
-  /**
    * Set cookies from ESPN for interacting with private leagues in NodeJS. Both cookie smust be
    * provided to be set.
    * @param {string} options.espnS2
@@ -54,9 +39,10 @@ class Client {
    * @return {Boxscore[]}
    */
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
-    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
-    const routeParams = `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`;
-    const route = `${routeBase}${routeParams}`;
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`
+    });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const schedule = _.get(response.data, 'schedule');
@@ -76,9 +62,10 @@ class Client {
    * @return {FreeAgentPlayer[]}
    */
   getFreeAgents({ seasonId, scoringPeriodId }) {
-    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
-    const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;
-    const route = `${routeBase}${routeParams}`;
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
+    });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'players');
@@ -95,9 +82,10 @@ class Client {
    * @return {Team[]}
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
-    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
-    const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`;
-    const route = `${routeBase}${routeParams}`;
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`
+    });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'teams');
@@ -114,9 +102,10 @@ class Client {
    * @return {NFLGame[]}
    */
   getNFLGamesForPeriod({ startDate, endDate }) {
-    const routeBase = 'apis/fantasy/v2/games/ffl/games';
-    const routeParams = `?dates=${startDate}-${endDate}&pbpOnly=true`;
-    const route = `${routeBase}${routeParams}`;
+    const route = this.constructor._buildRoute({
+      base: 'apis/fantasy/v2/games/ffl/games',
+      params: `?dates=${startDate}-${endDate}&pbpOnly=true`
+    });
 
     const axiosConfig = this._buildAxiosConfig({ baseURL: 'https://site.api.espn.com/' });
 
@@ -132,14 +121,34 @@ class Client {
    * @return {League}
    */
   getLeagueInfo({ seasonId }) {
-    const routeBase = `${seasonId}/segments/0/leagues/${this.leagueId}`;
-    const routeParams = '?view=mSettings';
-    const route = `${routeBase}${routeParams}`;
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: '?view=mSettings'
+    });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'settings');
       return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
     });
+  }
+
+  /**
+   * Correctly builds an axios config with cookies, if set on the instance
+   * @param  {object} config An axios config.
+   * @return {object}        An axios config with cookies added if set on instance
+   * @private
+   */
+  _buildAxiosConfig(config) {
+    if ((this.espnS2 && this.SWID)) {
+      const headers = { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` };
+      return _.merge({}, config, { headers, withCredentials: true });
+    }
+
+    return config;
+  }
+
+  static _buildRoute({ base, params }) {
+    return `${base}${params}`;
   }
 }
 
