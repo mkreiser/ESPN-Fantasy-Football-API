@@ -111,6 +111,15 @@ const nflTeamIdToNFLTeamAbbreviation = {
 };
 
 /**
+ * All possible ways a player may be acquired onto a fantasy football team roster.
+ * @typedef {
+ *   'FREEAGENCY' |
+ *   'WAIVERS_TRADITIONAL' |
+ *   'WAIVERS_CONTINUOUS'
+ * } ACQUISITION_TYPES
+ */
+
+/**
  * All possible draft types for a league.
  * @typedef {
  *   'OFFLINE' |
@@ -142,7 +151,16 @@ const nflTeamIdToNFLTeamAbbreviation = {
  */
 
 /**
- * All possible times at which a strating lineup may be locked and no further changes may be made.
+ * The different types in which keeper order can be determined.
+ * @typedef {
+ * 'TRADITIONAL' |
+ * 'END_OF_DRAFT' |
+ * 'SELECTED_ROUND'
+ * } KEEPER_ORDER_TYPES
+ */
+
+/**
+ * All possible times at which a starting lineup may be locked and no further changes may be made.
  * @typedef {
  *   'INDIVIDUAL_GAME' |
  *   'FIRSTGAME_SCORINGPERIOD'
@@ -150,14 +168,24 @@ const nflTeamIdToNFLTeamAbbreviation = {
  */
 
 /**
- * All possible draft types for FF league drafts.
+ * All possible types of player moves.
  * @typedef {
- *   'OFFLINE' |
- *   'SNAKE' |
- *   'AUTOPICK' |
- *   'SNAIL' |
- *   'AUCTION'
- * } DRAFT_TYPE
+ *   'WIN' |
+ *   'LOSS' |
+ *   'TIE' |
+ *   'NONE'
+ * } MATCHUP_RESULTS
+ */
+
+/**
+ * All possible tiebreakers for a matchup.
+ * @typedef {
+ *   'NONE' |
+ *   'HOME_TEAM_WINS' |
+ *   'SLOT_POINTS' |
+ *   'STAT_POINTS' |
+ *   'FIRSTGAME_SCORINGPERIOD'
+ * } MATCHUP_TIEBREAKERS
  */
 
 /**
@@ -167,6 +195,60 @@ const nflTeamIdToNFLTeamAbbreviation = {
  * 'ONTEAM' |
  * 'WAIVERS'
  * } PLAYER_AVAILABILITY_STATUSES
+ */
+
+/**
+ * All possible types of player moves.
+ * @typedef {
+ *   'NONE' |
+ *   'LINEUP' |
+ *   'ADD' |
+ *   'DROP' |
+ *   'DRAFT' |
+ *   'UNDRAFT' |
+ *   'DRAFT_TRADE'
+ * } PLAYER_MOVE_TYPES
+ */
+
+/**
+ * The rule by which playoff seeds are determined.
+ * @typedef {
+ * 'UNKNOWN' |
+ * 'H2H_RECORD' |
+ * 'TOTAL_POINTS_SCORED' |
+ * 'INTRA_DIVISION_RECORD' |
+ * 'TOTAL_POINTS_AGAINST' |
+ * 'RAW_STAT'
+ * } PLAYOFF_SEEDING_RULES
+ */
+
+/**
+ * All possible types of transactions.
+ * @typedef {
+ *   'TRADE_DECLINE' |
+ *   'TRADE_PROPOSAL' |
+ *   'TRADE_ACCEPT' |
+ *   'TRADE_UPHOLD' |
+ *   'TRADE_VETO' |
+ *   'WAIVER_ERROR' |
+ *   'TRADE_ERROR' |
+ *   'WAIVER' |
+ *   'ROSTER' |
+ *   'FUTURE_ROSTER' |
+ *   'RETRO_ROSTER' |
+ *   'FREEAGENT' |
+ *   'DRAFT'
+ * } TRANSACTION_TYPES
+ */
+
+/**
+ * Which team won a matchup.
+ * @typedef {
+ *   'HOME' |
+ *   'AWAY' |
+ *   'TIE' |
+ *   'UNDECIDED'
+ * } WINNING_TEAM
  */
 
 export {
