@@ -278,6 +278,86 @@ describe('Client', () => {
       });
     });
 
+    describe('getHistoricalScoreboardForWeek', () => {
+      let client;
+      let leagueId;
+      let matchupPeriodId;
+      let scoringPeriodId;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        matchupPeriodId = 2;
+        scoringPeriodId = 3;
+        seasonId = 2018;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${leagueId}`;
+        const routeParams = `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
+         '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam';
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getHistoricalScoreboardForWeek({ seasonId, matchupPeriodId, scoringPeriodId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(Boxscore, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getHistoricalScoreboardForWeek({ seasonId, matchupPeriodId, scoringPeriodId });
+          expect(Boxscore.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Boxscores', async () => {
+          const response = {
+            data: [{
+              schedule: [{
+                matchupPeriodId,
+                home: { teamId: 2 },
+                away: { teamId: 3 }
+              }, {
+                matchupPeriodId,
+                home: { teamId: 5 },
+                away: { teamId: 6 }
+              }, {
+                matchupPeriodId: matchupPeriodId + 1,
+                home: { teamId: 6 },
+                away: { teamId: 2 }
+              }]
+            }]
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const boxscores = await client.getHistoricalScoreboardForWeek({
+            seasonId, matchupPeriodId, scoringPeriodId
+          });
+
+          expect.hasAssertions();
+          expect(boxscores.length).toBe(2);
+          _.forEach(boxscores, (boxscore, index) => {
+            expect(boxscore).toBeInstanceOf(Boxscore);
+            expect(boxscore.homeTeamId).toBe(response.data[0].schedule[index].home.teamId);
+            expect(boxscore.awayTeamId).toBe(response.data[0].schedule[index].away.teamId);
+          });
+        });
+      });
+    });
+
     describe('getFreeAgents', () => {
       let client;
       let leagueId;

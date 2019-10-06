@@ -55,6 +55,38 @@ class Client {
   }
 
   /**
+   * Returns boxscores WITHOUT ROSTERS for PREVIOUS seasons. Useful for pulling historical
+   * scoreboards.
+   * NOTE: This route will error for the current season, as ESPN only exposes this data for previous
+   * seasons.
+   * NOTE: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are
+   * required and must correspond with each other correctly.
+   * @param  {number} options.seasonId The season in which the boxscores occur.
+   * @param  {number} options.matchupPeriodId
+   * @param  {number} options.scoringPeriodId
+   * @return {Boxscore[]}
+   */
+  getHistoricalScoreboardForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
+    const route = this.constructor._buildRoute({
+      base: `${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
+        '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam'
+    });
+
+    const axiosConfig = this._buildAxiosConfig({
+      baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
+    });
+    return axios.get(route, axiosConfig).then((response) => {
+      const schedule = _.get(response.data[0], 'schedule'); // Data is an array instead of object
+      const data = _.filter(schedule, { matchupPeriodId });
+
+      return _.map(data, (matchup) => (
+        Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
    * Returns all free agents (in terms of the league's rosters) for a given week.
    * NOTE: `scoringPeriodId` of 0 corresponds to the preseason; `18` for after the season ends.
    * @param  {number} options.seasonId
