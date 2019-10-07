@@ -30,7 +30,12 @@ class Boxscore extends BaseObject {
    * @type {Boxscore~BoxscoreMap}
    */
   static responseMap = {
-    homeScore: 'home.totalPoints',
+    homeScore: {
+      key: 'home',
+      manualParse: (responseData) => (
+        _.get(responseData, 'totalPointsLive') || _.get(responseData, 'totalPoints')
+      )
+    },
     homeTeamId: 'home.teamId',
     homeRoster: {
       key: 'home.rosterForCurrentScoringPeriod.entries',
@@ -41,7 +46,12 @@ class Boxscore extends BaseObject {
       )
     },
 
-    awayScore: 'away.totalPoints',
+    awayScore: {
+      key: 'away',
+      manualParse: (responseData) => (
+        _.get(responseData, 'totalPointsLive') || _.get(responseData, 'totalPoints')
+      )
+    },
     awayTeamId: 'away.teamId',
     awayRoster: {
       key: 'away.rosterForCurrentScoringPeriod.entries',

@@ -53,6 +53,50 @@ describe('Boxscore', () => {
       };
     });
 
+    describe('homeScore', () => {
+      describe('manualParse', () => {
+        describe('when totalPointsLive is populated on the team\'s response', () => {
+          test('maps to totalPointsLive', () => {
+            data.home.totalPointsLive = data.home.totalPoints + 12;
+
+            const boxscore = buildBoxscore(data);
+            expect(boxscore.homeScore).toBe(data.home.totalPointsLive);
+          });
+        });
+
+        describe('when totalPointsLive is not populated on the team\'s response', () => {
+          test('maps to totalPoints', () => {
+            delete data.home.totalPointsLive;
+
+            const boxscore = buildBoxscore(data);
+            expect(boxscore.homeScore).toBe(data.home.totalPoints);
+          });
+        });
+      });
+    });
+
+    describe('awayScore', () => {
+      describe('manualParse', () => {
+        describe('when totalPointsLive is populated on the team\'s response', () => {
+          test('maps to totalPointsLive', () => {
+            data.away.totalPointsLive = data.away.totalPoints + 12;
+
+            const boxscore = buildBoxscore(data);
+            expect(boxscore.awayScore).toBe(data.away.totalPointsLive);
+          });
+        });
+
+        describe('when totalPointsLive is not populated on the team\'s response', () => {
+          test('maps to totalPoints', () => {
+            delete data.away.totalPointsLive;
+
+            const boxscore = buildBoxscore(data);
+            expect(boxscore.awayScore).toBe(data.away.totalPoints);
+          });
+        });
+      });
+    });
+
     describe('homeRoster', () => {
       describe('manualParse', () => {
         test('maps to BoxscorePlayer instances', () => {
