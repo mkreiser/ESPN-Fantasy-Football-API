@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import {
   nflTeamIdToNFLTeam,
@@ -37,9 +36,9 @@ describe('NFLGame', () => {
     });
 
     describe('startTime', () => {
-      test('returns a moment', () => {
+      test('returns a JS Date', () => {
         const game = NFLGame.buildFromServer(data);
-        expect(game.startTime).toBeInstanceOf(moment);
+        expect(game.startTime).toEqual(new Date(data.date));
       });
     });
 

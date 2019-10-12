@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import BaseObject from '../base-classes/base-object/base-object';
 
@@ -58,9 +57,9 @@ describe('League', () => {
         expect(league.draftSettings).toEqual(expect.any(Object));
       });
 
-      test('maps date as a moment', () => {
+      test('maps date as a JS Date instance', () => {
         const league = League.buildFromServer(data);
-        expect(league.draftSettings.date).toEqual(moment(draftSettings.date));
+        expect(league.draftSettings.date).toEqual(new Date(draftSettings.date));
       });
 
       test('maps type directly', () => {
