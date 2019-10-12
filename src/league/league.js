@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import moment from 'moment';
 
 import BaseObject from '../base-classes/base-object/base-object';
 
@@ -16,7 +15,7 @@ class League extends BaseObject {
   /**
    * @typedef {object} League~DraftSettings
    *
-   * @property {moment} date The date of the draft.
+   * @property {date} date The date of the draft.
    * @property {DRAFT_TYPE} type The type of draft.
    * @property {number} timePerPick The amount of time to make a selection.
    * @property {boolean} canTradeDraftPicks Whether or not draft picks can be traded.
@@ -67,7 +66,7 @@ class League extends BaseObject {
     draftSettings: {
       key: 'draftSettings',
       manualParse: (responseData) => ({
-        date: moment(responseData.date),
+        date: new Date(responseData.date),
         type: responseData.type,
         timePerPick: responseData.timePerSelection,
         canTradeDraftPicks: responseData.isTradingEnabled
