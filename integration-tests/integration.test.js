@@ -86,9 +86,7 @@ describe('client integration tests', () => {
 
   describe('getMatchupScores', () => {
     test('returns a populated array of MatchupScores', async () => {
-      const matchupScores = await client.getMatchupScores({
-        seasonId
-      });
+      const matchupScores = await client.getMatchupScores({ seasonId });
 
       expect(matchupScores).toMatchSnapshot();
     });

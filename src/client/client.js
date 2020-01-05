@@ -47,7 +47,7 @@ class Client {
    */
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
-      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      base: this._getLeagueSeasonBaseRoute(seasonId),
       params: `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`
     });
 
@@ -102,7 +102,7 @@ class Client {
    */
   getFreeAgents({ seasonId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
-      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      base: this._getLeagueSeasonBaseRoute(seasonId),
       params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
     });
 
@@ -122,7 +122,7 @@ class Client {
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
-      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      base: this._getLeagueSeasonBaseRoute(seasonId),
       params: `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`
     });
 
@@ -161,7 +161,7 @@ class Client {
    */
   getLeagueInfo({ seasonId }) {
     const route = this.constructor._buildRoute({
-      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      base: this._getLeagueSeasonBaseRoute(seasonId),
       params: '?view=mSettings'
     });
 
@@ -178,7 +178,7 @@ class Client {
    */
   getMatchupScores({ seasonId }) {
     const route = this.constructor._buildRoute({
-      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      base: this._getLeagueSeasonBaseRoute(seasonId),
       params: '?view=mMatchupScore'
     });
 
@@ -204,6 +204,10 @@ class Client {
     }
 
     return config;
+  }
+
+  _getLeagueSeasonBaseRoute(seasonId) {
+    return `${seasonId}/segments/0/leagues/${this.leagueId}`;
   }
 
   static _buildRoute({ base, params }) {
