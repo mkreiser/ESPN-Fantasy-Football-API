@@ -115,6 +115,26 @@ class Client {
   }
 
   /**
+   * Returns an array of Team objects representing each fantasy football team in the FF league.
+   * NOTE: Does not include roster data
+   * @param  {number} options.seasonId
+   * @return {Team[]}
+   */
+  getTeams({ seasonId }) {
+    const route = this.constructor._buildRoute({
+      base: this._getLeagueSeasonBaseRoute(seasonId),
+      params: '?view=mTeam'
+    });
+
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
+      const data = _.get(response.data, 'teams');
+      return _.map(data, (team) => (
+        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
    * Returns an array of Team object representing each fantasy football team in the FF league.
    * @param  {number} options.seasonId
    * @param  {number} options.scoringPeriodId

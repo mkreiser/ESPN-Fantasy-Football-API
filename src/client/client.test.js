@@ -452,6 +452,99 @@ describe('Client', () => {
       });
     });
 
+    describe('getTeams', () => {
+      let client;
+      let leagueId;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        seasonId = 2018;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const routeParams = '?view=mTeam';
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getTeams({ seasonId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(Team, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getTeams({ seasonId });
+          expect(Team.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Teams', async () => {
+          const response = {
+            data: {
+              teams: [{
+                abbrev: 'SWAG',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 3,
+                    losses: 11
+                  }
+                }
+              }, {
+                abbrev: 'JS',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 5,
+                    losses: 11
+                  }
+                }
+              }, {
+                abbrev: 'SWAG',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 11,
+                    losses: 8
+                  }
+                }
+              }]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const teams = await client.getTeams({ seasonId });
+
+          expect.hasAssertions();
+          expect(teams.length).toBe(3);
+          _.forEach(teams, (team, index) => {
+            expect(team).toBeInstanceOf(Team);
+            expect(team.abbreviation).toBe(response.data.teams[index].abbrev);
+
+            expect(team.wins).toBe(response.data.teams[index].record.overall.wins);
+            expect(team.losses).toBe(response.data.teams[index].record.overall.losses);
+          });
+        });
+      });
+    });
+
     describe('getTeamsAtWeek', () => {
       let client;
       let leagueId;

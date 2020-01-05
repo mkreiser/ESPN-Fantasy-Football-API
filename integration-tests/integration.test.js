@@ -56,6 +56,14 @@ describe('client integration tests', () => {
     });
   });
 
+  describe('getTeams', () => {
+    test('returns a populated array of Teams', async () => {
+      const teams = await client.getTeams({ seasonId });
+
+      expect(teams).toMatchSnapshot();
+    });
+  });
+
   describe('getTeamsAtWeek', () => {
     test('returns a populated array of Teams', async () => {
       const teams = await client.getTeamsAtWeek({
