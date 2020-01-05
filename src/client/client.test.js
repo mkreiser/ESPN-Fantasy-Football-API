@@ -5,12 +5,12 @@ import q from 'q';
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
+import MatchupScore from '../matchup-score/matchup-score';
 import NFLGame from '../nfl-game/nfl-game';
 import Player from '../player/player';
 import Team from '../team/team';
 
 import Client from './client';
-import MatchupScore from "../matchup-score/matchup-score";
 
 describe('Client', () => {
   describe('constructor', () => {
@@ -697,13 +697,11 @@ describe('Client', () => {
       let client;
       let leagueId;
       let matchupPeriodId;
-      let scoringPeriodId;
       let seasonId;
 
       beforeEach(() => {
         leagueId = 213213;
         matchupPeriodId = 2;
-        scoringPeriodId = 3;
         seasonId = 2018;
 
         client = new Client({ leagueId });
