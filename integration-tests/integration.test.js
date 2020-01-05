@@ -83,4 +83,14 @@ describe('client integration tests', () => {
       expect(league).toMatchSnapshot();
     });
   });
+
+  describe('getMatchupScores', () => {
+    test('returns a populated array of MatchupScores', async () => {
+      const matchupScores = await client.getMatchupScores({
+        seasonId
+      });
+
+      expect(matchupScores).toMatchSnapshot();
+    });
+  });
 });

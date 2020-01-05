@@ -10,6 +10,7 @@ import Player from '../player/player';
 import Team from '../team/team';
 
 import Client from './client';
+import MatchupScore from "../matchup-score/matchup-score";
 
 describe('Client', () => {
   describe('constructor', () => {
@@ -688,6 +689,85 @@ describe('Client', () => {
 
           const league = await client.getLeagueInfo({ seasonId });
           expect(league).toBeInstanceOf(League);
+        });
+      });
+    });
+
+    describe('getMatchupScores', () => {
+      let client;
+      let leagueId;
+      let matchupPeriodId;
+      let scoringPeriodId;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        matchupPeriodId = 2;
+        scoringPeriodId = 3;
+        seasonId = 2018;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const routeParams = '?view=mMatchupScore';
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getMatchupScores({ seasonId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(MatchupScore, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getMatchupScores({ seasonId });
+          expect(MatchupScore.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into MatchupScores', async () => {
+          const response = {
+            data: {
+              schedule: [{
+                matchupPeriodId,
+                home: { teamId: 2 },
+                away: { teamId: 3 }
+              }, {
+                matchupPeriodId,
+                home: { teamId: 5 },
+                away: { teamId: 6 }
+              }, {
+                matchupPeriodId,
+                home: { teamId: 6 },
+                away: { teamId: 2 }
+              }]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const matchupScores = await client.getMatchupScores({
+            seasonId
+          });
+
+          expect.hasAssertions();
+          expect(matchupScores.length).toBe(3);
+          _.forEach(matchupScores, (matchupScore, index) => {
+            expect(matchupScore).toBeInstanceOf(MatchupScore);
+            expect(matchupScore.homeTeamId).toBe(response.data.schedule[index].home.teamId);
+            expect(matchupScore.awayTeamId).toBe(response.data.schedule[index].away.teamId);
+          });
         });
       });
     });

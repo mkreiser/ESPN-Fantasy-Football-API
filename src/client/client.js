@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
+import MatchupScore from '../matchup-score/matchup-score';
 import NFLGame from '../nfl-game/nfl-game';
 import Team from '../team/team';
 
@@ -167,6 +168,26 @@ class Client {
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'settings');
       return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
+    });
+  }
+
+  /**
+   * Returns all matchup scores for a season.
+   * @param  {number} options.seasonId The season in which the matchups occur.
+   * @return {MatchupScore[]}
+   */
+  getMatchupScores({ seasonId }) {
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: '?view=mMatchupScore'
+    });
+
+    return axios.get(route, this._buildAxiosConfig()).then((response) => {
+      const data = _.get(response.data, 'schedule');
+
+      return _.map(data, (matchup) => (
+        MatchupScore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
+      ));
     });
   }
 
