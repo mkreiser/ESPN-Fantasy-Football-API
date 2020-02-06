@@ -35,6 +35,11 @@ class Client {
     }
   }
 
+  deleteCookies() {
+    delete this.espnS2;
+    delete this.SWID;
+  }
+
   /**
    * Returns all boxscores for a week.
    * NOTE: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are
