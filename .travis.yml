@@ -7,7 +7,9 @@ branches:
   only:
     - master
     - v3-api-conversion
-install: npm install
+install:
+  - npm install
+  - npm install -g codecov
 before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
@@ -15,6 +17,7 @@ before_script:
 script: npm run ci && LEAGUE_ID=$LEAGUE_ID ESPN_S2=$ESPN_S2 SWID=$SWID npm run test:integration
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
+  - codecov
 deploy:
   provider: s3
   access_key_id: $AWS_ACCESS_KEY
