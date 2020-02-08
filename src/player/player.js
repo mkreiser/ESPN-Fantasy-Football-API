@@ -8,6 +8,8 @@ import {
   slotCategoryIdToPositionMap
 } from '../constants.js';
 
+/* global INJURY_STATUSES, PLAYER_AVAILABILITY_STATUSES */
+
 /**
  * Represents an NFL player. This model is not directly associated with any fantasy team.
  *
@@ -44,7 +46,7 @@ class Player extends BaseCacheableObject {
   /**
    * @typedef {object} Player~PlayerMap
    *
-   * @property {number} id
+   * @property {number} id The id of the player in the ESPN universe.
    * @property {string} firstName The first name of the player.
    * @property {string} lastName The last name of the player.
    * @property {string} fullName The full name of the player.

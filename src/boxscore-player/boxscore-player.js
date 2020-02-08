@@ -7,6 +7,8 @@ import { parsePlayerStats } from '../player-stats/player-stats';
 
 import { slotCategoryIdToPositionMap } from '../constants';
 
+/* global PlayerStats */
+
 /**
  * Represents a player and their stats on a boxscore.
  *
