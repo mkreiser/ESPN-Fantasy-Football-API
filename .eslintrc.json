@@ -1,6 +1,7 @@
 {
   "extends": [
     "plugin:jest/recommended",
+    "plugin:jsdoc/recommended",
     "airbnb-base"
   ],
   "env": {
@@ -12,7 +13,7 @@
   "parserOptions": {
     "ecmaVersion": 6
   },
-  "plugins": ["jest"],
+  "plugins": ["jest", "jsdoc"],
   "rules": {
     "arrow-parens": ["error", "always"],
     "comma-dangle": ["error", "never"],
