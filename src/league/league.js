@@ -34,22 +34,18 @@ class League extends BaseObject {
   /**
    * @typedef {object} League~scheduleSettings
    *
-   * @property {number} id The id of the NFL team in the ESPN universe.
+   * @property {number} numberOfRegularSeasonMatchups The number of regular season matchups a team
+   *                                                  will have on the schedule.
+   * @property {number} regularSeasonMatchupLength How many weeks each regular season matchup lasts.
+   * @property {number} numberOfPlayoffMatchups The number of playoff matchups a team will have
+   *                                            on the schedule.
+   * @property {number} playoffMatchupLength How many weeks each playoff matchup lasts.
+   * @property {number} numberOfPlayoffTeams The number of playoff teams there will be.
    */
-
 
   /**
    * @typedef {object} League~LeagueMap
    *
-   * @property {number} numberOfRegularSeasonMatchups
-   * @property {number} regularSeasonMatchupLength How many weeks each regular season matchup lasts.
-   * @property {number} numberOfPlayoffMatchups
-   * @property {number} playoffMatchupLength How many weeks each playoff matchup lasts.
-   * @property {number} numberOfPlayoffTeams
-   */
-
-  /**
-   * @type {League~LeagueMap}
    * @property {string} name The name of the league.
    * @property {number} size The number of teams in the league.
    * @property {boolean} isPublic Whether or not the league is publically visible and accessible.
@@ -57,6 +53,10 @@ class League extends BaseObject {
    * @property {League~DraftSettings} draftSettings The draft settings of the league.
    * @property {League~RosterSettings} rosterSettings The roster settings of the league.
    * @property {League~ScheduleSettings} scheduleSettings The schedule settings of the league.
+   */
+
+  /**
+   * @type {League~LeagueMap}
    */
   static responseMap = {
     name: 'name',

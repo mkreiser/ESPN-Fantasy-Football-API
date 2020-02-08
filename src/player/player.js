@@ -27,8 +27,8 @@ class Player extends BaseCacheableObject {
   /**
    * Returns valid id params when 'id' and 'seasonId' are passed.
    *
-   * @param  {object} params
-   * @returns {object|undefined}
+   * @param   {object} params The params to use.
+   * @returns {object|undefined} An object containing the params, or `undefined`.
    */
   static getIDParams(params = {}) {
     if (params.id && params.seasonId) {

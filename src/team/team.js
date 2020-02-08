@@ -23,8 +23,8 @@ class Team extends BaseCacheableObject {
   /**
    * Returns valid id params when 'id', `leagueId`, and 'seasonId' are passed.
    *
-   * @param  {object} params
-   * @returns {object|undefined}
+   * @param   {object} params The params to use.
+   * @returns {object|undefined} An object containing the params, or `undefined`.
    */
   static getIDParams(params = {}) {
     if (params.id && params.leagueId && params.seasonId) {
@@ -39,10 +39,10 @@ class Team extends BaseCacheableObject {
   }
 
   /**
-   * @typedef {object} Team~TeamMap
+   * @typedef  {object} Team~TeamMap
    *
-   * @property {number} id
-   * @property {stirng} abbreviation The team's abbreviation.
+   * @property {number} id The id of the team in the ESPN universe.
+   * @property {string} abbreviation The team's abbreviation.
    * @property {string} name The team's name.
    * @property {string} logoURL The URL for the team's uploaded logo.
    * @property {number} wavierRank The team's position in the current wavier order.
