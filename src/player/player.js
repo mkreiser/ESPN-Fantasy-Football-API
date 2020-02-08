@@ -11,7 +11,7 @@ import {
 /**
  * Represents an NFL player. This model is not directly associated with any fantasy team.
  *
- * @extends {BaseCacheableObject}
+ * @augments {BaseCacheableObject}
  */
 class Player extends BaseCacheableObject {
   constructor(options = {}) {
@@ -26,8 +26,9 @@ class Player extends BaseCacheableObject {
 
   /**
    * Returns valid id params when 'id' and 'seasonId' are passed.
-   * @param  {Object} params
-   * @return {Object|undefined}
+   *
+   * @param  {object} params
+   * @returns {object|undefined}
    */
   static getIDParams(params = {}) {
     if (params.id && params.seasonId) {

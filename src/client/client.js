@@ -25,6 +25,7 @@ class Client {
   /**
    * Set cookies from ESPN for interacting with private leagues in NodeJS. Both cookie smust be
    * provided to be set.
+   *
    * @param {string} options.espnS2
    * @param {string} options.SWID
    */
@@ -39,10 +40,11 @@ class Client {
    * Returns all boxscores for a week.
    * NOTE: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are
    * required and must correspond with each other correctly.
+   *
    * @param  {number} options.seasonId The season in which the boxscores occur.
    * @param  {number} options.matchupPeriodId
    * @param  {number} options.scoringPeriodId
-   * @return {Boxscore[]}
+   * @returns {Boxscore[]}
    */
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
@@ -67,10 +69,11 @@ class Client {
    * seasons.
    * NOTE: Due to the way ESPN populates data, both the `scoringPeriodId` and `matchupPeriodId` are
    * required and must correspond with each other correctly.
+   *
    * @param  {number} options.seasonId The season in which the boxscores occur.
    * @param  {number} options.matchupPeriodId
    * @param  {number} options.scoringPeriodId
-   * @return {Boxscore[]}
+   * @returns {Boxscore[]}
    */
   getHistoricalScoreboardForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
@@ -95,9 +98,10 @@ class Client {
   /**
    * Returns all free agents (in terms of the league's rosters) for a given week.
    * NOTE: `scoringPeriodId` of 0 corresponds to the preseason; `18` for after the season ends.
+   *
    * @param  {number} options.seasonId
    * @param  {number} options.scoringPeriodId
-   * @return {FreeAgentPlayer[]}
+   * @returns {FreeAgentPlayer[]}
    */
   getFreeAgents({ seasonId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
@@ -115,9 +119,10 @@ class Client {
 
   /**
    * Returns an array of Team object representing each fantasy football team in the FF league.
+   *
    * @param  {number} options.seasonId
    * @param  {number} options.scoringPeriodId
-   * @return {Team[]}
+   * @returns {Team[]}
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
     const route = this.constructor._buildRoute({
@@ -135,9 +140,10 @@ class Client {
 
   /**
    * Returns all NFL games that occur in the passed timeframe. NOTE: Date format must be "YYYYMMDD".
+   *
    * @param  {string} options.startDate Must be in "YYYYMMDD" format.
    * @param  {string} options.endDate   Must be in "YYYYMMDD" format.
-   * @return {NFLGame[]}
+   * @returns {NFLGame[]}
    */
   getNFLGamesForPeriod({ startDate, endDate }) {
     const route = this.constructor._buildRoute({
@@ -155,8 +161,9 @@ class Client {
 
   /**
    * Returns info on an ESPN fantasy football league
+   *
    * @param  {number} options.seasonId
-   * @return {League}
+   * @returns {League}
    */
   getLeagueInfo({ seasonId }) {
     const route = this.constructor._buildRoute({
@@ -172,8 +179,9 @@ class Client {
 
   /**
    * Correctly builds an axios config with cookies, if set on the instance
+   *
    * @param  {object} config An axios config.
-   * @return {object}        An axios config with cookies added if set on instance
+   * @returns {object} An axios config with cookies added if set on instance
    * @private
    */
   _buildAxiosConfig(config) {

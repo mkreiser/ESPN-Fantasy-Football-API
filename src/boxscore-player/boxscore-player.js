@@ -10,7 +10,7 @@ import { slotCategoryIdToPositionMap } from '../constants';
 /**
  * Represents a player and their stats on a boxscore.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class BoxscorePlayer extends BaseObject {
   static displayName = 'BoxscorePlayer';

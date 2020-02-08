@@ -7,7 +7,7 @@ import { slotCategoryIdToPositionMap } from '../constants.js';
 /**
  * Represents basic information about an ESPN fantasy football league.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class League extends BaseObject {
   static displayName = 'League';
@@ -15,7 +15,7 @@ class League extends BaseObject {
   /**
    * @typedef {object} League~DraftSettings
    *
-   * @property {date} date The date of the draft.
+   * @property {Date} date The date of the draft.
    * @property {DRAFT_TYPE} type The type of draft.
    * @property {number} timePerPick The amount of time to make a selection.
    * @property {boolean} canTradeDraftPicks Whether or not draft picks can be traded.
@@ -49,15 +49,15 @@ class League extends BaseObject {
    */
 
   /**
-    * @type {League~LeagueMap}
-    * @property {string} name The name of the league.
-    * @property {number} size The number of teams in the league.
-    * @property {boolean} isPublic Whether or not the league is publically visible and accessible.
-    *
-    * @property {League~DraftSettings} draftSettings The draft settings of the league.
-    * @property {League~RosterSettings} rosterSettings The roster settings of the league.
-    * @property {League~ScheduleSettings} scheduleSettings The schedule settings of the league.
-    */
+   * @type {League~LeagueMap}
+   * @property {string} name The name of the league.
+   * @property {number} size The number of teams in the league.
+   * @property {boolean} isPublic Whether or not the league is publically visible and accessible.
+   *
+   * @property {League~DraftSettings} draftSettings The draft settings of the league.
+   * @property {League~RosterSettings} rosterSettings The roster settings of the league.
+   * @property {League~ScheduleSettings} scheduleSettings The schedule settings of the league.
+   */
   static responseMap = {
     name: 'name',
     size: 'size',

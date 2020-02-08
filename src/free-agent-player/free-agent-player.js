@@ -6,7 +6,7 @@ import { parsePlayerStats } from '../player-stats/player-stats';
 /**
  * Represents a player and their raw stats.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class FreeAgentPlayer extends BaseObject {
   static displayName = 'FreeAgentPlayer';

@@ -7,7 +7,7 @@ import Player from '../player/player';
 /**
  * Represents a fantasy football team in a league.
  *
- * @extends {BaseCacheableObject}
+ * @augments {BaseCacheableObject}
  */
 class Team extends BaseCacheableObject {
   constructor(options = {}) {
@@ -22,8 +22,9 @@ class Team extends BaseCacheableObject {
 
   /**
    * Returns valid id params when 'id', `leagueId`, and 'seasonId' are passed.
-   * @param  {Object} params
-   * @return {Object|undefined}
+   *
+   * @param  {object} params
+   * @returns {object|undefined}
    */
   static getIDParams(params = {}) {
     if (params.id && params.leagueId && params.seasonId) {

@@ -7,7 +7,7 @@ import BoxscorePlayer from '../boxscore-player/boxscore-player';
 /**
  * Represents a boxscore for a week.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class Boxscore extends BaseObject {
   static displayName = 'Boxscore';
