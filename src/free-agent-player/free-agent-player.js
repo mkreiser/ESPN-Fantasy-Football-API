@@ -3,10 +3,12 @@ import BaseObject from '../base-classes/base-object/base-object';
 import Player from '../player/player';
 import { parsePlayerStats } from '../player-stats/player-stats';
 
+/* global PlayerStats */
+
 /**
  * Represents a player and their raw stats.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class FreeAgentPlayer extends BaseObject {
   static displayName = 'FreeAgentPlayer';

@@ -9,7 +9,7 @@ import BaseObject from '../base-classes/base-object/base-object';
  * The stat map is not comprehensive, but should cover normal standard and PPR scoring rules. The
  * largest missing piece is IDP scoring.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class PlayerStats extends BaseObject {
   constructor(options = {}) {
@@ -97,8 +97,8 @@ class PlayerStats extends BaseObject {
    */
 
   /**
-    * @type {PlayerStats~PlayerStatsMap}
-    */
+   * @type {PlayerStats~PlayerStatsMap}
+   */
   static responseMap = {
     passingYards: '3',
     passingTouchdowns: '4',

@@ -9,7 +9,8 @@ import {
 
 /**
  * Represents an NFL game between two NFL teams.
- * @extends {BaseObject}
+ *
+ * @augments {BaseObject}
  */
 class NFLGame extends BaseObject {
   static displayName = 'NFLGame';
@@ -33,7 +34,7 @@ class NFLGame extends BaseObject {
   /**
    * @typedef {object} NFLGame~NFLGameMap
    *
-   * @property {date} startTime The date and time when the game starts in Eastern Time.
+   * @property {Date} startTime The date and time when the game starts in Eastern Time.
    * @property {number} quarter The quarter the game is in.
    * @property {string} clock The current game clock formatted as MM:SS.
    * @property {string} odds The odds for the game formatted as "TEAM_ABBREV LINE"
@@ -46,8 +47,8 @@ class NFLGame extends BaseObject {
    */
 
   /**
-    * @type {NFLGame~NFLGameMap}
-    */
+   * @type {NFLGame~NFLGameMap}
+   */
   static responseMap = {
     startTime: {
       key: 'date',
