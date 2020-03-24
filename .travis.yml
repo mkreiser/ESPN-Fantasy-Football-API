@@ -18,6 +18,7 @@ script: npm run ci && LEAGUE_ID=$LEAGUE_ID ESPN_S2=$ESPN_S2 SWID=$SWID npm run t
 after_script:
   - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
   - codecov
+  - coveralls < coverage/lcov.info
 deploy:
   provider: s3
   access_key_id: $AWS_ACCESS_KEY
