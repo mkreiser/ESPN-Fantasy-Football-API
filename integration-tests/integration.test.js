@@ -1,8 +1,6 @@
-import _ from 'lodash';
-
 import { Client } from '../src/index';
 
-jest.setTimeout(15000);
+jest.setTimeout(10000);
 
 describe('client integration tests', () => {
   let client;
@@ -12,7 +10,7 @@ describe('client integration tests', () => {
 
   beforeEach(() => {
     leagueId = process.env.LEAGUE_ID;
-    seasonId = _.toSafeInteger(new Date().getFullYear()) - 1;
+    seasonId = 2018;
     scoringPeriodId = 1;
 
     client = new Client({
@@ -34,7 +32,7 @@ describe('client integration tests', () => {
 
   describe('getHistoricalScoreboardForWeek', () => {
     beforeEach(() => {
-      seasonId = _.toSafeInteger(new Date().getFullYear()) - 3;
+      seasonId = 2016;
     });
 
     test('returns a populated array of Boxscores', async () => {

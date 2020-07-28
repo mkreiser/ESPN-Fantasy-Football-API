@@ -8,10 +8,12 @@ import {
   slotCategoryIdToPositionMap
 } from '../constants.js';
 
+/* global INJURY_STATUSES, PLAYER_AVAILABILITY_STATUSES */
+
 /**
  * Represents an NFL player. This model is not directly associated with any fantasy team.
  *
- * @extends {BaseCacheableObject}
+ * @augments {BaseCacheableObject}
  */
 class Player extends BaseCacheableObject {
   constructor(options = {}) {
@@ -26,8 +28,9 @@ class Player extends BaseCacheableObject {
 
   /**
    * Returns valid id params when 'id' and 'seasonId' are passed.
-   * @param  {Object} params
-   * @return {Object|undefined}
+   *
+   * @param   {object} params The params to use.
+   * @returns {object|undefined} An object containing the params, or `undefined`.
    */
   static getIDParams(params = {}) {
     if (params.id && params.seasonId) {
@@ -43,7 +46,7 @@ class Player extends BaseCacheableObject {
   /**
    * @typedef {object} Player~PlayerMap
    *
-   * @property {number} id
+   * @property {number} id The id of the player in the ESPN universe.
    * @property {string} firstName The first name of the player.
    * @property {string} lastName The last name of the player.
    * @property {string} fullName The full name of the player.

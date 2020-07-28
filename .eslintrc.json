@@ -1,0 +1,68 @@
+{
+  "extends": [
+    "plugin:jest/recommended",
+    "airbnb-base"
+  ],
+  "env": {
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
+
+  "parser": "babel-eslint",
+  "parserOptions": {
+    "ecmaVersion": 6
+  },
+
+  "plugins": ["jest", "jsdoc"],
+
+  "rules": {
+    "arrow-parens": ["error", "always"],
+    "comma-dangle": ["error", "never"],
+    "no-else-return": ["error", { "allowElseIf": true }],
+    "no-underscore-dangle": "off",
+    "operator-linebreak": ["error", "after"],
+
+    "import/extensions": "off",
+
+    "jest/no-alias-methods": "off",
+
+    "jsdoc/check-access": "error",
+    "jsdoc/check-alignment": "error",
+    "jsdoc/check-examples": "off",
+    "jsdoc/check-indentation": "off",
+    "jsdoc/check-param-names": "error",
+    "jsdoc/check-property-names": "error",
+    "jsdoc/check-syntax": "off",
+    "jsdoc/check-tag-names": "error",
+    "jsdoc/check-types": "error",
+    "jsdoc/check-values": "error",
+    "jsdoc/empty-tags": "error",
+    "jsdoc/implements-on-classes": "error",
+    "jsdoc/match-description": "off",
+    "jsdoc/newline-after-description": "error",
+    "jsdoc/no-bad-blocks": "off",
+    "jsdoc/no-defaults": "off",
+    "jsdoc/no-types": "off",
+    "jsdoc/no-undefined-types": "error",
+    "jsdoc/require-description": "off",
+    "jsdoc/require-description-complete-sentence": "off",
+    "jsdoc/require-example": "off",
+    "jsdoc/require-file-overview": "off",
+    "jsdoc/require-hyphen-before-param-description": "off",
+    "jsdoc/require-jsdoc": "error",
+    "jsdoc/require-param": "error",
+    "jsdoc/require-param-description": "error",
+    "jsdoc/require-param-name": "error",
+    "jsdoc/require-param-type": "error",
+    "jsdoc/require-property": "error",
+    "jsdoc/require-property-description": "error",
+    "jsdoc/require-property-name": "error",
+    "jsdoc/require-property-type": "error",
+    "jsdoc/require-returns": "error",
+    "jsdoc/require-returns-check": "error",
+    "jsdoc/require-returns-description": "error",
+    "jsdoc/require-returns-type": "error",
+    "jsdoc/valid-types": "error"
+  }
+}
