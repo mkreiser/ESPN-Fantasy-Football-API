@@ -136,8 +136,7 @@ class Client {
     const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mTeam' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'teams');
-      return _.map(data, (team) => (
+      return _.map(_.get(response.data, 'teams'), (team) => (
         Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
     });
@@ -211,9 +210,7 @@ class Client {
     const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'schedule');
-
-      return _.map(data, (matchup) => (
+      return _.map(_.get(response.data, 'schedule'), (matchup) => (
         MatchupScore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
       ));
     });
