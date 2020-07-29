@@ -208,10 +208,9 @@ class Client {
   getMatchupScores({ seasonId }) {
     const route = this._buildLeagueSeasonMatchupScoreRoute(seasonId);
 
-    return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'schedule');
-      return this._buildMatchupScoresFromServerData(data, seasonId);
-    });
+    return axios.get(route, this._buildAxiosConfig()).then(
+      (response) => this._buildMatchupScoresFromServerData(_.get(response.data, 'schedule'), seasonId)
+    );
   }
 
   /**
