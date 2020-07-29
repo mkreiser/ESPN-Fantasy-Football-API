@@ -211,7 +211,10 @@ class Client {
    * @returns {MatchupScore[]} The list of matchup scores.
    */
   getMatchupScores({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
+    const route = this._buildLeagueSeasonRouteWithParams(
+      seasonId,
+      { view: 'mMatchupScore' }
+    );
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const matchupData = _.get(response.data, 'schedule');
