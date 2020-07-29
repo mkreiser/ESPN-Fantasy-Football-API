@@ -53,7 +53,7 @@ class Client {
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
     const route = this._buildLeagueSeasonRouteWithParams(
       seasonId,
-      `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`
+      { scoringPeriodId, view: ['mMatchup', 'mMatchupScore'] }
     );
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
@@ -113,10 +113,7 @@ class Client {
    * @returns {FreeAgentPlayer[]} The list of free agents.
    */
   getFreeAgents({ seasonId, scoringPeriodId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(
-      seasonId,
-      `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
-    );
+    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { scoringPeriodId, view: 'kona_player_info' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'players');
@@ -136,7 +133,7 @@ class Client {
    * @returns {Team[]} The list of teams
    */
   getTeams({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, '?view=mTeam');
+    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mTeam' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'teams');
@@ -155,10 +152,7 @@ class Client {
    * @returns {Team[]} The list of teams.
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(
-      seasonId,
-      `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`
-    );
+    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { scoringPeriodId, view: ['mRoster', 'mTeam'] });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'teams');
@@ -198,7 +192,7 @@ class Client {
    * @returns {League} The league info.
    */
   getLeagueInfo({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, '?view=mSettings');
+    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mSettings' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'settings');
@@ -214,7 +208,7 @@ class Client {
    * @returns {MatchupScore[]} The list of matchup scores.
    */
   getMatchupScores({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, '?view=mMatchupScore');
+    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'schedule');
@@ -256,14 +250,27 @@ class Client {
    * Correctly builds a route for a league season with parameters
    *
    * @param  {number} seasonId The season to construct the route for.
-   * @param  {string} params Parameters to append to the base route
+   * @param  {object} params Key/value parameters to append to the base route
    * @returns {string} A route for a league season with parameters
    * @private
    */
   _buildLeagueSeasonRouteWithParams(seasonId, params) {
+    const str = [];
+    Object.keys(params).forEach((p) => {
+      if (!_.isArray(params[p])) {
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(params[p])}`);
+
+        return;
+      }
+
+      params[p].forEach((v) => {
+        str.push(`${encodeURIComponent(p)}=${encodeURIComponent(v)}`);
+      });
+    });
+
     return this.constructor._buildRoute({
       base: this._getLeagueSeasonBaseRoute(seasonId),
-      params
+      params: `?${str.join('&')}`
     });
   }
 
