@@ -133,10 +133,11 @@ class Client {
    * @returns {Team[]} The list of teams
    */
   getTeams({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mTeam' });
+    const teamRoute = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mTeam' });
 
-    return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      return _.map(_.get(response.data, 'teams'), (team) => (
+    return axios.get(teamRoute, this._buildAxiosConfig()).then((response) => {
+      const teams = _.get(response.data, 'teams');
+      return _.map(teams, (team) => (
         Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
     });
@@ -151,12 +152,15 @@ class Client {
    * @returns {Team[]} The list of teams.
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(seasonId, { scoringPeriodId, view: ['mRoster', 'mTeam'] });
+    const teamRosterRoute = this._buildLeagueSeasonRouteWithParams(
+      seasonId,
+      { scoringPeriodId, view: ['mRoster', 'mTeam'] }
+    );
 
-    return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'teams');
-      return _.map(data, (team) => (
-        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+    return axios.get(teamRosterRoute, this._buildAxiosConfig()).then((response) => {
+      const teamsWithRosters = _.get(response.data, 'teams');
+      return _.map(teamsWithRosters, (teamWithRoster) => (
+        Team.buildFromServer(teamWithRoster, { leagueId: this.leagueId, seasonId })
       ));
     });
   }
@@ -210,7 +214,8 @@ class Client {
     const route = this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      return _.map(_.get(response.data, 'schedule'), (matchup) => (
+      const matchupData = _.get(response.data, 'schedule');
+      return _.map(matchupData, (matchup) => (
         MatchupScore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
       ));
     });
