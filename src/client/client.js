@@ -211,10 +211,7 @@ class Client {
    * @returns {MatchupScore[]} The list of matchup scores.
    */
   getMatchupScores({ seasonId }) {
-    const route = this._buildLeagueSeasonRouteWithParams(
-      seasonId,
-      { view: 'mMatchupScore' }
-    );
+    const route = this._buildLeagueSeasonMatchupScoreRoute(seasonId);
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const matchupData = _.get(response.data, 'schedule');
@@ -277,6 +274,17 @@ class Client {
       base: this._getLeagueSeasonBaseRoute(seasonId),
       params: `?${str.join('&')}`
     });
+  }
+
+  /**
+   * Correctly builds a route for a league season with parameters
+   *
+   * @param  {number} seasonId The season to construct the route for.
+   * @returns {string} A route for matchup scores in a league season
+   * @private
+   */
+  _buildLeagueSeasonMatchupScoreRoute(seasonId) {
+    return this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
   }
 
   static _buildRoute({ base, params }) {
