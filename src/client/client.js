@@ -128,9 +128,12 @@ class Client {
 
   /**
    * Returns an array of Team objects representing each fantasy football team in the FF league.
+   *
    * NOTE: Does not include roster data
-   * @param  {number} options.seasonId
-   * @return {Team[]}
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season to grab data from.
+   * @returns {Team[]} The list of teams
    */
   getTeams({ seasonId }) {
     const route = this._buildLeagueSeasonRouteWithParams(seasonId, '?view=mTeam');
@@ -205,8 +208,10 @@ class Client {
 
   /**
    * Returns all matchup scores for a season.
-   * @param  {number} options.seasonId The season in which the matchups occur.
-   * @return {MatchupScore[]}
+   *
+   * @param   {object} options Required options object.
+   * @param   {number} options.seasonId The season to grab data from.
+   * @returns {MatchupScore[]} The list of matchup scores.
    */
   getMatchupScores({ seasonId }) {
     const route = this._buildLeagueSeasonRouteWithParams(seasonId, '?view=mMatchupScore');
@@ -238,8 +243,9 @@ class Client {
 
   /**
    * Correctly builds a base route for a league season
-   * @param  {number} seasonId
-   * @return {string}        A base route for a league season
+   *
+   * @param  {number} seasonId The season to construct the route for.
+   * @returns {string} A base route for a league season
    * @private
    */
   _getLeagueSeasonBaseRoute(seasonId) {
@@ -248,9 +254,10 @@ class Client {
 
   /**
    * Correctly builds a route for a league season with parameters
-   * @param  {number} seasonId
+   *
+   * @param  {number} seasonId The season to construct the route for.
    * @param  {string} params Parameters to append to the base route
-   * @return {string}        A route for a league season with parameters
+   * @returns {string} A route for a league season with parameters
    * @private
    */
   _buildLeagueSeasonRouteWithParams(seasonId, params) {

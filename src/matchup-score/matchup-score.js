@@ -5,7 +5,7 @@ import BaseObject from '../base-classes/base-object/base-object';
 /**
  * Represents a matchup score for a week.
  *
- * @extends {BaseObject}
+ * @augments {BaseObject}
  */
 class MatchupScore extends BaseObject {
   static displayName = 'MatchupScore';
