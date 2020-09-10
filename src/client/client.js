@@ -148,7 +148,7 @@ class Client {
       'x-fantasy-filter': `{"players":{"filterSlotIds":{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},"filterRanksForScoringPeriodIds":{"value":[1]},"limit":100,"offset":${offset},"sortPercOwned":{"sortAsc":false,"sortPriority":1}, "sortDraftRanks":{"sortPriority":100,"sortAsc":true,"value":"STANDARD"},"filterRanksForRankTypes":{"value":["PPR"]},"filterStatsForTopScoringPeriodIds":{"value":2,"additionalValue":["002020","102020","002019","1120201","022020"]}}}`
     };
 
-    return axios.get(route, this._buildAxiosConfig({},filters)).then((response) => {
+    return axios.get(route, this._buildAxiosConfig({}, filters)).then((response) => {
       const data = _.get(response.data, 'players');
       return _.map(data, (player) => (
         FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
