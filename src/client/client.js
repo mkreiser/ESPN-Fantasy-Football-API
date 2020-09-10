@@ -125,8 +125,6 @@ class Client {
     });
   }
 
-
-
   /**
    * Returns a list players for a given week.  One hundred players returned per request.
    *
@@ -229,9 +227,8 @@ class Client {
   _buildAxiosConfig(config, addlHeaders) {
     if ((this.espnS2 && this.SWID)) {
       const headers = _.merge({}, addlHeaders, { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` });
-      return _.merge({}, config, {headers, withCredentials: true });
+      return _.merge({}, config, { headers, withCredentials: true });
     }
-    
     return config;
   }
 
