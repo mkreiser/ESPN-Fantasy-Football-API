@@ -76,7 +76,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "lodash": "^4.17.15"
+    "axios": "^0.20.0",
+    "lodash": "^4.17.20"
   }
 }
