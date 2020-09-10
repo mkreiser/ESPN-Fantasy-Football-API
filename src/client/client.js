@@ -221,6 +221,7 @@ class Client {
    * Correctly builds an axios config with cookies, if set on the instance
    *
    * @param   {object} config An axios config.
+   * @param   {object} addlHeaders Additional headers for HTTP request.
    * @returns {object} An axios config with cookies added if set on instance
    * @private
    */
