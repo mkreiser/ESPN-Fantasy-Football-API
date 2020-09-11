@@ -88,5 +88,4 @@ class NFLGame extends BaseObject {
   }
 }
 
-
 export default NFLGame;
