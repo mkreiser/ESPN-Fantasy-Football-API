@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 import BaseObject from '../base-classes/base-object/base-object';
 
 /**
