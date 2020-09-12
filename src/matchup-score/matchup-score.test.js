@@ -34,7 +34,8 @@ describe('MatchupScore', () => {
             data.home.totalPointsLive = data.home.totalPoints + 12;
 
             const boxscore = buildMatchupScore(data);
-            expect(boxscore.homeScore).toBe(data.home.totalPointsLive);
+            expect(boxscore.homeScore).toBe(data.home.totalPoints);
+            expect(boxscore.homeScoreLive).toBe(data.home.totalPointsLive);
           });
         });
 
@@ -56,7 +57,8 @@ describe('MatchupScore', () => {
             data.away.totalPointsLive = data.away.totalPoints + 12;
 
             const boxscore = buildMatchupScore(data);
-            expect(boxscore.awayScore).toBe(data.away.totalPointsLive);
+            expect(boxscore.awayScore).toBe(data.away.totalPoints);
+            expect(boxscore.awayScoreLive).toBe(data.away.totalPointsLive);
           });
         });
 

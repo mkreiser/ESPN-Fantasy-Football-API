@@ -16,9 +16,11 @@ class MatchupScore extends BaseObject {
    * @property {number} matchupPeriodId The id of the matchup period
    *
    * @property {number} homeScore The total points scored by the home team.
+   * @property {number} homeScoreLive The live points scored by the home team.
    * @property {number} homeTeamId The home team's id. Can be used to load a cached Team.
    *
    * @property {number} awayScore The total points scored by the away team.
+   * @property {number} awayScoreLive The live points scored by the away team.
    * @property {number} awayTeamId The away team's id. Can be used to load a cached Team.
    */
 
@@ -28,20 +30,12 @@ class MatchupScore extends BaseObject {
   static responseMap = {
     matchupPeriodId: 'matchupPeriodId',
 
-    homeScore: {
-      key: 'home',
-      manualParse: (responseData) => (
-        _.get(responseData, 'totalPointsLive') || _.get(responseData, 'totalPoints')
-      )
-    },
+    homeScore: 'home.totalPoints',
+    homeScoreLive: 'home.totalPointsLive',
     homeTeamId: 'home.teamId',
 
-    awayScore: {
-      key: 'away',
-      manualParse: (responseData) => (
-        _.get(responseData, 'totalPointsLive') || _.get(responseData, 'totalPoints')
-      )
-    },
+    awayScore: 'away.totalPoints',
+    awayScoreLive: 'away.totalPointsLive',
     awayTeamId: 'away.teamId'
   };
 }
