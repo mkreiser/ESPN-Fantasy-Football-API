@@ -46,7 +46,7 @@ describe('League', () => {
       };
 
       status = {
-        currentMatchupPeriodId: 2
+        currentMatchupPeriod: 2
       };
 
       data = {
@@ -170,8 +170,8 @@ describe('League', () => {
 
       test('maps currentMatchupPeriodId directly', () => {
         const league = League.buildFromServer(data);
-        expect(league.status.currentMatchupPeriodId).toBe(
-          status.currentMatchupPeriodId
+        expect(league.status.currentMatchupPeriod).toBe(
+          status.currentMatchupPeriod
         );
       });
     });

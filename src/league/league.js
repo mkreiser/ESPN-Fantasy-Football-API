@@ -48,7 +48,7 @@ class League extends BaseObject {
   /**
    * @typedef {object} League~Status
    *
-   * @property {number} currentMatchupPeriodId The matchup period currently in progress
+   * @property {number} currentMatchupPeriod The matchup period currently in progress
    */
 
   /**
@@ -119,7 +119,7 @@ class League extends BaseObject {
     status: {
       key: 'status',
       manualParse: (responseData) => ({
-        currentMatchupPeriodId: responseData.currentMatchupPeriodId
+        currentMatchupPeriod: responseData.currentMatchupPeriod
       })
     }
   };
