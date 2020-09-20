@@ -34,7 +34,7 @@ class League extends BaseObject {
    */
 
   /**
-   * @typedef {object} League~scheduleSettings
+   * @typedef {object} League~ScheduleSettings
    *
    * @property {number} numberOfRegularSeasonMatchups The number of regular season matchups a team
    *                                                  will have on the schedule.
@@ -43,6 +43,12 @@ class League extends BaseObject {
    *                                            on the schedule.
    * @property {number} playoffMatchupLength How many weeks each playoff matchup lasts.
    * @property {number} numberOfPlayoffTeams The number of playoff teams there will be.
+   */
+
+  /**
+   * @typedef {object} League~Status
+   *
+   * @property {number} currentMatchupPeriodId The matchup period currently in progress
    */
 
   /**
@@ -55,6 +61,7 @@ class League extends BaseObject {
    * @property {League~DraftSettings} draftSettings The draft settings of the league.
    * @property {League~RosterSettings} rosterSettings The roster settings of the league.
    * @property {League~ScheduleSettings} scheduleSettings The schedule settings of the league.
+   * @property {League~Status} status The status of the league.
    */
 
   /**
@@ -107,6 +114,13 @@ class League extends BaseObject {
           numberOfPlayoffTeams: responseData.playoffTeamCount
         };
       }
+    },
+
+    status: {
+      key: 'status',
+      manualParse: (responseData) => ({
+        currentMatchupPeriodId: responseData.currentMatchupPeriodId
+      })
     }
   };
 }

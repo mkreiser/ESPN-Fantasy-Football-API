@@ -772,7 +772,8 @@ describe('Client', () => {
                 name: 'some league',
                 draftSettings: {},
                 rosterSettings: {},
-                scheduleSettings: {}
+                scheduleSettings: {},
+                status: {}
               }
             }
           };

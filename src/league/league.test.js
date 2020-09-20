@@ -16,6 +16,7 @@ describe('League', () => {
     let draftSettings;
     let rosterSettings;
     let scheduleSettings;
+    let status;
 
     beforeEach(() => {
       draftSettings = {
@@ -44,10 +45,15 @@ describe('League', () => {
         playoffTeamCount: 4
       };
 
+      status = {
+        currentMatchupPeriodId: 2
+      };
+
       data = {
         draftSettings,
         rosterSettings,
-        scheduleSettings
+        scheduleSettings,
+        status
       };
     });
 
@@ -152,6 +158,20 @@ describe('League', () => {
         const league = League.buildFromServer(data);
         expect(league.scheduleSettings.numberOfPlayoffTeams).toBe(
           scheduleSettings.playoffTeamCount
+        );
+      });
+    });
+
+    describe('status', () => {
+      test('returns an object', () => {
+        const league = League.buildFromServer(data);
+        expect(league.status).toEqual(expect.any(Object));
+      });
+
+      test('maps currentMatchupPeriodId directly', () => {
+        const league = League.buildFromServer(data);
+        expect(league.status.currentMatchupPeriodId).toBe(
+          status.currentMatchupPeriodId
         );
       });
     });
