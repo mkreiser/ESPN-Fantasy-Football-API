@@ -194,6 +194,7 @@ class Client {
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'settings');
+      data.status = _.get(response.data, 'status');
       return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
     });
   }
