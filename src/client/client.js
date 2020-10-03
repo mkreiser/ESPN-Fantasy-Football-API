@@ -225,6 +225,45 @@ class Client {
   }
 
   /**
+   * Returns an array of Team object representing each fantasy football team in a pre-2018 FF
+   * league.
+   *
+   * NOTE: This route will error for the current season, as ESPN only exposes this data for previous
+   * seasons.
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season to grab data from.  This value must be before 2018
+   * @param  {number} options.scoringPeriodId The scoring period in which to grab teams from.
+   * @returns {Team[]} The list of teams.
+   */
+  getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId }) {
+    const route = this.constructor._buildRoute({
+      base: `${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
+        '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam'
+    });
+
+    const axiosConfig = this._buildAxiosConfig({
+      baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
+    });
+
+    return axios.get(route, axiosConfig).then((response) => {
+      // Join member (owner) information with team data before dumping into builder
+      const teams = _.get(response.data, 'teams');
+      const members = _.get(response.data, 'members');
+
+      const mergedData = teams.map((team) => {
+        const owner = members.find((member) => member.id === team.primaryOwner);
+        return { owner, ...team }; // Don't spread owner to prevent id and other attributes clashing
+      });
+
+      return _.map(mergedData, (team) => (
+        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
    * Returns all NFL games that occur in the passed timeframe. NOTE: Date format must be "YYYYMMDD".
    *
    * @param  {object} options Required options object.
