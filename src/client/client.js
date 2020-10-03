@@ -146,7 +146,35 @@ class Client {
       ));
     });
   }
+  
+  /**
+   * Returns an array of Team object representing each fantasy football team in the FF league.
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season to grab data from.  This value must be before 2018
+   * @param  {number} options.scoringPeriodId The scoring period in which to grab teams from.
+   * @returns {Team[]} The list of teams.
+   */
+  getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId }) {
+    const route = this.constructor._buildRoute({
+      base: `${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
+        '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam'
+    });
 
+    const axiosConfig = this._buildAxiosConfig({
+      baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
+    });
+	
+	return axios.get(route, axiosConfig).then((response) => {
+      const data = _.get(response.data, 'teams');
+      return _.map(data, (team) => (
+        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+	
+  }
+  
   /**
    * Returns all NFL games that occur in the passed timeframe. NOTE: Date format must be "YYYYMMDD".
    *

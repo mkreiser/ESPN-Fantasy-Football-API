@@ -576,6 +576,134 @@ describe('Client', () => {
       });
     });
 
+
+    describe('getHistoricalTeamsAtWeek', () => {
+      let client;
+      let leagueId;
+      let scoringPeriodId;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        scoringPeriodId = 3;
+        seasonId = 2017;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${leagueId}`;
+        const routeParams = `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam`;
+        const route = `${routeBase}${routeParams}`;
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(Team, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId });
+          expect(Team.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Teams', async () => {
+          const response = {
+            data: {
+              teams: [{
+                abbrev: 'SWAG',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 3,
+                    losses: 11
+                  }
+                },
+                roster: {
+                  entries: [{
+                    playerPoolEntry: {
+                      firstName: 'Joe',
+                      lastName: 'Montana'
+                    }
+                  }]
+                }
+              }, {
+                abbrev: 'JS',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 5,
+                    losses: 11
+                  }
+                },
+                roster: {
+                  entries: [{
+                    playerPoolEntry: {
+                      firstName: 'Joe',
+                      lastName: 'Smith'
+                    }
+                  }]
+                }
+              }, {
+                abbrev: 'SWAG',
+                location: 'First ',
+                nickname: 'Last',
+                record: {
+                  overall: {
+                    wins: 11,
+                    losses: 8
+                  }
+                },
+                roster: {
+                  entries: [{
+                    playerPoolEntry: {
+                      firstName: 'Joe',
+                      lastName: 'Brown'
+                    }
+                  }]
+                }
+              }]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const teams = await client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId });
+
+          expect.hasAssertions();
+          expect(teams.length).toBe(3);
+          _.forEach(teams, (team, index) => {
+            expect(team).toBeInstanceOf(Team);
+            expect(team.abbreviation).toBe(response.data.teams[index].abbrev);
+
+            expect(team.wins).toBe(response.data.teams[index].record.overall.wins);
+            expect(team.losses).toBe(response.data.teams[index].record.overall.losses);
+
+            expect(team.roster).toEqual(expect.any(Array));
+            expect(team.roster[0]).toBeInstanceOf(Player);
+            expect(team.roster[0].firstName).toBe(
+              response.data.teams[index].roster.entries[0].playerPoolEntry.firstName
+            );
+          });
+        });
+      });
+    });
+
+
+
+
     describe('getNFLGamesForPeriod', () => {
       let client;
       let endDate;
