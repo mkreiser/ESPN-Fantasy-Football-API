@@ -474,6 +474,100 @@ describe('Client', () => {
       });
     });
 
+    describe('getPlayers', () => {
+      let client;
+      let leagueId;
+      let scoringPeriodId;
+      let offset;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        scoringPeriodId = 3;
+        seasonId = 2018;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getPlayers({ seasonId, scoringPeriodId, offset });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+
+      describe('before the promise resolves', () => {
+        test('does not invoke callback', () => {
+          jest.spyOn(FreeAgentPlayer, 'buildFromServer').mockImplementation();
+          axios.get.mockReturnValue(q());
+
+          client.getPlayers({ seasonId, scoringPeriodId, offset });
+          expect(FreeAgentPlayer.buildFromServer).not.toBeCalled();
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into FreeAgentPlayers', async () => {
+          const response = {
+            data: {
+              players: [{
+                player: {
+                  firstName: 'Test',
+                  lastName: 'McTestFace',
+                  stats: [{
+                    seasonId,
+                    statSourceId: 1,
+                    statSplitTypeId: 0,
+                    stats: [{
+                      23: 2341,
+                      24: 234,
+                      25: 123
+                    }]
+                  }]
+                }
+              }, {
+                player: {
+                  firstName: 'Stable',
+                  lastName: 'Genius',
+                  stats: [{
+                    seasonId,
+                    statSourceId: 1,
+                    statSplitTypeId: 0,
+                    stats: [{
+                      23: 32,
+                      24: 23124,
+                      25: 0
+                    }]
+                  }]
+                }
+              }]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const freeAgents = await client.getPlayers({ seasonId, scoringPeriodId, offset });
+
+          expect.hasAssertions();
+          expect(freeAgents.length).toBe(2);
+          _.forEach(freeAgents, (freeAgent, index) => {
+            expect(freeAgent).toBeInstanceOf(FreeAgentPlayer);
+            expect(freeAgent.player.firstName).toBe(response.data.players[index].player.firstName);
+            expect(freeAgent.player.lastName).toBe(response.data.players[index].player.lastName);
+          });
+        });
+      });
+    });
+
     describe('getTeamsAtWeek', () => {
       let client;
       let leagueId;

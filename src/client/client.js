@@ -143,6 +143,35 @@ class Client {
   }
 
   /**
+   * Returns a list players for a given week.  One hundred players returned per request.
+   *
+   * NOTE: `scoringPeriodId` of 0 corresponds to the preseason; `18` for after the season ends.
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season to grab data from.
+   * @param  {number} options.scoringPeriodId The scoring period to grab free agents from.
+   * @param  {number} options.offset The starting index to retrieve the next 100 players from.
+   * @returns {FreeAgentPlayer[]} The list of free agents.
+   */
+  getPlayers({ seasonId, scoringPeriodId, offset }) {
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
+    });
+
+    const filters = {
+      'x-fantasy-filter': `{"players":{"filterSlotIds":{"value":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,23,24]},"filterRanksForScoringPeriodIds":{"value":[1]},"limit":100,"offset":${offset},"sortPercOwned":{"sortAsc":false,"sortPriority":1}, "sortDraftRanks":{"sortPriority":100,"sortAsc":true,"value":"STANDARD"},"filterRanksForRankTypes":{"value":["PPR"]},"filterStatsForTopScoringPeriodIds":{"value":2,"additionalValue":["002020","102020","002019","1120201","022020"]}}}`
+    };
+
+    return axios.get(route, this._buildAxiosConfig({}, filters)).then((response) => {
+      const data = _.get(response.data, 'players');
+      return _.map(data, (player) => (
+        FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
    * Returns an array of Team object representing each fantasy football team in the FF league.
    *
    * @param  {object} options Required options object.
@@ -209,15 +238,15 @@ class Client {
    * Correctly builds an axios config with cookies, if set on the instance
    *
    * @param   {object} config An axios config.
+   * @param   {object} addlHeaders Additional headers for HTTP request.
    * @returns {object} An axios config with cookies added if set on instance
    * @private
    */
-  _buildAxiosConfig(config) {
+  _buildAxiosConfig(config, addlHeaders) {
     if ((this.espnS2 && this.SWID)) {
-      const headers = { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` };
+      const headers = _.merge({}, addlHeaders, { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` });
       return _.merge({}, config, { headers, withCredentials: true });
     }
-
     return config;
   }
 
