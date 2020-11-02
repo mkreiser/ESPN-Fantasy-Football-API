@@ -30,10 +30,12 @@ class MatchupScore extends BaseObject {
 
     homeScore: 'home.totalPoints',
     homeScoreLive: 'home.totalPointsLive',
+    homeScoreProjected: 'home.totalProjectedPointsLive',
     homeTeamId: 'home.teamId',
 
     awayScore: 'away.totalPoints',
     awayScoreLive: 'away.totalPointsLive',
+    awayScoreProjected: 'away.totalProjectedPointsLive',
     awayTeamId: 'away.teamId'
   };
 }

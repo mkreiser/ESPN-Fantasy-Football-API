@@ -295,7 +295,7 @@ class Client {
    * @private
    */
   _buildLeagueSeasonMatchupScoreRoute(seasonId) {
-    return this._buildLeagueSeasonRouteWithParams(seasonId, { view: 'mMatchupScore' });
+    return this._buildLeagueSeasonRouteWithParams(seasonId, { view: ['mMatchupScore', 'mScoreboard'] });
   }
 
   /**
