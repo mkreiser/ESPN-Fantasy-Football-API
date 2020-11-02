@@ -44,7 +44,7 @@ describe('client integration tests', () => {
     });
   });
 
-  describe.skip('getFreeAgents', () => {
+  describe('getFreeAgents', () => {
     test('returns a populated array of FreeAgentPlayers', async () => {
       const players = await client.getFreeAgents({
         seasonId, scoringPeriodId

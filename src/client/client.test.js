@@ -375,6 +375,29 @@ describe('Client', () => {
         jest.spyOn(axios, 'get').mockImplementation();
       });
 
+      test('calls _buildAxiosConfig with additional headers', () => {
+        jest.spyOn(client, '_buildAxiosConfig').mockImplementation();
+        axios.get.mockReturnValue(q());
+
+        client.getFreeAgents({ seasonId, scoringPeriodId });
+        expect(client._buildAxiosConfig).toBeCalledWith({
+          headers: {
+            'x-fantasy-filter': JSON.stringify({
+              players: {
+                filterStatus: {
+                  value: ['FREEAGENT', 'WAIVERS']
+                },
+                limit: 2000,
+                sortPercOwned: {
+                  sortAsc: false,
+                  sortPriority: 1
+                }
+              }
+            })
+          }
+        });
+      });
+
       test('calls axios.get with the correct params', () => {
         const routeBase = `${seasonId}/segments/0/leagues/${leagueId}`;
         const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;

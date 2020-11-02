@@ -1,6 +1,6 @@
 {
   "name": "espn-fantasy-football-api",
-  "version": "0.16.0",
+  "version": "0.16.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "web.js",
   "files": [
@@ -63,16 +63,16 @@
     "babel-jest": "26.3.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-lodash": "^3.3.4",
-    "eslint": "^7.8.1",
+    "eslint": "^7.10.0",
     "eslint-config-airbnb-base": "^14.2.0",
-    "eslint-plugin-import": "^2.22.0",
-    "eslint-plugin-jest": "^24.0.0",
-    "eslint-plugin-jsdoc": "^30.4.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-jest": "^24.0.2",
+    "eslint-plugin-jsdoc": "^30.6.3",
     "http-server": "^0.12.3",
     "jest": "26.4.2",
-    "jsdoc": "^3.6.5",
+    "jsdoc": "^3.6.6",
     "q": "^1.5.1",
-    "webpack": "^4.44.1",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
   "dependencies": {
