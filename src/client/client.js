@@ -157,8 +157,16 @@ class Client {
     });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'teams');
-      return _.map(data, (team) => (
+      // Join member (owner) information with team data before dumping into builder
+      const teams = _.get(response.data, 'teams');
+      const members = _.get(response.data, 'members');
+
+      const mergedData = teams.map((team) => {
+        const owner = members.find((member) => member.id === team.primaryOwner);
+        return { owner, ...team }; // Don't spread owner to prevent id and other attributes clashing
+      });
+
+      return _.map(mergedData, (team) => (
         Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
     });
