@@ -89,6 +89,8 @@ class Team extends BaseCacheableObject {
       key: 'location',
       manualParse: (responseData, data) => `${_.trim(data.location)} ${_.trim(data.nickname)}`
     },
+    firstName: 'firstName',
+    lastName: 'lastName',
     logoURL: 'logo',
     wavierRank: 'wavierRank',
 
