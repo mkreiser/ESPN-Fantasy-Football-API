@@ -159,7 +159,10 @@ class Client {
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const teams = _.get(response.data, 'teams');
       const members = _.get(response.data, 'members');
-      const data = teams.map((item, i) => ({ ...members[i], ...item }));
+      const data = teams.map((team) => {
+        const member = members.find((cur) => cur.id === team.primaryOwner);
+        return { ...member, ...team };
+      });
       return _.map(data, (team) => (
         Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
       ));
