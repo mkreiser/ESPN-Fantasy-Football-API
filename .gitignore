@@ -20,8 +20,10 @@ node_modules/
 
 .DS_Store
 
+# build
 web.js*
 web-dev.js*
 node.js*
 node-dev.js*
 *.map
+dist
