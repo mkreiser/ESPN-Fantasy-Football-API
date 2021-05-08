@@ -3,6 +3,7 @@
   "version": "0.16.1",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "web.js",
+  "types": "dist/index.d.ts",
   "files": [
     "web.js",
     "node.js",
@@ -19,10 +20,11 @@
   },
   "license": "LGPL-3.0-only",
   "scripts": {
-    "build": "npm run clean:dist && webpack",
+    "build": "npm run clean:dist && npm run build:types && webpack",
     "build:docs": "npm run clean:docs && jsdoc -c .jsdoc.json",
+    "build:types": "npx tsc",
     "clean": "npm run clean:dist && npm run clean:docs",
-    "clean:dist": "rm -rf web.js web.js.map node.js node.js.map web-dev.js web-dev.js.map node-dev.js node-dev.js.map",
+    "clean:dist": "rm -rf web.js web.js.map node.js node.js.map web-dev.js web-dev.js.map node-dev.js node-dev.js.map dist",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test && npm run build && npm run build:docs",
     "lint": "eslint integration-tests/**/*.js src/**/*.js",
@@ -72,6 +74,7 @@
     "jest": "26.4.2",
     "jsdoc": "^3.6.6",
     "q": "^1.5.1",
+    "typescript": "^4.2.4",
     "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12"
   },
