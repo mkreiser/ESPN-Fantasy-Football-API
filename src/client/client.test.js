@@ -714,5 +714,55 @@ describe('Client', () => {
         });
       });
     });
+
+    describe('getPlayerScoreForPeriod', () => {
+      let client;
+      let leagueId;
+      let playerIds;
+      let seasonId;
+      let scoringPeriodId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        playerIds = 14881;
+        scoringPeriodId = 2;
+        seasonId = 2018;
+
+        client = new Client({ leagueId: 213213 });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls _buildAxiosConfig with additional headers', () => {
+        jest.spyOn(client, '_buildAxiosConfig').mockImplementation();
+        axios.get.mockReturnValue(q());
+
+        client.getPlayerScoreForPeriod({ playerIds, seasonId, scoringPeriodId });
+        expect(client._buildAxiosConfig).toBeCalledWith({
+          headers: {
+            'x-fantasy-filter': JSON.stringify({
+              players: {
+                filterIds: {
+                  value: [playerIds]
+                }
+              }
+            })
+          }
+        });
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const routeBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const routeParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_playercard`;
+        const route = `${routeBase}${routeParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q());
+
+        client.getPlayerScoreForPeriod({ playerIds, seasonId, scoringPeriodId });
+        expect(axios.get).toBeCalledWith(route, config);
+      });
+    });
   });
 });

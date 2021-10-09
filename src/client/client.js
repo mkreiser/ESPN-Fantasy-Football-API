@@ -5,6 +5,7 @@ import Boxscore from '../boxscore/boxscore';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
+import PlayerScore from '../player-score/player-score';
 import Team from '../team/team';
 
 axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
@@ -202,6 +203,41 @@ class Client {
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
       const data = _.get(response.data, 'settings');
       return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
+    });
+  }
+
+  /**
+   * Returns scoring info for a player for a week.
+   *
+   * @param   {object} options Required options object
+   * @param   {number | number[]} options.playerIds Single player Id or array of player Ids
+   * @param   {number} options.seasonId The season to grab data from.
+   * @param   {number} options.scoringPeriodId The scoring period in which to grab teams from.
+   * @returns {PlayerScore} The player score
+   */
+  getPlayerScoreForPeriod({ playerIds, seasonId, scoringPeriodId }) {
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=kona_playercard`
+    });
+
+    const config = this._buildAxiosConfig({
+      headers: {
+        'x-fantasy-filter': JSON.stringify({
+          players: {
+            filterIds: {
+              value: Array.isArray(playerIds) ? playerIds : [playerIds]
+            }
+          }
+        })
+      }
+    });
+
+    return axios.get(route, config).then((response) => {
+      const data = _.get(response.data, 'players');
+      return _.map(data, (player) => (
+        PlayerScore.buildFromServer(player, { leagueId: this.leagueId, seasonId })
+      ));
     });
   }
 
