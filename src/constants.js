@@ -1,5 +1,6 @@
 /**
  * Maps `slotCategoryId`'s numerical enum to readable positions.
+ *
  * @type {object}
  */
 const slotCategoryIdToPositionMap = {
@@ -32,19 +33,20 @@ const slotCategoryIdToPositionMap = {
 
 /**
  * Maps `proTeam` numerical enum to readable team names.
+ *
  * @type {object}
  */
 const nflTeamIdToNFLTeam = {
   [-1]: 'Bye',
-  1 : 'Atlanta Falcons',
-  2 : 'Buffalo Bills',
-  3 : 'Chicago Bears',
-  4 : 'Cincinnati Bengals',
-  5 : 'Cleveland Browns',
-  6 : 'Dallas Cowboys',
-  7 : 'Denver Broncos',
-  8 : 'Detroit Lions',
-  9 : 'Green Bay Packers',
+  1: 'Atlanta Falcons',
+  2: 'Buffalo Bills',
+  3: 'Chicago Bears',
+  4: 'Cincinnati Bengals',
+  5: 'Cleveland Browns',
+  6: 'Dallas Cowboys',
+  7: 'Denver Broncos',
+  8: 'Detroit Lions',
+  9: 'Green Bay Packers',
   10: 'Tennessee Titans',
   11: 'Indianapolis Colts',
   12: 'Kansas City Chiefs',
@@ -72,19 +74,20 @@ const nflTeamIdToNFLTeam = {
 
 /**
  * Maps `proTeam` numerical enum to readable team name abbreviations.
+ *
  * @type {object}
  */
 const nflTeamIdToNFLTeamAbbreviation = {
   [-1]: 'Bye',
-  1 : 'ATL',
-  2 : 'BUF',
-  3 : 'CHI',
-  4 : 'CIN',
-  5 : 'CLE',
-  6 : 'DAL',
-  7 : 'DEN',
-  8 : 'DET',
-  9 : 'GB',
+  1: 'ATL',
+  2: 'BUF',
+  3: 'CHI',
+  4: 'CIN',
+  5: 'CLE',
+  6: 'DAL',
+  7: 'DEN',
+  8: 'DET',
+  9: 'GB',
   10: 'TEN',
   11: 'IND',
   12: 'KC',
@@ -112,6 +115,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible ways a player may be acquired onto a fantasy football team roster.
+ *
  * @typedef {
  *   'FREEAGENCY' |
  *   'WAIVERS_TRADITIONAL' |
@@ -121,6 +125,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible draft types for a league.
+ *
  * @typedef {
  *   'OFFLINE' |
  *   'SNAKE' |
@@ -132,6 +137,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible injury statuses for a Player returned by the API
+ *
  * @typedef {
  *   'ACTIVE' |
  *   'BEREAVEMENT' |
@@ -152,6 +158,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * The different types in which keeper order can be determined.
+ *
  * @typedef {
  * 'TRADITIONAL' |
  * 'END_OF_DRAFT' |
@@ -161,6 +168,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible times at which a starting lineup may be locked and no further changes may be made.
+ *
  * @typedef {
  *   'INDIVIDUAL_GAME' |
  *   'FIRSTGAME_SCORINGPERIOD'
@@ -169,6 +177,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible types of player moves.
+ *
  * @typedef {
  *   'WIN' |
  *   'LOSS' |
@@ -179,6 +188,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible tiebreakers for a matchup.
+ *
  * @typedef {
  *   'NONE' |
  *   'HOME_TEAM_WINS' |
@@ -190,6 +200,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * The status of a player for fantasy rostering purposes.
+ *
  * @typedef {
  * 'FREEAGENT' |
  * 'ONTEAM' |
@@ -199,6 +210,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible types of player moves.
+ *
  * @typedef {
  *   'NONE' |
  *   'LINEUP' |
@@ -212,6 +224,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * The rule by which playoff seeds are determined.
+ *
  * @typedef {
  * 'UNKNOWN' |
  * 'H2H_RECORD' |
@@ -224,6 +237,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * All possible types of transactions.
+ *
  * @typedef {
  *   'TRADE_DECLINE' |
  *   'TRADE_PROPOSAL' |
@@ -243,6 +257,7 @@ const nflTeamIdToNFLTeamAbbreviation = {
 
 /**
  * Which team won a matchup.
+ *
  * @typedef {
  *   'HOME' |
  *   'AWAY' |

@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-classes-per-file
 import _ from 'lodash';
 
 import { flattenObject } from '../../utils.js';

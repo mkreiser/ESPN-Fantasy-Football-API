@@ -24,6 +24,7 @@
     "operator-linebreak": ["error", "after"],
 
     "import/extensions": "off",
+    "import/prefer-default-export": "off",
 
     "jest/no-alias-methods": "off",
 

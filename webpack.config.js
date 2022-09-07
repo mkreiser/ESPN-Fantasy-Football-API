@@ -8,7 +8,7 @@ const baseConfig = {
       {
         test: /\.js$/,
         exclude: /node_modules/,
-        loader: "babel-loader"
+        loader: 'babel-loader'
       }
     ]
   },
@@ -28,7 +28,7 @@ module.exports = [
       filename: 'web.js'
     },
     mode: 'production',
-    devtool: undefined,
+    devtool: undefined
   }),
   _.merge({}, baseConfig, {
     output: {

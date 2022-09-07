@@ -7,7 +7,7 @@ import { flattenObject } from '../../utils.js';
  */
 class BaseObject {
   /**
-   * @param {Object} options Properties to be assigned to the BaseObject. Must match the keys of the
+   * @param {object} options Properties to be assigned to the BaseObject. Must match the keys of the
    *                         BaseObject's `responseMap` or valid options defined by the class's
    *                         `constructor`.
    */
@@ -24,20 +24,23 @@ class BaseObject {
   /**
    * The class name. Minification will break `this.constructor.name`; this allows for readable
    * logging even in minified code.
-   * @type {String}
+   *
+   * @type {string}
    */
   static displayName = 'BaseObject';
 
   /**
    * Helper for processing items on `responseMap`s that are objects.
-   * @private
    *
-   * @param  {Object} options.data
-   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
-   * @param  {Object} options.constructorParams Params to be passed to the instance's constructor.
-   *                                            Useful for passing parent data, such as `leagueId`.
-   * @param  {String} options.value The value of the responseMap entry being parsed.
-   * @return {*}
+   * @private
+   * @param {object} options The object containing the function parameters
+   * @param {object} options.data The data to be parsed onto the instance.
+   * @param {BaseObject} options.instance The instance to populate. This instance will be mutated.
+   * @param {object} options.constructorParams Params to be passed to the instance's constructor.
+   * Useful for passing parent data, such as `leagueId`.
+   * @param {string} options.value The value of the responseMap entry being parsed.
+   * @returns {*} The result of the parsing. Will Throw an Error if the value does not have
+   * a manualParse function or BaseObject.
    */
   static _processObjectValue({
     data, constructorParams, instance, value
@@ -69,22 +72,23 @@ class BaseObject {
   /**
    * Helper method for `_populateObject` that houses the attribute mapping logic. Should never be
    * used by other methods. See {@link ResponseMapValueObject} for `responseMap` documentation.
-   * @private
    *
-   * @param  {Object} options.data
-   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
-   * @param  {Object} options.constructorParams Params to be passed to the instance's constructor.
-   *                                            Useful for passing parent data, such as `leagueId`.
-   * @param  {Boolean} options.isDataFromServer When true, the data came from the ESPN API over the
-   *                                            wire. When false, the data came locally.
-   * @param  {String} options.key The key of the responseMap entry being parsed.
-   * @param  {String} options.value The value of the responseMap entry being parsed.
+   * @private
+   * @param {object} options The object containing the function parameters
+   * @param {object} options.data The data to be parsed onto the instance.
+   * @param {BaseObject} options.instance The instance to populate. This instance will be mutated.
+   * @param {object} options.constructorParams Params to be passed to the instance's constructor.
+   * Useful for passing parent data, such as `leagueId`.
+   * @param {boolean} options.isDataFromServer When true, the data came from the ESPN API over the
+   * wire. When false, the data came locally.
+   * @param {string} options.key The key of the responseMap entry being parsed.
+   * @param {string} options.value The value of the responseMap entry being parsed.
    */
   static _processResponseMapItem({
     data, constructorParams, instance, isDataFromServer, key, value
   }) {
     /**
-     * @typedef {Object} BaseObject~ResponseMapValueObject
+     * @typedef {object} BaseObject~ResponseMapValueObject
      *
      * The `responseMap` can have two values: a string or a ResponseMapValueObject. When string, the
      * data found on that response is directly mapped to the BaseObject without mutation. When
@@ -92,16 +96,16 @@ class BaseObject {
      * manually parsed with a provided `manualParse function`. Either result is attached to the
      * BaseObject being populated.
      *
-     * @property {String} key The key on the response data where the data can be found. This must be
+     * @property {string} key The key on the response data where the data can be found. This must be
      *                        defined.
      * @property {BaseObject} BaseObject The BaseObject to create with the response data.
-     * @property {Boolean} isArray Whether or not the response data is an array. Useful for
+     * @property {boolean} isArray Whether or not the response data is an array. Useful for
      *                             attributes such as "teams".
-     * @property {Boolean} defer Whether or not to wait to parse the entry until a second pass of
+     * @property {boolean} defer Whether or not to wait to parse the entry until a second pass of
      *                           the map. This is useful for populating items with cached instances
      *                           that are not guaranteed to be parsed/cached during initial parsing.
      *                           Example: Using Team instances on League.
-     * @property {function} manualParse A function to manually apply logic to the response. This
+     * @property {Function} manualParse A function to manually apply logic to the response. This
      *                                  function must return its result to be attached to the
      *                                  populated BaseObject. The arguments to this function are:
      *                                  (data at the key), (the whole response), (the instance being
@@ -153,13 +157,15 @@ class BaseObject {
   /**
    * Returns the passed instance of the BaseObject populated with the passed data, mapping the
    * attributes defined in the value of responseMap to the matching key.
-   * @private
    *
-   * @param  {Object} options.data The data to map onto the passed instance.
-   * @param  {BaseObject} options.instance The instance to populate. This instance will be mutated.
-   * @param  {Boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
-   *                                            data came locally.
-   * @return {BaseObject} The mutated BaseObject instance.
+   * @private
+   * @param {object} options The object containing the function parameters
+   * @param {object} options.data The data to be parsed onto the instance.
+   * @param {BaseObject} options.instance The instance to populate. This instance will be mutated.
+   * @param {object} options.constructorParams Params to be passed to the instance's constructor.
+   * @param {boolean} options.isDataFromServer When true, the data came from ESPN. When false, the
+   * data came locally.
+   * @returns {BaseObject} The mutated BaseObject instance.
    */
   static _populateObject({
     data, constructorParams, instance, isDataFromServer
@@ -194,10 +200,11 @@ class BaseObject {
    * Returns a new instance of the BaseObject populated with the passed data that came from ESPN,
    * mapping the attributes defined in the value of responseMap to the matching key. Use this method
    * when constructing BaseObjects with server responses.
-   * @param  {Object} data Data originating from the server.
-   * @param  {Object} constructorParams Params to be passed to the instance's constructor. Useful
+   *
+   * @param  {object} data Data originating from the server.
+   * @param  {object} constructorParams Params to be passed to the instance's constructor. Useful
    *                                    for passing parent data, such as `leagueId`.
-   * @return {BaseObject} A new instance of the BaseObject populated with the passed data.
+   * @returns {BaseObject} A new instance of the BaseObject populated with the passed data.
    */
   static buildFromServer(data, constructorParams) {
     const instance = new this(constructorParams);
