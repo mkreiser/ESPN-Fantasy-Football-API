@@ -37,6 +37,10 @@ class Client {
     }
   }
 
+  getSeasons() {
+    return axios.get('', this._buildAxiosConfig());
+  }
+
   /**
    * Returns all boxscores for a week.
    *
@@ -212,7 +216,7 @@ class Client {
    * @returns {object} An axios config with cookies added if set on instance
    * @private
    */
-  _buildAxiosConfig(config) {
+  _buildAxiosConfig(config = {}) {
     if ((this.espnS2 && this.SWID)) {
       const headers = { Cookie: `espn_s2=${this.espnS2}; SWID=${this.SWID};` };
       return _.merge({}, config, { headers, withCredentials: true });
