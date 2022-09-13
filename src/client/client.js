@@ -38,13 +38,15 @@ class Client {
     }
   }
 
+  /**
+   * Returns all seasons and the current scoring period for each.
+   *
+   * @returns {Season[]} All seasons and the current scoring period for each.
+   */
   getSeasons() {
     return axios.get('', this._buildAxiosConfig())
-      .then((response) => {
-        return _.map(response.data, (season) => (Season.buildFromServer(season)));
-      })
+      .then((response) => _.map(response.data, Season.buildFromServer));
   }
-
 
   /**
    * Returns all boxscores for a week.
