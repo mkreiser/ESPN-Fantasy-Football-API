@@ -6,6 +6,7 @@ import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
 import Team from '../team/team';
+import Season from '../season/season';
 
 axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
 
@@ -38,8 +39,12 @@ class Client {
   }
 
   getSeasons() {
-    return axios.get('', this._buildAxiosConfig());
+    return axios.get('', this._buildAxiosConfig())
+      .then((response) => {
+        return _.map(response.data, (season) => (Season.buildFromServer(season)));
+      })
   }
+
 
   /**
    * Returns all boxscores for a week.
