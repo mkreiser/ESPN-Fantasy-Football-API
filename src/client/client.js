@@ -45,7 +45,7 @@ class Client {
    */
   getSeasons() {
     return axios.get('', this._buildAxiosConfig())
-      .then((response) => _.map(response.data, Season.buildFromServer));
+      .then((response) => _.map(response.data, (season) => Season.buildFromServer(season)));
   }
 
   /**
