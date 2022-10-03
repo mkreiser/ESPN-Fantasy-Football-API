@@ -46,7 +46,7 @@ class PlayerStats extends BaseObject {
    * @property {number} lostFumbles Total fumbles lost (typically negative points) (applies to all
    *                                offensive players).
    *
-   * @property {number} madeFieldGoalsFrom50Plus Total made field goals from 50 yards or further.
+   * @property {number} madeFieldGoalsFrom50To59 Total made field goals from 50 yards to 59 yards.
    * @property {number} madeFieldGoalsFrom40To49 Total made field goals from 40 yards to 49 yards.
    * @property {number} madeFieldGoalsFromUnder40 Total made field goals from under 40 yards.
    * @property {number} missedFieldGoals Total missed field goals (typically negative or zero
@@ -65,7 +65,9 @@ class PlayerStats extends BaseObject {
    *                                                 game.
    * @property {number} defensive35To45PointsAllowed When a DST allowed 35-45 points in their NFL
    *                                                 game.
-   *
+   * @property {number} defensive46PlusPointsAllowed When a DST allowed 46+ points in their NFL
+   *                                                 game.
+   * 
    * @property {number} defensiveBlockedKickForTouchdowns When a DST blocks any kick and returns it
    *                                                      for a touchdown.
    * @property {number} defensiveInterceptions When a DST records an interception.
@@ -80,6 +82,8 @@ class PlayerStats extends BaseObject {
    * @property {number} interceptionReturnTouchdown When a DST returns an interception for a
    *                                                touchdown.
    *
+   * @property {number} defensiveLessThan100YardsAllowed When a DST allows 100-199 yards in their
+   *                                                  NFL game.
    * @property {number} defensive100To199YardsAllowed When a DST allows 100-199 yards in their NFL
    *                                                  game.
    * @property {number} defensive200To299YardsAllowed When a DST allows 200-299 yards in their NFL
@@ -94,6 +98,9 @@ class PlayerStats extends BaseObject {
    *                                                  game.
    * @property {number} defensiveOver550YardsAllowed When a DST allows 550 or more yards in their
    *                                                 NFL game.
+   * 
+   * @property {number} defensive2PointReturn When a DST returns a 2 point conversion.
+   * @property {number} defensive1PointSafeties When a DST records a one point safety.
    */
 
   /**
@@ -116,7 +123,7 @@ class PlayerStats extends BaseObject {
 
     lostFumbles: '72',
 
-    madeFieldGoalsFrom50Plus: '74',
+    madeFieldGoalsFrom50To59: '198',
     madeFieldGoalsFrom40To49: '77',
     madeFieldGoalsFromUnder40: '80',
     missedFieldGoals: '85',
@@ -142,14 +149,19 @@ class PlayerStats extends BaseObject {
 
     defensive28To34PointsAllowed: '123',
     defensive35To45PointsAllowed: '124',
+    defensive46PlusPointsAllowed: '125',
 
+    defensiveLessThan100YardsAllowed: '128',
     defensive100To199YardsAllowed: '129',
     defensive200To299YardsAllowed: '130',
     defensive350To399YardsAllowed: '132',
     defensive400To449YardsAllowed: '133',
     defensive450To499YardsAllowed: '134',
     defensive500To549YardsAllowed: '135',
-    defensiveOver550YardsAllowed: '136'
+    defensiveOver550YardsAllowed: '136',
+
+    defensive2PointReturn: '206',
+    defensive1PointSafeties: '209'
   };
 }
 
