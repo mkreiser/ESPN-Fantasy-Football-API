@@ -206,6 +206,46 @@ class Client {
   }
 
   /**
+   * Returns the free agent (in terms of the league's rosters) with the highest ownership percentage for a given week.
+   *
+   * NOTE: `scoringPeriodId` of 0 corresponds to the preseason; `18` for after the season ends.
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season to grab data from.
+   * @param  {number} options.scoringPeriodId The scoring period to grab free agents from.
+   * @returns {FreeAgentPlayer} The top percentage owned free agent.
+   */
+  getTopOwnedFreeAgent({ seasonId, scoringPeriodId }) {
+    const route = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
+    });
+
+    const config = this._buildAxiosConfig({
+      headers: {
+        'x-fantasy-filter': JSON.stringify({
+          players: {
+            filterStatus: {
+              value: ['FREEAGENT']
+            },
+            limit: 1,
+            sortPercOwned: {
+              sortAsc: false,
+              sortPriority: 1
+            }
+          }
+        })
+      }
+    });
+    return axios.get(route, config).then((response) => {
+      const data = _.get(response.data, 'players');
+      return _.map(data, (player) => (
+        FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
+      ));
+    });
+  }
+
+  /**
    * Correctly builds an axios config with cookies, if set on the instance
    *
    * @param   {object} config An axios config.
