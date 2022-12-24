@@ -49,7 +49,6 @@ describe('NFLGame', () => {
       });
     });
 
-
     describe('homeTeam', () => {
       test('returns an object', () => {
         const game = NFLGame.buildFromServer(data);

@@ -117,7 +117,24 @@ class Client {
       params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
     });
 
-    return axios.get(route, this._buildAxiosConfig()).then((response) => {
+    const config = this._buildAxiosConfig({
+      headers: {
+        'x-fantasy-filter': JSON.stringify({
+          players: {
+            filterStatus: {
+              value: ['FREEAGENT', 'WAIVERS']
+            },
+            limit: 2000,
+            sortPercOwned: {
+              sortAsc: false,
+              sortPriority: 1
+            }
+          }
+        })
+      }
+    });
+
+    return axios.get(route, config).then((response) => {
       const data = _.get(response.data, 'players');
       return _.map(data, (player) => (
         FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
