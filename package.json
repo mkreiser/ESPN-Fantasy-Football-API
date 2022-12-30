@@ -29,7 +29,8 @@
     "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest src --maxWorkers=2",
-    "test:integration": "jest integration-tests --maxWorkers=2 --coverage=false"
+    "test:integration": "jest integration-tests --maxWorkers=2 --coverage=false",
+    "test:updateSnapshot": "jest --updateSnapshot"
   },
   "repository": {
     "type": "git",
