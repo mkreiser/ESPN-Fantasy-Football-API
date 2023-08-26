@@ -18,7 +18,7 @@ class BoxscorePlayer extends BaseObject {
   static displayName = 'BoxscorePlayer';
 
   /**
-   * @typedef {object} BoxscorePlayer~BoxscorePlayerMap
+   * @typedef {object} BoxscorePlayerMap
    *
    * @property {Player} player The player model representing the NFL player.
    * @property {string} position The position the player is slotted at in the fantasy lineup.
@@ -30,7 +30,7 @@ class BoxscorePlayer extends BaseObject {
    */
 
   /**
-   * @type {BoxscorePlayer~BoxscorePlayerMap}
+   * @type {BoxscorePlayerMap}
    */
   static responseMap = {
     player: {

@@ -21,7 +21,7 @@ class PlayerStats extends BaseObject {
   static displayName = 'PlayerStats';
 
   /**
-   * @typedef {object} PlayerStats~PlayerStatsMap
+   * @typedef {object} PlayerStatsMap
    *
    * Defensive yards allowed and points allowed are inclusive and only scored when their condition
    * is met. For example, if a DST allowed 360 yards, then `defensive350To399YardsAllowed` will be
@@ -97,7 +97,7 @@ class PlayerStats extends BaseObject {
    */
 
   /**
-   * @type {PlayerStats~PlayerStatsMap}
+   * @type {PlayerStatsMap}
    */
   static responseMap = {
     passingYards: '3',

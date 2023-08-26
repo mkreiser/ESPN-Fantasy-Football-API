@@ -44,7 +44,7 @@ class Player extends BaseCacheableObject {
   }
 
   /**
-   * @typedef {object} Player~PlayerMap
+   * @typedef {object} PlayerMap
    *
    * @property {number} id The id of the player in the ESPN universe.
    * @property {string} firstName The first name of the player.
@@ -78,7 +78,7 @@ class Player extends BaseCacheableObject {
    */
 
   /**
-   * @type {Player~PlayerMap}
+   * @type {PlayerMap}
    */
   static responseMap = {
     id: 'id',
@@ -103,9 +103,9 @@ class Player extends BaseCacheableObject {
     },
     eligiblePositions: {
       key: 'eligibleSlots',
-      manualParse: (responseData) => _.map(
-        responseData, (posId) => _.get(slotCategoryIdToPositionMap, posId)
-      )
+      manualParse: (responseData) => _.map(responseData, (posId) => (
+        _.get(slotCategoryIdToPositionMap, posId)
+      ))
     },
 
     averageDraftPosition: 'averageDraftPosition',

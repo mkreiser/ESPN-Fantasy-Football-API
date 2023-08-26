@@ -9,7 +9,7 @@
     "jest": true
   },
 
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
     "ecmaVersion": 6
   },
@@ -40,7 +40,6 @@
     "jsdoc/empty-tags": "error",
     "jsdoc/implements-on-classes": "error",
     "jsdoc/match-description": "off",
-    "jsdoc/newline-after-description": "error",
     "jsdoc/no-bad-blocks": "off",
     "jsdoc/no-defaults": "off",
     "jsdoc/no-types": "off",
