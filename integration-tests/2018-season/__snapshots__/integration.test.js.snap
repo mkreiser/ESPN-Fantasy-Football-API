@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`client integration tests getBoxscoreForWeek returns a populated array of Boxscores 1`] = `
+exports[`2018 season client integration tests getBoxscoreForWeek returns a populated array of Boxscores 1`] = `
 [
   Boxscore {
     "awayRoster": [
@@ -7353,7 +7353,7 @@ exports[`client integration tests getBoxscoreForWeek returns a populated array o
 ]
 `;
 
-exports[`client integration tests getFreeAgents returns a populated array of FreeAgentPlayers 1`] = `
+exports[`2018 season client integration tests getFreeAgents returns a populated array of FreeAgentPlayers 1`] = `
 [
   FreeAgentPlayer {
     "player": Player {
@@ -44856,44 +44856,7 @@ exports[`client integration tests getFreeAgents returns a populated array of Fre
 ]
 `;
 
-exports[`client integration tests getHistoricalScoreboardForWeek returns a populated array of Boxscores 1`] = `
-[
-  Boxscore {
-    "awayRoster": [],
-    "awayScore": 106.06,
-    "awayTeamId": 4,
-    "homeRoster": [],
-    "homeScore": 96.56,
-    "homeTeamId": 1,
-  },
-  Boxscore {
-    "awayRoster": [],
-    "awayScore": 87.86,
-    "awayTeamId": 2,
-    "homeRoster": [],
-    "homeScore": 86.32,
-    "homeTeamId": 9,
-  },
-  Boxscore {
-    "awayRoster": [],
-    "awayScore": 123.3,
-    "awayTeamId": 5,
-    "homeRoster": [],
-    "homeScore": 103.76,
-    "homeTeamId": 3,
-  },
-  Boxscore {
-    "awayRoster": [],
-    "awayScore": 94.72,
-    "awayTeamId": 8,
-    "homeRoster": [],
-    "homeScore": 109.6,
-    "homeTeamId": 12,
-  },
-]
-`;
-
-exports[`client integration tests getLeagueInfo returns a populated League instance 1`] = `
+exports[`2018 season client integration tests getLeagueInfo returns a populated League instance 1`] = `
 League {
   "draftSettings": {
     "canTradeDraftPicks": false,
@@ -44963,7 +44926,7 @@ League {
 }
 `;
 
-exports[`client integration tests getNFLGamesForPeriod returns a populated array of NFLGames 1`] = `
+exports[`2018 season client integration tests getNFLGamesForPeriod returns a populated array of NFLGames 1`] = `
 [
   NFLGame {
     "awayTeam": {
@@ -45283,7 +45246,7 @@ exports[`client integration tests getNFLGamesForPeriod returns a populated array
 ]
 `;
 
-exports[`client integration tests getTeamsAtWeek returns a populated array of Teams 1`] = `
+exports[`2018 season client integration tests getTeamsAtWeek returns a populated array of Teams 1`] = `
 [
   Team {
     "abbreviation": "GOAT",

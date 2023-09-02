@@ -56,6 +56,7 @@ class NFLGame extends BaseObject {
     quarter: 'period',
     clock: 'clock',
     broadcaster: 'broadcast',
+    odds: 'odds',
 
     gameStatus: {
       key: 'status',
