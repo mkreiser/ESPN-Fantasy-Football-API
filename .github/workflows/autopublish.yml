@@ -1,0 +1,23 @@
+name: Autopublish
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test:
+    name: Publish NPM Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Install Dependencies
+        run: npm ci
+      - name: Publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          access: public
+          check-version: true
