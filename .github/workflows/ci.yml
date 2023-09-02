@@ -7,47 +7,56 @@ on:
 jobs:
   dependencies-cache:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - name: Cache node_modules
         id: cache-node-modules-node
         uses: actions/cache/save@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
   lint:
     runs-on: ubuntu-latest
     needs: dependencies-cache
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Restore node_modules cache
         id: restore-cache-node-modules-node
         uses: actions/cache/restore@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
       - run: npm run lint
   test:
     runs-on: ubuntu-latest
     needs: dependencies-cache
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Restore node_modules cache
         id: restore-cache-node-modules-node
         uses: actions/cache/restore@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
       - run: npm run test
       - uses: codecov/codecov-action@v3
         with:
@@ -55,45 +64,54 @@ jobs:
   integration-test:
     runs-on: ubuntu-latest
     needs: dependencies-cache
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Restore node_modules cache
         id: restore-cache-node-modules-node
         uses: actions/cache/restore@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
       - run: LEAGUE_ID=${{ secrets.LEAGUE_ID }} ESPN_S2=${{ secrets.ESPN_S2 }} SWID=${{ secrets.SWID }} npm run test:integration
   build:
     runs-on: ubuntu-latest
     needs: dependencies-cache
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Restore node_modules cache
         id: restore-cache-node-modules-node
         uses: actions/cache/restore@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
       - run: npm run build
   docs:
     runs-on: ubuntu-latest
     needs: dependencies-cache
+    strategy:
+      matrix:
+        node-version: [16, 18, 20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.node-version }}
       - name: Restore node_modules cache
         id: restore-cache-node-modules-node
         uses: actions/cache/restore@v3
         with:
           path: '**/node_modules'
-          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+          key: ${{ runner.os }}-node-modules-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
       - run: npm run build:docs
