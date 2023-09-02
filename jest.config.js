@@ -10,6 +10,10 @@ module.exports = {
   ],
   coverageDirectory: 'coverage',
   restoreMocks: true,
+  snapshotFormat: {
+    escapeString: true,
+    printBasicPrototype: true
+  },
   testEnvironment: 'node',
   transform: {
     '^.+\\.js$': 'babel-jest'
