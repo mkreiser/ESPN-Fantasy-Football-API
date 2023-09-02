@@ -37,6 +37,8 @@ class NFLGame extends BaseObject {
    * @property {Date} startTime The date and time when the game starts in Eastern Time.
    * @property {number} quarter The quarter the game is in.
    * @property {string} clock The current game clock formatted as MM:SS.
+   * @property {string} odds The odds for the game formatted as "TEAM_ABBREV LINE". NOTE: These
+   *   may only display for the current week.
    * @property {string} broadcaster Who is broadcasting the game on TV.
    *
    * @property {string} gameStatus Whether or not the game has not started, is in progress, or has
