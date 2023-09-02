@@ -69,7 +69,8 @@ describe('FreeAgentPlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildFreeAgentPlayer(data, { seasonId });
           const expectedStats = PlayerStats.buildFromServer(
-            pointStats.stats, { usesPoints: false, seasonId }
+            pointStats.stats,
+            { usesPoints: false, seasonId }
           );
           expect(player.rawStats).toEqual(expectedStats);
         });
@@ -81,7 +82,8 @@ describe('FreeAgentPlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildFreeAgentPlayer(data, { seasonId });
           const expectedStats = PlayerStats.buildFromServer(
-            projectedStats.stats, { usesPoints: false, seasonId }
+            projectedStats.stats,
+            { usesPoints: false, seasonId }
           );
           expect(player.projectedRawStats).toEqual(expectedStats);
         });

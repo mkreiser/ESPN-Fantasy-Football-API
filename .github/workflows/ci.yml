@@ -1,0 +1,99 @@
+name: CI
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches: [master]
+jobs:
+  dependencies-cache:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - name: Cache node_modules
+        id: cache-node-modules-node
+        uses: actions/cache/save@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+  lint:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore node_modules cache
+        id: restore-cache-node-modules-node
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run lint
+  test:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore node_modules cache
+        id: restore-cache-node-modules-node
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run test
+      - uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore node_modules cache
+        id: restore-cache-node-modules-node
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+      - run: LEAGUE_ID=${{ secrets.LEAGUE_ID }} ESPN_S2=${{ secrets.ESPN_S2 }} SWID=${{ secrets.SWID }} npm run test:integration
+  build:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore node_modules cache
+        id: restore-cache-node-modules-node
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run build
+  docs:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Restore node_modules cache
+        id: restore-cache-node-modules-node
+        uses: actions/cache/restore@v3
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('package-lock.json') }}
+      - run: npm run build:docs

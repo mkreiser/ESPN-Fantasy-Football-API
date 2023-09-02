@@ -15,7 +15,7 @@ class League extends BaseObject {
   static displayName = 'League';
 
   /**
-   * @typedef {object} League~DraftSettings
+   * @typedef {object} DraftSettings
    *
    * @property {Date} date The date of the draft.
    * @property {DRAFT_TYPE} type The type of draft.
@@ -24,7 +24,7 @@ class League extends BaseObject {
    */
 
   /**
-   * @typedef {object} League~RosterSettings
+   * @typedef {object} RosterSettings
    *
    * @property {object} lineupPositionCount How many slots of each position are in a starting
    *                                        lineup. Key is position; value is count.
@@ -34,7 +34,7 @@ class League extends BaseObject {
    */
 
   /**
-   * @typedef {object} League~scheduleSettings
+   * @typedef {object} ScheduleSettings
    *
    * @property {number} numberOfRegularSeasonMatchups The number of regular season matchups a team
    *                                                  will have on the schedule.
@@ -46,19 +46,19 @@ class League extends BaseObject {
    */
 
   /**
-   * @typedef {object} League~LeagueMap
+   * @typedef {object} LeagueMap
    *
    * @property {string} name The name of the league.
    * @property {number} size The number of teams in the league.
    * @property {boolean} isPublic Whether or not the league is publically visible and accessible.
    *
-   * @property {League~DraftSettings} draftSettings The draft settings of the league.
-   * @property {League~RosterSettings} rosterSettings The roster settings of the league.
-   * @property {League~ScheduleSettings} scheduleSettings The schedule settings of the league.
+   * @property {DraftSettings} draftSettings The draft settings of the league.
+   * @property {RosterSettings} rosterSettings The roster settings of the league.
+   * @property {ScheduleSettings} scheduleSettings The schedule settings of the league.
    */
 
   /**
-   * @type {League~LeagueMap}
+   * @type {LeagueMap}
    */
   static responseMap = {
     name: 'name',

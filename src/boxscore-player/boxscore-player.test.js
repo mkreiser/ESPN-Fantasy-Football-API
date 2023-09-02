@@ -71,7 +71,8 @@ describe('BoxscorePlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildBoxscorePlayer(data);
           const expectedStats = PlayerStats.buildFromServer(
-            pointStats.appliedStats, { usesPoints: true }
+            pointStats.appliedStats,
+            { usesPoints: true }
           );
           expect(player.pointBreakdown).toEqual(expectedStats);
         });
@@ -83,7 +84,8 @@ describe('BoxscorePlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildBoxscorePlayer(data);
           const expectedStats = PlayerStats.buildFromServer(
-            projectedStats.appliedStats, { usesPoints: true }
+            projectedStats.appliedStats,
+            { usesPoints: true }
           );
           expect(player.projectedPointBreakdown).toEqual(expectedStats);
         });
@@ -95,7 +97,8 @@ describe('BoxscorePlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildBoxscorePlayer(data);
           const expectedStats = PlayerStats.buildFromServer(
-            pointStats.stats, { usesPoints: false }
+            pointStats.stats,
+            { usesPoints: false }
           );
           expect(player.rawStats).toEqual(expectedStats);
         });
@@ -107,7 +110,8 @@ describe('BoxscorePlayer', () => {
         test('maps points to a PlayerStats instance', () => {
           const player = buildBoxscorePlayer(data);
           const expectedStats = PlayerStats.buildFromServer(
-            projectedStats.stats, { usesPoints: false }
+            projectedStats.stats,
+            { usesPoints: false }
           );
           expect(player.projectedRawStats).toEqual(expectedStats);
         });

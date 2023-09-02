@@ -39,7 +39,7 @@ class Team extends BaseCacheableObject {
   }
 
   /**
-   * @typedef  {object} Team~TeamMap
+   * @typedef  {object} TeamMap
    *
    * @property {number} id The id of the team in the ESPN universe.
    * @property {string} abbreviation The team's abbreviation.
@@ -80,7 +80,7 @@ class Team extends BaseCacheableObject {
    */
 
   /**
-   * @type {Team~TeamMap}
+   * @type {TeamMap}
    */
   static responseMap = {
     id: 'id',

@@ -14,7 +14,7 @@ class FreeAgentPlayer extends BaseObject {
   static displayName = 'FreeAgentPlayer';
 
   /**
-   * @typedef {object} FreeAgentPlayer~FreeAgentPlayerMap
+   * @typedef {object} FreeAgentPlayerMap
    *
    * @property {Player} player The player model representing the NFL player.
    * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
@@ -24,7 +24,7 @@ class FreeAgentPlayer extends BaseObject {
    */
 
   /**
-   * @type {FreeAgentPlayer~FreeAgentPlayerMap}
+   * @type {FreeAgentPlayerMap}
    */
   static responseMap = {
     player: {

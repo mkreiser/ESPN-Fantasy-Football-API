@@ -1,0 +1,17 @@
+name: CodeClimate Test Coverage
+on:
+  push:
+    branches: [master]
+jobs:
+  test-coverage:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run test
+      - uses: paambaati/codeclimate-action@v5.0.0
+        env:
+          CC_TEST_REPORTER_ID: $CC_TEST_REPORTER_ID

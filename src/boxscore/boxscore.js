@@ -13,7 +13,7 @@ class Boxscore extends BaseObject {
   static displayName = 'Boxscore';
 
   /**
-   * @typedef {object} Boxscore~BoxscoreMap
+   * @typedef {object} BoxscoreMap
    *
    * @property {number} homeScore The total points scored by the home team.
    * @property {number} homeTeamId The home team's id. Can be used to load a cached Team.
@@ -27,7 +27,7 @@ class Boxscore extends BaseObject {
    */
 
   /**
-   * @type {Boxscore~BoxscoreMap}
+   * @type {BoxscoreMap}
    */
   static responseMap = {
     homeScore: {

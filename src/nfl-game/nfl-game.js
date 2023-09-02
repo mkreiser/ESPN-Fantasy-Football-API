@@ -22,7 +22,7 @@ class NFLGame extends BaseObject {
   };
 
   /**
-   * @typedef {object} NFLGame~NFLTeam
+   * @typedef {object} NFLTeam
    *
    * @property {number} id The id of the NFL team in the ESPN universe.
    * @property {string} team The name of the NFL team.
@@ -32,22 +32,21 @@ class NFLGame extends BaseObject {
    */
 
   /**
-   * @typedef {object} NFLGame~NFLGameMap
+   * @typedef {object} NFLGameMap
    *
    * @property {Date} startTime The date and time when the game starts in Eastern Time.
    * @property {number} quarter The quarter the game is in.
    * @property {string} clock The current game clock formatted as MM:SS.
-   * @property {string} odds The odds for the game formatted as "TEAM_ABBREV LINE"
    * @property {string} broadcaster Who is broadcasting the game on TV.
    *
    * @property {string} gameStatus Whether or not the game has not started, is in progress, or has
    *                               finished.
-   * @property {NFLGame~NFLTeam} homeTeam The home team in the game.
-   * @property {NFLGame~NFLTeam} awayTeam The away team in the game.
+   * @property {NFLTeam} homeTeam The home team in the game.
+   * @property {NFLTeam} awayTeam The away team in the game.
    */
 
   /**
-   * @type {NFLGame~NFLGameMap}
+   * @type {NFLGameMap}
    */
   static responseMap = {
     startTime: {
@@ -56,7 +55,6 @@ class NFLGame extends BaseObject {
     },
     quarter: 'period',
     clock: 'clock',
-    odds: 'odds',
     broadcaster: 'broadcast',
 
     gameStatus: {
