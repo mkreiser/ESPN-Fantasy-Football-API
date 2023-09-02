@@ -3,7 +3,7 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   push:
-    branches: [master]
+    branches: [main]
 jobs:
   dependencies-cache:
     runs-on: ubuntu-latest
