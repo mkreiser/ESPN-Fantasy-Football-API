@@ -1,0 +1,22 @@
+name: Build and Upload Docs
+on:
+  push:
+    branches: [main]
+jobs:
+  build-and-upload-docs:
+    runs-on: ubuntu-latest
+    needs: dependencies-cache
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: npm ci
+      - run: npm run build:docs
+      - uses: shallwefootball/s3-upload-action@master
+        with:
+          aws_key_id: ${{ secrets.AWS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY}}
+          aws_bucket: ${{ secrets.AWS_BUCKET }}
+          source_dir: 'docs'
+          destination_dir: ''
