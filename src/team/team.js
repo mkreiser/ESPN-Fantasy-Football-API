@@ -43,7 +43,7 @@ class Team extends BaseCacheableObject {
    *
    * @property {number} id The id of the team in the ESPN universe.
    * @property {string} abbreviation The team's abbreviation.
-   * @property {string} currentName The current team name
+   * @property {string} teamName The current team name
    * @property {string} name The team's name.
    * @property {string} logoURL The URL for the team's uploaded logo.
    * @property {number} wavierRank The team's position in the current wavier order.
@@ -86,7 +86,7 @@ class Team extends BaseCacheableObject {
   static responseMap = {
     id: 'id',
     abbreviation: 'abbrev',
-    currentName: 'name',
+    teamName: 'name',
     name: {
       key: 'location',
       manualParse: (responseData, data) => `${_.trim(data.location)} ${_.trim(data.nickname)}`
