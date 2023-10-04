@@ -42,21 +42,6 @@ describe('Team', () => {
   describe('responseMap', () => {
     const buildTeam = (data, options) => Team.buildFromServer(data, options);
 
-    describe('name', () => {
-      describe('manualParse', () => {
-        test('interpolates location and nickname into a single string', () => {
-          const data = {
-            location: ' First ',
-            nickname: ' Last ',
-            name: 'This is not used'
-          };
-          const team = buildTeam(data);
-
-          expect(team.name).toBe(`${_.trim(data.location)} ${_.trim(data.nickname)}`);
-        });
-      });
-    });
-
     describe('roster', () => {
       describe('manualParse', () => {
         test('returns an array of players', () => {

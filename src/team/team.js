@@ -85,10 +85,7 @@ class Team extends BaseCacheableObject {
   static responseMap = {
     id: 'id',
     abbreviation: 'abbrev',
-    name: {
-      key: 'location',
-      manualParse: (responseData, data) => `${_.trim(data.location)} ${_.trim(data.nickname)}`
-    },
+    name: 'name',
     logoURL: 'logo',
     wavierRank: 'wavierRank',
 
