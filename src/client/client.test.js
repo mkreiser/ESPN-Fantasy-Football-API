@@ -517,10 +517,24 @@ describe('Client', () => {
         test('maps response data into Teams', async () => {
           const response = {
             data: {
+              members: [{
+                firstName: 'Owner',
+                id: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4057}',
+                lastName: 'Dude'
+              }, {
+                firstName: 'Owner',
+                id: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4058}',
+                lastName: 'Dude'
+              }, {
+                firstName: 'Owner',
+                id: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4059}',
+                lastName: 'Dude'
+              }],
               teams: [{
                 abbrev: 'SWAG',
                 location: 'First ',
                 nickname: 'Last',
+                primaryOwner: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4058}',
                 record: {
                   overall: {
                     wins: 3,
@@ -539,6 +553,7 @@ describe('Client', () => {
                 abbrev: 'JS',
                 location: 'First ',
                 nickname: 'Last',
+                primaryOwner: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4059}',
                 record: {
                   overall: {
                     wins: 5,
@@ -557,6 +572,7 @@ describe('Client', () => {
                 abbrev: 'SWAG',
                 location: 'First ',
                 nickname: 'Last',
+                primaryOwner: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4057}',
                 record: {
                   overall: {
                     wins: 11,
@@ -585,6 +601,7 @@ describe('Client', () => {
           _.forEach(teams, (team, index) => {
             expect(team).toBeInstanceOf(Team);
             expect(team.abbreviation).toBe(response.data.teams[index].abbrev);
+            expect(team.ownerName).toBe('Owner Dude');
 
             expect(team.wins).toBe(response.data.teams[index].record.overall.wins);
             expect(team.losses).toBe(response.data.teams[index].record.overall.losses);

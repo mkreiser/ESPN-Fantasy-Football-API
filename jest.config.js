@@ -11,6 +11,7 @@ module.exports = {
   coverageDirectory: 'coverage',
   restoreMocks: true,
   testEnvironment: 'node',
+  testMatch: ['**/src/**/?(*.)+(spec|test).[jt]s?(x)'],
   transform: {
     '^.+\\.js$': 'babel-jest'
   }

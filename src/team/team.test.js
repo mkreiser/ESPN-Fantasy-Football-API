@@ -46,6 +46,11 @@ describe('Team', () => {
       describe('manualParse', () => {
         test('returns an array of players', () => {
           const data = {
+            owner: {
+              firstName: 'Test',
+              id: '{BAD5167F-96F5-40FF-AFF0-4D2CC92F4058}',
+              lastName: 'Owner'
+            },
             roster: {
               entries: [{
                 playerPoolEntry: { id: 0 }

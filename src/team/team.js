@@ -44,6 +44,7 @@ class Team extends BaseCacheableObject {
    * @property {number} id The id of the team in the ESPN universe.
    * @property {string} abbreviation The team's abbreviation.
    * @property {string} name The team's name.
+   * @property {string} ownerName The team's primary owner's name
    * @property {string} logoURL The URL for the team's uploaded logo.
    * @property {number} wavierRank The team's position in the current wavier order.
    *
@@ -86,6 +87,10 @@ class Team extends BaseCacheableObject {
     id: 'id',
     abbreviation: 'abbrev',
     name: 'name',
+    ownerName: {
+      key: 'owner',
+      manualParse: ({ firstName, lastName }) => `${_.trim(firstName)} ${_.trim(lastName)}`
+    },
     logoURL: 'logo',
     wavierRank: 'wavierRank',
 
