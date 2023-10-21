@@ -29,8 +29,8 @@
     "lint": "eslint integration-tests/**/*.js src/**/*.js",
     "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
-    "test": "jest src --maxWorkers=2",
-    "test:integration": "jest integration-tests --maxWorkers=2 --coverage=false"
+    "test": "jest --maxWorkers=2",
+    "test:integration": "jest --maxWorkers=2 --config=jest-integration-tests.config.js"
   },
   "repository": {
     "type": "git",
