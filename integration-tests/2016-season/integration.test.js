@@ -31,4 +31,11 @@ describe('2016 season integration tests', () => {
       expect(scoreboards).toMatchSnapshot();
     });
   });
+
+  describe('getHistoricalTeamsAtWeek', () => {
+    test('returns a populated array of Teams', async () => {
+      const teams = await client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId });
+      expect(teams).toMatchSnapshot();
+    });
+  });
 });
