@@ -208,20 +208,9 @@ class Client {
       params: `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`
     });
 
-    return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      // Join member (owner) information with team data before dumping into builder
-      const teams = _.get(response.data, 'teams');
-      const members = _.get(response.data, 'members');
-
-      const mergedData = teams.map((team) => {
-        const owner = members.find((member) => member.id === team.primaryOwner);
-        return { owner, ...team }; // Don't spread owner to prevent id and other attributes clashing
-      });
-
-      return _.map(mergedData, (team) => (
-        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
-      ));
-    });
+    return axios.get(route, this._buildAxiosConfig()).then((response) => (
+      this._parseTeamReponse(response.data, seasonId)
+    ));
   }
 
   /**
@@ -240,27 +229,32 @@ class Client {
     const route = this.constructor._buildRoute({
       base: `${this.leagueId}`,
       params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
-        '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam'
+        '&view=mMatchupScore&view=mScoreboard&view=mSettings&view=mTopPerformers&view=mTeam&view=mRoster'
     });
 
     const axiosConfig = this._buildAxiosConfig({
       baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
     });
 
-    return axios.get(route, axiosConfig).then((response) => {
-      // Join member (owner) information with team data before dumping into builder
-      const teams = _.get(response.data, 'teams');
-      const members = _.get(response.data, 'members');
+    return axios.get(route, axiosConfig).then((response) => (
+      // Data returns an array for historical teams (??)
+      this._parseTeamReponse(response.data[0], seasonId)
+    ));
+  }
 
-      const mergedData = teams.map((team) => {
-        const owner = members.find((member) => member.id === team.primaryOwner);
-        return { owner, ...team }; // Don't spread owner to prevent id and other attributes clashing
-      });
+  _parseTeamReponse(responseData, seasonId) {
+    // Join member (owner) information with team data before dumping into builder
+    const teams = _.get(responseData, 'teams');
+    const members = _.get(responseData, 'members');
 
-      return _.map(mergedData, (team) => (
-        Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
-      ));
+    const mergedData = _.map(teams, (team) => {
+      const owner = members.find((member) => member.id === team.primaryOwner);
+      return { owner, ...team }; // Don't spread owner to prevent id and other attributes clashing
     });
+
+    return _.map(mergedData, (team) => (
+      Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+    ));
   }
 
   /**

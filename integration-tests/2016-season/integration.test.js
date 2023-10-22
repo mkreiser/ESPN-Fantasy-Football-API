@@ -34,7 +34,7 @@ describe('2016 season integration tests', () => {
 
   describe('getHistoricalTeamsAtWeek', () => {
     test('returns a populated array of Teams', async () => {
-      const teams = await client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId});
+      const teams = await client.getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId });
       expect(teams).toMatchSnapshot();
     });
   });
