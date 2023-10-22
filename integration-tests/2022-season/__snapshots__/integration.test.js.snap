@@ -49605,6 +49605,8 @@ exports[`2022 season client integration tests getFreeAgents returns a populated 
 
 exports[`2022 season client integration tests getLeagueInfo returns a populated League instance 1`] = `
 League {
+  "currentMatchupPeriodId": 17,
+  "currentScoringPeriodId": 19,
   "draftSettings": {
     "canTradeDraftPicks": true,
     "date": 2022-08-27T01:00:00.000Z,

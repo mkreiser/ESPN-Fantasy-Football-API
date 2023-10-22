@@ -719,6 +719,10 @@ describe('Client', () => {
                 draftSettings: {},
                 rosterSettings: {},
                 scheduleSettings: {}
+              },
+              status: {
+                currentMatchupPeriod: 7,
+                latestScoringPeriod: 7
               }
             }
           };

@@ -21,6 +21,10 @@ class League extends BaseObject {
    * @property {DRAFT_TYPE} type The type of draft.
    * @property {number} timePerPick The amount of time to make a selection.
    * @property {boolean} canTradeDraftPicks Whether or not draft picks can be traded.
+   * @property {number} currentMatchupPeriodId The current matchup period id (see README.md for
+   *   matchupPeriod v. scoringPeriod)
+   * @property {number} currentScoringPeriodId The current scoring period id (see README.md for
+   *   matchupPeriod v. scoringPeriod)
    */
 
   /**
@@ -64,6 +68,9 @@ class League extends BaseObject {
     name: 'name',
     size: 'size',
     isPublic: 'isPublic',
+
+    currentMatchupPeriodId: 'currentMatchupPeriodId',
+    currentScoringPeriodId: 'currentScoringPeriodId',
 
     draftSettings: {
       key: 'draftSettings',
