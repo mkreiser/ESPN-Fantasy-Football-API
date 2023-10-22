@@ -208,7 +208,14 @@ class Client {
     });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => {
-      const data = _.get(response.data, 'settings');
+      const settingsData = _.get(response.data, 'settings');
+      const statusData = _.get(response.data, 'status');
+      const data = {
+        currentMatchupPeriodId: statusData.currentMatchupPeriod,
+        currentScoringPeriodId: statusData.latestScoringPeriod,
+        ...settingsData
+      };
+
       return League.buildFromServer(data, { leagueId: this.leagueId, seasonId });
     });
   }
