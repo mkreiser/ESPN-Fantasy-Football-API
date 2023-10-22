@@ -32,6 +32,13 @@ describe('2022 season client integration tests', () => {
     });
   });
 
+  describe('getDraftInfo', () => {
+    test('returns a populated array of DraftPlayers', async () => {
+      const draft = await client.getDraftInfo({ seasonId });
+      expect(draft).toMatchSnapshot();
+    });
+  });
+
   describe('getFreeAgents', () => {
     test('returns a populated array of FreeAgentPlayers', async () => {
       const players = await client.getFreeAgents({
