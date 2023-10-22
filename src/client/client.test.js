@@ -3,6 +3,7 @@ import _ from 'lodash';
 import q from 'q';
 
 import Boxscore from '../boxscore/boxscore';
+import DraftPlayer from '../draft-player/draft-player';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
@@ -273,6 +274,113 @@ describe('Client', () => {
             expect(boxscore).toBeInstanceOf(Boxscore);
             expect(boxscore.homeTeamId).toBe(response.data.schedule[index].home.teamId);
             expect(boxscore.awayTeamId).toBe(response.data.schedule[index].away.teamId);
+          });
+        });
+      });
+    });
+
+    describe('getDraftInfo', () => {
+      let client;
+      let leagueId;
+      let scoringPeriodId;
+      let seasonId;
+
+      beforeEach(() => {
+        leagueId = 213213;
+        scoringPeriodId = 3;
+        seasonId = 2018;
+
+        client = new Client({ leagueId });
+
+        jest.spyOn(axios, 'get').mockImplementation();
+      });
+
+      test('calls axios.get with the correct params', () => {
+        const draftRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const draftRouteParams = `?view=mDraftDetail&view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`;
+        const draftRoute = `${draftRouteBase}${draftRouteParams}`;
+
+        const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+        const playerRouteParams = `?scoringPeriodId=${scoringPeriodId}&view=players_wl`;
+        const playerRoute = `${playerRouteBase}${playerRouteParams}`;
+
+        const config = {};
+        jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+        axios.get.mockReturnValue(q({
+          data: {
+            draftDetail: {
+              picks: []
+            },
+            players: []
+          }
+        }));
+
+        client.getDraftInfo({ seasonId, scoringPeriodId });
+        expect(axios.get).toBeCalledWith(draftRoute, config);
+        expect(axios.get).toBeCalledWith(playerRoute, config);
+      });
+
+      describe('when scoringPeriodId is not passed', () => {
+        test('calls axios.get with the correct params', () => {
+          const draftRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+          const draftRouteParams = '?view=mDraftDetail&view=mMatchup&view=mMatchupScore&scoringPeriodId=0';
+          const draftRoute = `${draftRouteBase}${draftRouteParams}`;
+
+          const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
+          const playerRouteParams = '?scoringPeriodId=0&view=players_wl';
+          const playerRoute = `${playerRouteBase}${playerRouteParams}`;
+
+          const config = {};
+          jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
+          axios.get.mockReturnValue(q({
+            data: {
+              draftDetail: {
+                picks: []
+              },
+              players: []
+            }
+          }));
+
+          client.getDraftInfo({ seasonId });
+          expect(axios.get).toBeCalledWith(draftRoute, config);
+          expect(axios.get).toBeCalledWith(playerRoute, config);
+        });
+      });
+
+      describe('after the promise resolves', () => {
+        test('maps response data into Boxscores', async () => {
+          const response = {
+            data: {
+              draftDetail: {
+                picks: [{
+                  overallPickNumber: 1,
+                  playerId: 2
+                }, {
+                  overallPickNumber: 2,
+                  playerId: 3
+                }]
+              },
+              players: [{
+                player: {
+                  id: 2
+                }
+              }, {
+                player: {
+                  id: 3
+                }
+              }]
+            }
+          };
+
+          const promise = q(response);
+          axios.get.mockReturnValue(promise);
+
+          const draftPlayers = await client.getDraftInfo({ seasonId, scoringPeriodId });
+
+          expect.hasAssertions();
+          expect(draftPlayers.length).toBe(2);
+          _.forEach(draftPlayers, (draftPlayer) => {
+            expect(draftPlayer).toBeInstanceOf(DraftPlayer);
           });
         });
       });

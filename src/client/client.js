@@ -2,6 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 
 import Boxscore from '../boxscore/boxscore';
+import DraftPlayer from '../draft-player/draft-player';
 import FreeAgentPlayer from '../free-agent-player/free-agent-player';
 import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
@@ -63,6 +64,57 @@ class Client {
         Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
       ));
     });
+  }
+
+  /**
+   * Returns all draft picks for a given season.
+   *
+   * @param  {object} options Required options object.
+   * @param  {number} options.seasonId The season in which the draft occurs.
+   * @param  {number} [options.scoringPeriodId] The scoring period to pull player data from.
+   *   Defaults to preseason.
+   * @returns {DraftPlayer[]} All drafted players sorted in draft order
+   */
+  getDraftInfo({ seasonId, scoringPeriodId = 0 }) {
+    const draftRoute = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params:
+      `?view=mDraftDetail&view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`
+    });
+    const playerRoute = this.constructor._buildRoute({
+      base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
+      params: `?scoringPeriodId=${scoringPeriodId}&view=players_wl`
+    });
+
+    return Promise.all([
+      axios.get(draftRoute, this._buildAxiosConfig()),
+      axios.get(playerRoute, this._buildAxiosConfig({
+        headers: {
+          'x-fantasy-filter': JSON.stringify({
+            players: {
+              limit: 3000,
+              sortPercOwned: {
+                sortAsc: false,
+                sortPriority: 1
+              }
+            }
+          })
+        }
+      }))
+    ]).then(([draftResponse, playerResponse]) => (
+      _.map(draftResponse.data.draftDetail.picks, (draftPick) => {
+        const playerInfo = _.find(
+          playerResponse.data.players,
+          (player) => player.player.id === draftPick.playerId
+        );
+
+        const data = {
+          ...draftPick,
+          ...playerInfo.player
+        };
+
+        return DraftPlayer.buildFromServer(data, { seasonId });
+      })));
   }
 
   /**
