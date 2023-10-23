@@ -22,10 +22,92 @@ describe('2016 season integration tests', () => {
     });
   });
 
+  describe('getBoxscoreForWeek', () => {
+    test('throws an error', async () => {
+      expect.assertions(1);
+
+      try {
+        await client.getBoxscoreForWeek({
+          seasonId,
+          matchupPeriodId: scoringPeriodId,
+          scoringPeriodId
+        });
+      } catch (ex) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(ex).toMatchSnapshot();
+      }
+    });
+  });
+
+  describe('getDraftInfo', () => {
+    test('throws an error', async () => {
+      expect.assertions(1);
+
+      try {
+        await client.getDraftInfo({ seasonId });
+      } catch (ex) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(ex).toMatchSnapshot();
+      }
+    });
+  });
+
+  describe('getFreeAgents', () => {
+    test('throws an error', async () => {
+      expect.assertions(1);
+
+      try {
+        await client.getFreeAgents({ seasonId, scoringPeriodId });
+      } catch (ex) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(ex).toMatchSnapshot();
+      }
+    });
+  });
+
+  describe('getTeamsAtWeek', () => {
+    test('throws an error', async () => {
+      expect.assertions(1);
+
+      try {
+        await client.getTeamsAtWeek({ seasonId, scoringPeriodId });
+      } catch (ex) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(ex).toMatchSnapshot();
+      }
+    });
+  });
+
+  describe('getLeagueInfo', () => {
+    test('throws an error', async () => {
+      expect.assertions(1);
+
+      try {
+        await client.getLeagueInfo({ seasonId });
+      } catch (ex) {
+        // eslint-disable-next-line jest/no-conditional-expect
+        expect(ex).toMatchSnapshot();
+      }
+    });
+  });
+
+  describe('getNFLGamesForPeriod', () => {
+    test('returns a populated array of NFLGames', async () => {
+      const nflGames = await client.getNFLGamesForPeriod({
+        startDate: '20161003',
+        endDate: '20161008'
+      });
+
+      expect(nflGames).toMatchSnapshot();
+    });
+  });
+
   describe('getHistoricalScoreboardForWeek', () => {
     test('returns a populated array of Boxscores', async () => {
       const scoreboards = await client.getHistoricalScoreboardForWeek({
-        seasonId, matchupPeriodId: scoringPeriodId, scoringPeriodId
+        seasonId,
+        matchupPeriodId: scoringPeriodId,
+        scoringPeriodId
       });
 
       expect(scoreboards).toMatchSnapshot();

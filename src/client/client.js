@@ -17,6 +17,19 @@ axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
  * @class
  */
 class Client {
+  static _validateV3Params(seasonId, route, alternateRoute = '') {
+    if (seasonId < 2018) {
+      throw new Error(`Cannot call ${route} with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).${alternateRoute ? `Call Client#${alternateRoute} for historical data instead.` : ''}`);
+    }
+  }
+
+  static _validateHistoricalParams(seasonId, route, alternateRoute) {
+    if (seasonId >= 2018) {
+      // Historical routes should always have a modern endpoint, so alternateRoute is required.
+      throw new Error(`Cannot call ${route} with a season ID after 2017 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more). Call Client#${alternateRoute} for new data instead.`);
+    }
+  }
+
   constructor(options = {}) {
     this.leagueId = options.leagueId;
 
@@ -51,6 +64,12 @@ class Client {
    * @returns {Boxscore[]} All boxscores for the week
    */
   getBoxscoreForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
+    this.constructor._validateV3Params(
+      seasonId,
+      'getBoxscoreForWeek',
+      'getHistoricalScoreboardForWeek'
+    );
+
     const route = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
       params: `?view=mMatchup&view=mMatchupScore&scoringPeriodId=${scoringPeriodId}`
@@ -76,6 +95,8 @@ class Client {
    * @returns {DraftPlayer[]} All drafted players sorted in draft order
    */
   getDraftInfo({ seasonId, scoringPeriodId = 0 }) {
+    this.constructor._validateV3Params(seasonId, 'getDraftInfo');
+
     const draftRoute = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
       params:
@@ -134,6 +155,12 @@ class Client {
    * @returns {Boxscore[]} All boxscores for the week
    */
   getHistoricalScoreboardForWeek({ seasonId, matchupPeriodId, scoringPeriodId }) {
+    this.constructor._validateHistoricalParams(
+      seasonId,
+      'getHistoricalScoreboardForWeek',
+      'getBoxscoreForWeek'
+    );
+
     const route = this.constructor._buildRoute({
       base: `${this.leagueId}`,
       params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
@@ -164,6 +191,8 @@ class Client {
    * @returns {FreeAgentPlayer[]} The list of free agents.
    */
   getFreeAgents({ seasonId, scoringPeriodId }) {
+    this.constructor._validateV3Params(seasonId, 'getFreeAgents');
+
     const route = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
       params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
@@ -203,6 +232,8 @@ class Client {
    * @returns {Team[]} The list of teams.
    */
   getTeamsAtWeek({ seasonId, scoringPeriodId }) {
+    this.constructor._validateV3Params(seasonId, 'getTeamsAtWeek', 'getHistoricalTeamsAtWeek');
+
     const route = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
       params: `?scoringPeriodId=${scoringPeriodId}&view=mRoster&view=mTeam`
@@ -226,6 +257,12 @@ class Client {
    * @returns {Team[]} The list of teams.
    */
   getHistoricalTeamsAtWeek({ seasonId, scoringPeriodId }) {
+    this.constructor._validateHistoricalParams(
+      seasonId,
+      'getHistoricalTeamsAtWeek',
+      'getTeamsAtWeek'
+    );
+
     const route = this.constructor._buildRoute({
       base: `${this.leagueId}`,
       params: `?scoringPeriodId=${scoringPeriodId}&seasonId=${seasonId}` +
@@ -287,6 +324,8 @@ class Client {
    * @returns {League} The league info.
    */
   getLeagueInfo({ seasonId }) {
+    this.constructor._validateV3Params(seasonId, 'getLeagueInfo');
+
     const route = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
       params: '?view=mSettings'
