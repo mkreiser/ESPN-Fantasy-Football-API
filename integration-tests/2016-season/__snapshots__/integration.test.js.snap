@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`2016 season integration tests getBoxscoreForWeek throws an error 1`] = `[Error: Cannot call getBoxscoreForWeek with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).Call Client#getHistoricalScoreboardForWeek for historical data instead.]`;
+
+exports[`2016 season integration tests getDraftInfo throws an error 1`] = `[Error: Cannot call getDraftInfo with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).]`;
+
+exports[`2016 season integration tests getFreeAgents throws an error 1`] = `[Error: Cannot call getFreeAgents with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).]`;
+
 exports[`2016 season integration tests getHistoricalScoreboardForWeek returns a populated array of Boxscores 1`] = `
 [
   Boxscore {
@@ -3531,3 +3537,54 @@ exports[`2016 season integration tests getHistoricalTeamsAtWeek returns a popula
   },
 ]
 `;
+
+exports[`2016 season integration tests getLeagueInfo throws an error 1`] = `[Error: Cannot call getLeagueInfo with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).]`;
+
+exports[`2016 season integration tests getNFLGamesForPeriod returns a populated array of NFLGames 1`] = `
+[
+  NFLGame {
+    "awayTeam": {
+      "id": 19,
+      "record": "2-2",
+      "score": 10,
+      "team": "New York Giants",
+      "teamAbbrev": "NYG",
+    },
+    "broadcaster": "ESPN",
+    "clock": "0:00",
+    "gameStatus": "Final",
+    "homeTeam": {
+      "id": 16,
+      "record": "4-0",
+      "score": 24,
+      "team": "Minnesota Vikings",
+      "teamAbbrev": "MIN",
+    },
+    "quarter": 4,
+    "startTime": 2016-10-04T00:30:00.000Z,
+  },
+  NFLGame {
+    "awayTeam": {
+      "id": 22,
+      "record": "2-3",
+      "score": 33,
+      "team": "Arizona Cardinals",
+      "teamAbbrev": "ARI",
+    },
+    "broadcaster": "CBS",
+    "clock": "0:00",
+    "gameStatus": "Final",
+    "homeTeam": {
+      "id": 25,
+      "record": "1-4",
+      "score": 21,
+      "team": "San Francisco 49ers",
+      "teamAbbrev": "SF",
+    },
+    "quarter": 4,
+    "startTime": 2016-10-07T00:25:00.000Z,
+  },
+]
+`;
+
+exports[`2016 season integration tests getTeamsAtWeek throws an error 1`] = `[Error: Cannot call getTeamsAtWeek with a season ID prior to 2018 due to ESPN limitations (see README.md#espn-databases-and-data-storage for more).Call Client#getHistoricalTeamsAtWeek for historical data instead.]`;
