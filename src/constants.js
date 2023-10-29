@@ -25,9 +25,10 @@ const slotCategoryIdToPositionMap = {
   19: 'HC',
   20: 'Bench',
   21: 'IR',
-  22: 'Unknown?', // TODO: Figure out what this is
+  22: 'INVALID_CODE', // https://github.com/cwendt94/espn-api/blob/master/espn_api/football/constant.py#L24
   23: 'RB/WR/TE',
-  24: 'Unknown?' // TODO: Figure out what this is
+  24: 'ER',
+  25: 'Rookie'
 };
 
 /**
