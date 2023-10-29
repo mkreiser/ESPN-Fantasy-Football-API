@@ -2,8 +2,10 @@ import _ from 'lodash';
 
 import BaseObject from '../base-classes/base-object/base-object';
 
-import { slotCategoryIdToPositionMap } from '../constants.js';
-import { statIdsToAttributes } from '../player-stats/player-stats';
+import {
+  scoringIdToItem,
+  slotCategoryIdToPositionMap
+} from '../constants';
 
 /* global DRAFT_TYPE, LINEUP_LOCK_TIMES */
 
@@ -123,7 +125,7 @@ class League extends BaseObject {
       manualParse: (responseData) => _.reduce(
         responseData.scoringItems,
         (acc, { points, pointsOverrides, statId }) => {
-          const key = statIdsToAttributes[statId];
+          const key = scoringIdToItem[statId];
 
           if (!key) {
             return acc;
