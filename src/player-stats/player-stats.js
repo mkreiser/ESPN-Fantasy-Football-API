@@ -262,6 +262,11 @@ class PlayerStats extends BaseObject {
   };
 }
 
+export const statIdsToAttributes = _.reduce(PlayerStats.responseMap, (acc, value, key) => {
+  acc[value] = key;
+  return acc;
+}, {});
+
 export const parsePlayerStats = ({
   responseData, constructorParams, usesPoints, seasonId, statKey, statSourceId, statSplitTypeId
 }) => {

@@ -47,7 +47,18 @@ describe('League', () => {
       data = {
         draftSettings,
         rosterSettings,
-        scheduleSettings
+        scheduleSettings,
+        scoringSettings: {
+          scoringItems: [{
+            points: 1, statId: 0
+          }, {
+            points: 4, statId: 1
+          }, {
+            points: 6, pointsOverrides: { '16': 9 }, statId: 2 // eslint-disable-line quote-props
+          }, {
+            points: 75, statId: 999
+          }]
+        }
       };
     });
 
@@ -153,6 +164,17 @@ describe('League', () => {
         expect(league.scheduleSettings.numberOfPlayoffTeams).toBe(
           scheduleSettings.playoffTeamCount
         );
+      });
+    });
+
+    describe('scoringSettings', () => {
+      test('maps to object using constants', () => {
+        const league = League.buildFromServer(data);
+        expect(league.scoringSettings).toStrictEqual({
+          passingAttempts: 1,
+          passingIncompletions: 9,
+          passingCompletions: 4
+        });
       });
     });
   });
