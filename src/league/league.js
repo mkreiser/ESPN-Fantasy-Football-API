@@ -3,6 +3,7 @@ import _ from 'lodash';
 import BaseObject from '../base-classes/base-object/base-object';
 
 import { slotCategoryIdToPositionMap } from '../constants.js';
+import { statIdsToAttributes } from '../player-stats/player-stats';
 
 /* global DRAFT_TYPE, LINEUP_LOCK_TIMES */
 
@@ -59,6 +60,7 @@ class League extends BaseObject {
    * @property {DraftSettings} draftSettings The draft settings of the league.
    * @property {RosterSettings} rosterSettings The roster settings of the league.
    * @property {ScheduleSettings} scheduleSettings The schedule settings of the league.
+   * @property {object} scoringSettings The scoring settings of the league.
    */
 
   /**
@@ -114,6 +116,29 @@ class League extends BaseObject {
           numberOfPlayoffTeams: responseData.playoffTeamCount
         };
       }
+    },
+
+    scoringSettings: {
+      key: 'scoringSettings',
+      manualParse: (responseData) => _.reduce(
+        responseData.scoringItems,
+        (acc, { points, pointsOverrides, statId }) => {
+          const key = statIdsToAttributes[statId];
+
+          if (!key) {
+            return acc;
+          }
+
+          if (pointsOverrides) {
+            acc[key] = _.first(_.values(pointsOverrides));
+          } else {
+            acc[key] = points;
+          }
+
+          return acc;
+        },
+        {}
+      )
     }
   };
 }

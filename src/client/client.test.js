@@ -1087,20 +1087,21 @@ describe('Client', () => {
         client = new Client({ leagueId: 213213 });
 
         jest.spyOn(axios, 'get').mockImplementation();
+        axios.get.mockReturnValue(q({
+          scoringSettings: {
+            scoringItems: []
+          }
+        }));
       });
 
       describe('when the seasonId is prior to 2018', () => {
         test('throws an error', () => {
-          axios.get.mockReturnValue(q());
-
           expect(() => client.getLeagueInfo({ seasonId: 2017 })).toThrow();
         });
       });
 
       describe('when the seasonId is 2018 or after', () => {
         test('does not throw an error', () => {
-          axios.get.mockReturnValue(q());
-
           expect(() => client.getLeagueInfo({ seasonId: 2018 })).not.toThrow();
         });
 
@@ -1111,7 +1112,6 @@ describe('Client', () => {
 
           const config = {};
           jest.spyOn(client, '_buildAxiosConfig').mockReturnValue(config);
-          axios.get.mockReturnValue(q());
 
           client.getLeagueInfo({ seasonId });
           expect(axios.get).toBeCalledWith(route, config);
@@ -1120,7 +1120,6 @@ describe('Client', () => {
         describe('before the promise resolves', () => {
           test('does not invoke callback', () => {
             jest.spyOn(League, 'buildFromServer').mockImplementation();
-            axios.get.mockReturnValue(q());
 
             client.getLeagueInfo({ seasonId });
             expect(League.buildFromServer).not.toBeCalled();
@@ -1135,7 +1134,10 @@ describe('Client', () => {
                   name: 'some league',
                   draftSettings: {},
                   rosterSettings: {},
-                  scheduleSettings: {}
+                  scheduleSettings: {},
+                  scoringSettings: {
+                    scoringItems: []
+                  }
                 },
                 status: {
                   currentMatchupPeriod: 7,
