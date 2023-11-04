@@ -1034,7 +1034,7 @@ describe('Client', () => {
 
       test('calls axios.get with the correct params', () => {
         const routeBase = 'apis/fantasy/v2/games/ffl/games';
-        const routeParams = `?dates=${startDate}-${endDate}&pbpOnly=true`;
+        const routeParams = `?dates=${startDate}-${endDate}&pbpOnly=true`; // cspell:disable-line pbp
         const route = `${routeBase}${routeParams}`;
 
         const config = {};

@@ -1,6 +1,6 @@
 {
   "name": "espn-fantasy-football-api",
-  "version": "1.8.1",
+  "version": "1.9.0",
   "description": "A Javascript API to connect to ESPN's fantasy football API",
   "main": "web.js",
   "files": [
@@ -26,7 +26,9 @@
     "clean:dist": "rm -rf web.js web.js.map node.js node.js.map web-dev.js web-dev.js.map node-dev.js node-dev.js.map",
     "clean:docs": "rm -rf docs",
     "ci": "npm run clean && npm run lint && npm run test && npm run build && npm run build:docs",
-    "lint": "eslint integration-tests/**/*.js src/**/*.js",
+    "lint": "npm run lint:js && npm run lint:spelling",
+    "lint:js": "eslint integration-tests/**/*.js src/**/*.js --cache",
+    "lint:spelling": "cspell integration-tests/**/*.js src/**/*.js --quiet --cache",
     "prepublishOnly": "npm run build",
     "serve:docs": "npm run build:docs && http-server ./docs -c-1",
     "test": "jest --maxWorkers=2",
@@ -64,6 +66,7 @@
     "babel-jest": "29.6.4",
     "babel-loader": "^9.1.3",
     "babel-plugin-lodash": "^3.3.4",
+    "cspell": "^7.3.8",
     "dotenv": "^16.3.1",
     "eslint": "^8.48.0",
     "eslint-config-airbnb-base": "^15.0.0",
