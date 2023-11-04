@@ -37,7 +37,7 @@ class Client {
   }
 
   /**
-   * Set cookies from ESPN for interacting with private leagues in NodeJS. Both cookie smust be
+   * Set cookies from ESPN for interacting with private leagues in NodeJS. Both cookies must be
    * provided to be set. See the README for instructions on how to find these cookies.
    *
    * @param {object} options Required options object.
@@ -240,7 +240,7 @@ class Client {
     });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => (
-      this._parseTeamReponse(response.data, seasonId)
+      this._parseTeamResponse(response.data, seasonId)
     ));
   }
 
@@ -275,11 +275,11 @@ class Client {
 
     return axios.get(route, axiosConfig).then((response) => (
       // Data returns an array for historical teams (??)
-      this._parseTeamReponse(response.data[0], seasonId)
+      this._parseTeamResponse(response.data[0], seasonId)
     ));
   }
 
-  _parseTeamReponse(responseData, seasonId) {
+  _parseTeamResponse(responseData, seasonId) {
     // Join member (owner) information with team data before dumping into builder
     const teams = _.get(responseData, 'teams');
     const members = _.get(responseData, 'members');
@@ -305,7 +305,7 @@ class Client {
   getNFLGamesForPeriod({ startDate, endDate }) {
     const route = this.constructor._buildRoute({
       base: 'apis/fantasy/v2/games/ffl/games',
-      params: `?dates=${startDate}-${endDate}&pbpOnly=true`
+      params: `?dates=${startDate}-${endDate}&pbpOnly=true` // cspell:disable-line pbp
     });
 
     const axiosConfig = this._buildAxiosConfig({ baseURL: 'https://site.api.espn.com/' });
