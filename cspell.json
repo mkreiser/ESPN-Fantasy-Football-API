@@ -1,0 +1,18 @@
+{
+  "version": "0.2",
+  "language": "en",
+  "minWordLength": 3,
+  "allowCompoundWords": true,
+  "dictionaries": [
+    "en_US",
+    "companies",
+    "softwareTerms",
+    "typescript",
+    "node"
+  ],
+  "words": [
+    "kona",
+    "SWID"
+  ],
+  "flagWords": []
+}
