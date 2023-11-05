@@ -148,7 +148,7 @@ describe('BaseObject', () => {
       });
 
       const callPopulate = (Klass = TestBaseObject) => Klass._populateObject({
-        data, constructorParams, instance, isDataFromServer
+        data, rawData: data, constructorParams, instance, isDataFromServer
       });
 
       describe('when a instance is not passed', () => {
@@ -295,7 +295,7 @@ describe('BaseObject', () => {
                 test('calls the manualParse function', () => {
                   callPopulate();
                   expect(TestBaseObject.responseMap.someManualObject.manualParse).toBeCalledWith(
-                    data.manual, data, constructorParams, instance
+                    data.manual, data, data, constructorParams, instance
                   );
                 });
 
@@ -428,7 +428,7 @@ describe('BaseObject', () => {
                   expect(
                     TestBaseObject.responseMap.someManualAndBaseObject.manualParse
                   ).toBeCalledWith(
-                    data.both, data, constructorParams, instance
+                    data.both, data, data, constructorParams, instance
                   );
                   expect(MappingTestBaseObject.buildFromServer).not.toBeCalledWith(data.both);
 
@@ -611,6 +611,7 @@ describe('BaseObject', () => {
           TestBaseObject.buildFromServer(data, constructorParams);
           expect(TestBaseObject._populateObject).toBeCalledWith({
             data: flattenObject(data),
+            rawData: data,
             constructorParams,
             instance: expect.any(TestBaseObject),
             isDataFromServer: true
@@ -643,6 +644,7 @@ describe('BaseObject', () => {
           TestBaseObject.buildFromServer(data, constructorParams);
           expect(TestBaseObject._populateObject).toBeCalledWith({
             data,
+            rawData: data,
             constructorParams,
             instance: expect.any(TestBaseObject),
             isDataFromServer: true
