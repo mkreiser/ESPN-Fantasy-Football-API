@@ -87,7 +87,7 @@ class Player extends BaseCacheableObject {
     lastName: 'lastName',
     jerseyNumber: {
       key: 'jersey',
-      manualParse: (responseData) => _.toNumber(responseData)
+      manualParse: (responseData) => (responseData ? _.toNumber(responseData) : undefined)
     },
     proTeam: {
       key: 'proTeamId',

@@ -46,11 +46,22 @@ describe('Player', () => {
 
     describe('jerseyNumber', () => {
       describe('manualParse', () => {
-        test('converts response to a number', () => {
-          const data = { jersey: '23' };
-          const player = buildPlayer(data);
+        describe('when a value is passed', () => {
+          test('converts response to a number', () => {
+            const data = { jersey: '23' };
+            const player = buildPlayer(data);
 
-          expect(player.jerseyNumber).toBe(23);
+            expect(player.jerseyNumber).toBe(23);
+          });
+        });
+
+        describe('when a value is not passed', () => {
+          test('returns undefined', () => {
+            const data = {};
+            const player = buildPlayer(data);
+
+            expect(player.jerseyNumber).toBeUndefined();
+          });
         });
       });
     });
