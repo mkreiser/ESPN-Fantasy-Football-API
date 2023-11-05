@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-classes/base-object/base-object';
-
 import Player from '../player/player';
 import { parsePlayerStats } from '../player-stats/player-stats';
 
@@ -12,39 +10,41 @@ import { slotCategoryIdToPositionMap } from '../constants';
 /**
  * Represents a player and their stats on a boxscore.
  *
- * @augments {BaseObject}
+ * @augments {Player}
  */
-class BoxscorePlayer extends BaseObject {
+class BoxscorePlayer extends Player {
   static displayName = 'BoxscorePlayer';
 
+  /* eslint-disable jsdoc/no-undefined-types */
   /**
-   * @typedef {object} BoxscorePlayerMap
+   * @typedef {PlayerMap} BoxscorePlayerMap
    *
    * @property {Player} player The player model representing the NFL player.
-   * @property {string} position The position the player is slotted at in the fantasy lineup.
+   * @property {string} rosteredPosition The position the player is slotted at in the fantasy lineup
    * @property {number} totalPoints The total points scored by the player.
    * @property {PlayerStats} pointBreakdown The PlayerStats model with the points scored by the
    *                                        player.
    * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
    *                                  the player.
    */
+  /* eslint-enable jsdoc/no-undefined-types */
 
   /**
    * @type {BoxscorePlayerMap}
    */
   static responseMap = {
-    player: {
-      key: 'playerPoolEntry',
-      BaseObject: Player
+    availabilityStatus: {
+      key: 'status',
+      manualParse: (responseData, data, rawData) => rawData.playerPoolEntry.status
     },
-    position: {
+    rosteredPosition: {
       key: 'lineupSlotId',
       manualParse: (responseData) => _.get(slotCategoryIdToPositionMap, responseData)
     },
-    totalPoints: 'playerPoolEntry.appliedStatTotal',
+    totalPoints: 'appliedStatTotal',
     pointBreakdown: {
-      key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
         responseData,
         constructorParams,
         usesPoints: true,
@@ -54,8 +54,8 @@ class BoxscorePlayer extends BaseObject {
       })
     },
     projectedPointBreakdown: {
-      key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
         responseData,
         constructorParams,
         usesPoints: true,
@@ -65,8 +65,8 @@ class BoxscorePlayer extends BaseObject {
       })
     },
     rawStats: {
-      key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
         responseData,
         constructorParams,
         usesPoints: false,
@@ -76,8 +76,8 @@ class BoxscorePlayer extends BaseObject {
       })
     },
     projectedRawStats: {
-      key: 'playerPoolEntry',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
         responseData,
         constructorParams,
         usesPoints: false,

@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-classes/base-object/base-object.js';
-
 import PlayerStats from '../player-stats/player-stats';
 
 import { slotCategoryIdToPositionMap } from '../constants';
@@ -9,11 +7,6 @@ import { slotCategoryIdToPositionMap } from '../constants';
 import BoxscorePlayer from './boxscore-player.js';
 
 describe('BoxscorePlayer', () => {
-  test('extends BaseObject', () => {
-    const instance = new BoxscorePlayer();
-    expect(instance).toBeInstanceOf(BaseObject);
-  });
-
   describe('responseMap', () => {
     const buildBoxscorePlayer = (data, options) => BoxscorePlayer.buildFromServer(data, options);
 
@@ -52,16 +45,29 @@ describe('BoxscorePlayer', () => {
         playerPoolEntry: {
           player: {
             stats: [projectedStats, pointStats]
-          }
-        }
+          },
+          status: 'ONTEAM'
+        },
+        status: 'NORMAL'
       };
     });
 
-    describe('position', () => {
+    describe('availabilityStatus', () => {
       describe('manualParse', () => {
-        test('maps id to human readable position', () => {
+        test('maps from rawData to override collision with other status', () => {
           const player = buildBoxscorePlayer(data);
-          expect(player.position).toBe(_.get(slotCategoryIdToPositionMap, data.lineupSlotId));
+          expect(player.availabilityStatus).toBe(data.playerPoolEntry.status);
+        });
+      });
+    });
+
+    describe('rosteredPosition', () => {
+      describe('manualParse', () => {
+        test('maps id to human readable rosteredPosition', () => {
+          const player = buildBoxscorePlayer(data);
+          expect(player.rosteredPosition).toBe(
+            _.get(slotCategoryIdToPositionMap, data.lineupSlotId)
+          );
         });
       });
     });
