@@ -1,6 +1,5 @@
-import BaseObject from '../base-classes/base-object/base-object';
-
 import Player from '../player/player';
+
 import { parsePlayerStats } from '../player-stats/player-stats';
 
 /* global PlayerStats */
@@ -8,15 +7,14 @@ import { parsePlayerStats } from '../player-stats/player-stats';
 /**
  * Represents a player and their raw stats.
  *
- * @augments {BaseObject}
+ * @augments {Player}
  */
-class FreeAgentPlayer extends BaseObject {
+class FreeAgentPlayer extends Player {
   static displayName = 'FreeAgentPlayer';
 
   /**
    * @typedef {object} FreeAgentPlayerMap
    *
-   * @property {Player} player The player model representing the NFL player.
    * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
    *                                  the player over the season.
    * @property {PlayerStats} projectedRawStats The PlayerStats model with the raw statistics
@@ -27,16 +25,10 @@ class FreeAgentPlayer extends BaseObject {
    * @type {FreeAgentPlayerMap}
    */
   static responseMap = {
-    player: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => (
-        Player.buildFromServer(data, constructorParams)
-      )
-    },
     rawStats: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
-        responseData: data,
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
         constructorParams,
         usesPoints: false,
         seasonId: constructorParams.seasonId,
@@ -46,9 +38,9 @@ class FreeAgentPlayer extends BaseObject {
       })
     },
     projectedRawStats: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
-        responseData: data,
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
         constructorParams,
         usesPoints: false,
         seasonId: constructorParams.seasonId,

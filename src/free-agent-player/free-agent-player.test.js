@@ -1,16 +1,8 @@
-import BaseObject from '../base-classes/base-object/base-object';
-
-import Player from '../player/player';
 import PlayerStats from '../player-stats/player-stats';
 
 import FreeAgentPlayer from './free-agent-player';
 
 describe('FreeAgentPlayer', () => {
-  test('extends BaseObject', () => {
-    const instance = new FreeAgentPlayer();
-    expect(instance).toBeInstanceOf(BaseObject);
-  });
-
   describe('responseMap', () => {
     const buildFreeAgentPlayer = (data, options) => FreeAgentPlayer.buildFromServer(data, options);
 
@@ -53,15 +45,6 @@ describe('FreeAgentPlayer', () => {
           stats: [projectedStats, pointStats]
         }
       };
-    });
-
-    describe('player', () => {
-      describe('manualParse', () => {
-        test('returns a Player', () => {
-          const player = buildFreeAgentPlayer(data, { seasonId });
-          expect(player.player).toBeInstanceOf(Player);
-        });
-      });
     });
 
     describe('rawStats', () => {

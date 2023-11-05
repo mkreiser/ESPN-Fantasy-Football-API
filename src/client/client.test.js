@@ -665,10 +665,10 @@ describe('Client', () => {
             expect(freeAgents.length).toBe(2);
             _.forEach(freeAgents, (freeAgent, index) => {
               expect(freeAgent).toBeInstanceOf(FreeAgentPlayer);
-              expect(freeAgent.player.firstName).toBe(
+              expect(freeAgent.firstName).toBe(
                 response.data.players[index].player.firstName
               );
-              expect(freeAgent.player.lastName).toBe(response.data.players[index].player.lastName);
+              expect(freeAgent.lastName).toBe(response.data.players[index].player.lastName);
             });
           });
         });
