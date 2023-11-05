@@ -1,15 +1,8 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-classes/base-object/base-object';
-
 import PlayerStats, { parsePlayerStats } from './player-stats';
 
 describe('PlayerStats', () => {
-  test('extends BaseObject', () => {
-    const instance = new PlayerStats();
-    expect(instance).toBeInstanceOf(BaseObject);
-  });
-
   describe('constructor', () => {
     describe('when options are not passed', () => {
       const testPropIsUndefined = (prop) => {
@@ -40,35 +33,31 @@ describe('parsePlayerStats', () => {
   let data;
 
   beforeEach(() => {
-    data = {
-      player: {
-        stats: [{
-          appliedStats: {
-            24: 23,
-            25: 46
-          },
-          seasonId: 2018,
-          stats: {
-            24: 318,
-            25: 63
-          },
-          statSourceId: 0,
-          statSplitTypeId: 1
-        }, {
-          appliedStats: {
-            24: 2.3,
-            25: 6
-          },
-          seasonId: 2017,
-          stats: {
-            24: 3,
-            25: 6.4
-          },
-          statSourceId: 0,
-          statSplitTypeId: 1
-        }]
-      }
-    };
+    data = [{
+      appliedStats: {
+        24: 23,
+        25: 46
+      },
+      seasonId: 2018,
+      stats: {
+        24: 318,
+        25: 63
+      },
+      statSourceId: 0,
+      statSplitTypeId: 1
+    }, {
+      appliedStats: {
+        24: 2.3,
+        25: 6
+      },
+      seasonId: 2017,
+      stats: {
+        24: 3,
+        25: 6.4
+      },
+      statSourceId: 0,
+      statSplitTypeId: 1
+    }];
   });
 
   test('maps stats to a PlayerStats instance', () => {

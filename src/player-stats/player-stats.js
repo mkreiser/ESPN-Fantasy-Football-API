@@ -40,7 +40,7 @@ export const parsePlayerStats = ({
     filters.seasonId = seasonId;
   }
 
-  const statData = _.find(responseData.player.stats, filters);
+  const statData = _.find(responseData, filters);
   const params = _.assign({}, constructorParams, { usesPoints });
   return PlayerStats.buildFromServer(_.get(statData, statKey), params);
 };
