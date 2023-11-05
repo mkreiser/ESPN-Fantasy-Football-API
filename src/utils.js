@@ -1,11 +1,12 @@
 import _ from 'lodash';
 
 const setWithWarning = (objValue, newValue, key, object) => {
-  if (object[key]) {
-    console.warn(`espn-fantasy-football-api: Duplicate key ${key} in flatten response!`);
+  // istanbul ignore next
+  if (process.env.NODE_ENV === 'development' && object[key] && newValue !== objValue) {
+    console.warn(`espn-fantasy-football-api: Assigning non-empty key ${key}. Set value: ${objValue}, new value: ${newValue}!`);
   }
 
-  _.set(object, key, newValue);
+  return newValue;
 };
 
 const flattenObject = (object) => {
@@ -15,7 +16,12 @@ const flattenObject = (object) => {
     if (_.isPlainObject(value)) {
       _.assignWith(flatObject, flattenObject(value), setWithWarning);
     } else {
-      setWithWarning(flatObject, key, value);
+      // istanbul ignore next
+      if (process.env.NODE_ENV === 'development' && flatObject[key] && value !== flatObject[key]) {
+        console.warn(`espn-fantasy-football-api: Assigning non-empty key ${key}. Set value: ${flatObject[key]}, new value: ${value}!`);
+      }
+
+      _.set(flatObject, key, value);
     }
   });
 
@@ -29,7 +35,12 @@ const flattenObjectSansNumericKeys = (object) => {
     if (_.isPlainObject(value) && !_.some(_.keys(value), (k) => !_.isNaN(Number(k)))) {
       _.assignWith(flatObject, flattenObjectSansNumericKeys(value), setWithWarning);
     } else {
-      setWithWarning(flatObject, key, value);
+      // istanbul ignore next
+      if (process.env.NODE_ENV === 'development' && flatObject[key] && value !== flatObject[key]) {
+        console.warn(`espn-fantasy-football-api: Assigning non-empty key ${key}. Set value: ${flatObject[key]}, new value: ${value}!`);
+      }
+
+      _.set(flatObject, key, value);
     }
   });
 
