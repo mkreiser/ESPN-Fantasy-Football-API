@@ -1,11 +1,20 @@
 import _ from 'lodash';
 
-import { flattenObject } from '../../utils.js';
+import { flattenObjectSansNumericKeys } from '../../utils.js';
 
 /**
  * The base class for all project objects. Provides data mapping functionality.
  */
 class BaseObject {
+  static get responseMap() {
+    return this._responseMap;
+  }
+
+  static set responseMap(_responseMap) {
+    this._responseMap = _.assignWith({}, this._responseMap, _responseMap);
+  }
+
+
   /**
    * @param {Object} options Properties to be assigned to the BaseObject. Must match the keys of the
    *                         BaseObject's `responseMap` or valid options defined by the class's
