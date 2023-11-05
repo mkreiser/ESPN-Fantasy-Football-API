@@ -349,7 +349,7 @@ describe('Client', () => {
           const draftRoute = `${draftRouteBase}${draftRouteParams}`;
 
           const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
-          const playerRouteParams = `?scoringPeriodId=${scoringPeriodId}&view=players_wl`;
+          const playerRouteParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;
           const playerRoute = `${playerRouteBase}${playerRouteParams}`;
 
           const config = {};
@@ -375,7 +375,7 @@ describe('Client', () => {
             const draftRoute = `${draftRouteBase}${draftRouteParams}`;
 
             const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
-            const playerRouteParams = '?scoringPeriodId=0&view=players_wl';
+            const playerRouteParams = '?scoringPeriodId=0&view=kona_player_info';
             const playerRoute = `${playerRouteBase}${playerRouteParams}`;
 
             const config = {};
