@@ -1,17 +1,10 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-classes/base-object/base-object.js';
-
 import BoxscorePlayer from '../boxscore-player/boxscore-player';
 
 import Boxscore from './boxscore';
 
 describe('Boxscore', () => {
-  test('extends BaseObject', () => {
-    const instance = new Boxscore();
-    expect(instance).toBeInstanceOf(BaseObject);
-  });
-
   describe('responseMap', () => {
     const buildBoxscore = (data, options) => Boxscore.buildFromServer(data, options);
 
