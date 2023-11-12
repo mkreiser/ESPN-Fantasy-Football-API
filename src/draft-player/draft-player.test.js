@@ -1,106 +1,8 @@
-import _ from 'lodash';
-
-import BaseCacheableObject from '../base-classes/base-cacheable-object/base-cacheable-object.js';
-
-import {
-  nflTeamIdToNFLTeam,
-  nflTeamIdToNFLTeamAbbreviation,
-  slotCategoryIdToPositionMap
-} from '../constants.js';
+import PlayerStats from '../player-stats/player-stats';
 
 import DraftPlayer from './draft-player.js';
 
 describe('DraftPlayer', () => {
-  test('extends BaseCacheableObject', () => {
-    const instance = new DraftPlayer();
-    expect(instance).toBeInstanceOf(BaseCacheableObject);
-  });
-
-  describe('constructor', () => {
-    describe('when options are not passed', () => {
-      const testPropIsUndefined = (prop) => {
-        test(`${prop} is undefined`, () => {
-          const newInstance = new DraftPlayer();
-          expect(_.get(newInstance, prop)).toBeUndefined();
-        });
-      };
-
-      testPropIsUndefined('seasonId');
-    });
-
-    describe('when options are passed', () => {
-      const testPropIsSetFromOptions = (prop) => {
-        test(`${prop} is set from options`, () => {
-          const value = 25;
-          const newInstance = new DraftPlayer({ [prop]: value });
-          expect(_.get(newInstance, prop)).toBe(value);
-        });
-      };
-
-      testPropIsSetFromOptions('seasonId');
-    });
-  });
-
-  describe('responseMap', () => {
-    const buildPlayer = (data, options) => DraftPlayer.buildFromServer(data, options);
-
-    describe('proTeam', () => {
-      describe('manualParse', () => {
-        test('maps team id to human readable string', () => {
-          const proTeamId = 22;
-          const data = { proTeamId };
-
-          const player = buildPlayer(data);
-          expect(player.proTeam).toBe(_.get(nflTeamIdToNFLTeam, proTeamId));
-        });
-      });
-    });
-
-    describe('proTeamAbbreviation', () => {
-      describe('manualParse', () => {
-        test('maps team id to human readable abbreviation', () => {
-          const proTeamId = 22;
-          const data = { proTeamId };
-
-          const player = buildPlayer(data);
-          expect(player.proTeamAbbreviation).toBe(_.get(nflTeamIdToNFLTeamAbbreviation, proTeamId));
-        });
-      });
-    });
-
-    describe('defaultPosition', () => {
-      describe('manualParse', () => {
-        test('maps id to human readable position', () => {
-          const defaultPositionId = 2;
-          const data = { defaultPositionId };
-
-          const player = buildPlayer(data);
-          expect(player.defaultPosition).toBe(
-            _.get(slotCategoryIdToPositionMap, defaultPositionId)
-          );
-        });
-      });
-    });
-
-    describe('eligiblePositions', () => {
-      describe('manualParse', () => {
-        test('maps ids to positions', () => {
-          const eligibleSlots = [0, 1, 2];
-          const data = { eligibleSlots };
-
-          const player = buildPlayer(data);
-
-          expect.hasAssertions();
-          _.forEach(player.eligiblePositions, (position, index) => {
-            expect(position).toBe(
-              _.get(slotCategoryIdToPositionMap, eligibleSlots[index])
-            );
-          });
-        });
-      });
-    });
-  });
-
   describe('class methods', () => {
     describe('getIDParams', () => {
       const testReturnsUndefined = ({ playerId, seasonId }) => {
@@ -138,6 +40,158 @@ describe('DraftPlayer', () => {
 
         describe('when seasonId is undefined', () => {
           testReturnsUndefined({});
+        });
+      });
+    });
+  });
+
+  describe('responseMap', () => {
+    const buildPlayer = (data, options) => DraftPlayer.buildFromServer(data, options);
+
+    describe('positionalRanking', () => {
+      describe('when present on the response', () => {
+        test('sets the data', () => {
+          const player = buildPlayer({
+            ratings: [{
+              positionalRanking: 12
+            }]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.positionalRanking).toBe(12);
+        });
+      });
+
+      describe('when not present on the response', () => {
+        test('does not the data', () => {
+          const player = buildPlayer({
+            ratings: [{}]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.positionalRanking).toBeUndefined();
+        });
+      });
+    });
+
+    describe('overallRanking', () => {
+      describe('when present on the response', () => {
+        test('sets the data', () => {
+          const player = buildPlayer({
+            ratings: [{
+              totalRanking: 12
+            }]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.overallRanking).toBe(12);
+        });
+      });
+
+      describe('when not present on the response', () => {
+        test('does not the data', () => {
+          const player = buildPlayer({
+            ratings: [{}]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.overallRanking).toBeUndefined();
+        });
+      });
+    });
+
+    describe('rawStatsForYear', () => {
+      describe('manualParse', () => {
+        test('maps points to a PlayerStats instance', () => {
+          const stats = {
+            appliedStats: {
+              24: 2.3,
+              25: 6
+            },
+            seasonId: 2022,
+            stats: {
+              24: 3,
+              25: 6.4
+            },
+            statSourceId: 0,
+            statSplitTypeId: 0
+          };
+
+          const player = buildPlayer({
+            data: {
+              player: {
+                stats: [stats]
+              }
+            }
+          }, {
+            seasonId: 2022
+          });
+          const expectedStats = PlayerStats.buildFromServer(
+            stats.stats,
+            { usesPoints: false, seasonId: 2022 }
+          );
+          expect(player.rawStatsForYear).toEqual(expectedStats);
+        });
+      });
+    });
+
+    describe('projectedRawStatsForYear', () => {
+      describe('manualParse', () => {
+        test('maps points to a PlayerStats instance', () => {
+          const stats = {
+            appliedStats: {
+              24: 2.3,
+              25: 6
+            },
+            seasonId: 2022,
+            stats: {
+              24: 3,
+              25: 6.4
+            },
+            statSourceId: 1,
+            statSplitTypeId: 0
+          };
+
+          const player = buildPlayer({
+            data: {
+              player: {
+                stats: [stats]
+              }
+            }
+          }, {
+            seasonId: 2022
+          });
+          const expectedStats = PlayerStats.buildFromServer(
+            stats.stats,
+            { usesPoints: false, seasonId: 2022 }
+          );
+          expect(player.projectedRawStatsForYear).toEqual(expectedStats);
+        });
+      });
+    });
+
+    describe('pointsScoredThisSeason', () => {
+      describe('when present on the response', () => {
+        test('sets the data', () => {
+          const player = buildPlayer({
+            ratings: [{
+              totalRating: 12
+            }]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.pointsScoredThisSeason).toBe(12);
+        });
+      });
+
+      describe('when not present on the response', () => {
+        test('does not the data', () => {
+          const player = buildPlayer({
+            ratings: [{}]
+          }, {
+            seasonId: 2022
+          });
+          expect(player.pointsScoredThisSeason).toBeUndefined();
         });
       });
     });

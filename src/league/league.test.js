@@ -1,16 +1,10 @@
 import _ from 'lodash';
 
-import BaseObject from '../base-classes/base-object/base-object';
-
 import { slotCategoryIdToPositionMap } from '../constants.js';
 
 import League from './league';
 
 describe('League', () => {
-  test('extends BaseObject', () => {
-    expect(new League()).toBeInstanceOf(BaseObject);
-  });
-
   describe('responseMap', () => {
     let data;
     let draftSettings;

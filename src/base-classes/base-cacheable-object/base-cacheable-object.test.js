@@ -12,9 +12,11 @@ describe('BaseCacheableObject', () => {
       let data;
       let isDataFromServer;
       let instance;
+      let rawData;
 
       beforeEach(() => {
         data = {};
+        rawData = {};
         isDataFromServer = true;
         instance = new TestBaseCacheableObject();
       });
@@ -23,9 +25,9 @@ describe('BaseCacheableObject', () => {
         // Super lazy way to test
         jest.spyOn(BaseObject, '_populateObject');
 
-        TestBaseCacheableObject._populateObject({ data, instance, isDataFromServer });
+        TestBaseCacheableObject._populateObject({ data, instance, rawData, isDataFromServer });
 
-        expect(BaseObject._populateObject).toBeCalledWith({ data, instance, isDataFromServer });
+        expect(BaseObject._populateObject).toBeCalledWith({ data, instance, rawData, isDataFromServer });
 
         BaseObject._populateObject.mockRestore();
       });
@@ -50,7 +52,7 @@ describe('BaseCacheableObject', () => {
             const id = 'someCacheId23';
             jest.spyOn(instance, 'getCacheId').mockReturnValue(id);
 
-            TestBaseCacheableObject._populateObject({ data, instance, isDataFromServer });
+            TestBaseCacheableObject._populateObject({ data, instance, rawData, isDataFromServer });
 
             expect(TestBaseCacheableObject.get(id)).toBe(instance);
           });
@@ -89,7 +91,7 @@ describe('BaseCacheableObject', () => {
 
       test('returns populated instance', () => {
         const returnedInstance = TestBaseCacheableObject._populateObject({
-          data, instance, isDataFromServer
+          data, instance, rawData, isDataFromServer
         });
 
         expect(returnedInstance).toBe(instance);

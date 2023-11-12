@@ -20,6 +20,8 @@ class Player extends BaseCacheableObject {
     super(options);
 
     this.seasonId = options.seasonId;
+
+    this.scoringPeriodId = options.scoringPeriodId;
   }
 
   static displayName = 'Player';
@@ -33,10 +35,11 @@ class Player extends BaseCacheableObject {
    * @returns {object|undefined} An object containing the params, or `undefined`.
    */
   static getIDParams(params = {}) {
-    if (params.id && params.seasonId) {
+    if (params.id && params.seasonId && params.scoringPeriodId) {
       return {
         id: params.id,
-        seasonId: params.seasonId
+        seasonId: params.seasonId,
+        scoringPeriodId: params.scoringPeriodId
       };
     }
 
@@ -87,7 +90,7 @@ class Player extends BaseCacheableObject {
     lastName: 'lastName',
     jerseyNumber: {
       key: 'jersey',
-      manualParse: (responseData) => _.toNumber(responseData)
+      manualParse: (responseData) => (responseData ? _.toNumber(responseData) : undefined)
     },
     proTeam: {
       key: 'proTeamId',
@@ -122,7 +125,9 @@ class Player extends BaseCacheableObject {
     availabilityStatus: 'status',
     isDroppable: 'droppable',
     isInjured: 'injured',
-    injuryStatus: 'injuryStatus'
+    injuryStatus: 'injuryStatus',
+
+    outlooksByWeek: 'outlooksByWeek'
   };
 }
 

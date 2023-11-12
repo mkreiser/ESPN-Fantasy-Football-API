@@ -349,7 +349,7 @@ describe('Client', () => {
           const draftRoute = `${draftRouteBase}${draftRouteParams}`;
 
           const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
-          const playerRouteParams = `?scoringPeriodId=${scoringPeriodId}&view=players_wl`;
+          const playerRouteParams = `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`;
           const playerRoute = `${playerRouteBase}${playerRouteParams}`;
 
           const config = {};
@@ -375,7 +375,7 @@ describe('Client', () => {
             const draftRoute = `${draftRouteBase}${draftRouteParams}`;
 
             const playerRouteBase = `${seasonId}/segments/0/leagues/${leagueId}`;
-            const playerRouteParams = '?scoringPeriodId=0&view=players_wl';
+            const playerRouteParams = '?scoringPeriodId=0&view=kona_player_info';
             const playerRoute = `${playerRouteBase}${playerRouteParams}`;
 
             const config = {};
@@ -665,10 +665,10 @@ describe('Client', () => {
             expect(freeAgents.length).toBe(2);
             _.forEach(freeAgents, (freeAgent, index) => {
               expect(freeAgent).toBeInstanceOf(FreeAgentPlayer);
-              expect(freeAgent.player.firstName).toBe(
+              expect(freeAgent.firstName).toBe(
                 response.data.players[index].player.firstName
               );
-              expect(freeAgent.player.lastName).toBe(response.data.players[index].player.lastName);
+              expect(freeAgent.lastName).toBe(response.data.players[index].player.lastName);
             });
           });
         });

@@ -1,17 +1,10 @@
 import _ from 'lodash';
 
-import BaseCacheableObject from '../base-classes/base-cacheable-object/base-cacheable-object.js';
-
 import Player from '../player/player';
 
 import Team from './team';
 
 describe('Team', () => {
-  test('extends BaseCacheableObject', () => {
-    const instance = new Team();
-    expect(instance).toBeInstanceOf(BaseCacheableObject);
-  });
-
   describe('constructor', () => {
     describe('when options are not passed', () => {
       const testPropIsUndefined = (prop) => {

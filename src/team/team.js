@@ -97,7 +97,7 @@ class Team extends BaseCacheableObject {
     roster: {
       key: 'roster.entries',
       isArray: true,
-      manualParse: (responseData, data, constructorParams) => _.map(
+      manualParse: (responseData, data, rawData, constructorParams) => _.map(
         responseData,
         (playerData) => Player.buildFromServer(playerData.playerPoolEntry, constructorParams)
       )

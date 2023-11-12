@@ -1,11 +1,20 @@
 import _ from 'lodash';
 
-import { flattenObject } from '../../utils.js';
+import { flattenObjectSansNumericKeys } from '../../utils.js';
 
 /**
  * The base class for all project objects. Provides data mapping functionality.
  */
 class BaseObject {
+  static get responseMap() {
+    return this._responseMap;
+  }
+
+  static set responseMap(_responseMap) {
+    this._responseMap = _.assignWith({}, this._responseMap, _responseMap);
+  }
+
+
   /**
    * @param {Object} options Properties to be assigned to the BaseObject. Must match the keys of the
    *                         BaseObject's `responseMap` or valid options defined by the class's
@@ -40,7 +49,7 @@ class BaseObject {
    * @return {*}
    */
   static _processObjectValue({
-    data, constructorParams, instance, value
+    data, rawData, constructorParams, instance, value
   }) {
     if (!value.key) {
       throw new Error(
@@ -51,10 +60,10 @@ class BaseObject {
 
     const responseData = _.get(data, value.key);
     if (_.isFunction(value.manualParse)) {
-      return value.manualParse(responseData, data, constructorParams, instance);
+      return value.manualParse(responseData, data, rawData, constructorParams, instance);
     } else if (value.BaseObject) {
       const buildInstance = (passedData) => (
-        value.BaseObject.buildFromServer(passedData, constructorParams)
+        value.BaseObject.buildFromServer(passedData, constructorParams, rawData)
       );
 
       return value.isArray ? _.map(responseData, buildInstance) : buildInstance(responseData);
@@ -81,7 +90,7 @@ class BaseObject {
    * @param  {String} options.value The value of the responseMap entry being parsed.
    */
   static _processResponseMapItem({
-    data, constructorParams, instance, isDataFromServer, key, value
+    data, rawData, constructorParams, instance, isDataFromServer, key, value
   }) {
     /**
      * @typedef {Object} BaseObject~ResponseMapValueObject
@@ -136,7 +145,7 @@ class BaseObject {
       item = _.get(data, value);
     } else if (_.isPlainObject(value)) {
       item = this._processObjectValue({
-        data, constructorParams, instance, value
+        data, rawData, constructorParams, instance, value
       });
     } else {
       throw new Error(
@@ -162,7 +171,7 @@ class BaseObject {
    * @return {BaseObject} The mutated BaseObject instance.
    */
   static _populateObject({
-    data, constructorParams, instance, isDataFromServer
+    data, rawData, constructorParams, instance, isDataFromServer
   }) {
     if (!instance) {
       throw new Error(`${this.displayName}: _populateObject: Did not receive instance to populate`);
@@ -176,14 +185,14 @@ class BaseObject {
         _.set(deferredMapItems, key, value);
       } else {
         this._processResponseMapItem({
-          data, constructorParams, instance, isDataFromServer, key, value
+          data, rawData, constructorParams, instance, isDataFromServer, key, value
         });
       }
     });
 
     _.forEach(deferredMapItems, (value, key) => {
       this._processResponseMapItem({
-        data, constructorParams, instance, isDataFromServer, key, value
+        data, rawData, constructorParams, instance, isDataFromServer, key, value
       });
     });
 
@@ -202,9 +211,14 @@ class BaseObject {
   static buildFromServer(data, constructorParams) {
     const instance = new this(constructorParams);
 
-    const dataToUse = this.flattenResponse ? flattenObject(data) : data;
+    const flatData = this.flattenResponse ? flattenObjectSansNumericKeys(data) : data;
+
     this._populateObject({
-      data: dataToUse, constructorParams, instance, isDataFromServer: true
+      data: flatData,
+      rawData: data,
+      constructorParams,
+      instance,
+      isDataFromServer: true
     });
 
     return instance;

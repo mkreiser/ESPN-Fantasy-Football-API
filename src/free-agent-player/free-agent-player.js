@@ -1,6 +1,5 @@
-import BaseObject from '../base-classes/base-object/base-object';
-
 import Player from '../player/player';
+
 import { parsePlayerStats } from '../player-stats/player-stats';
 
 /* global PlayerStats */
@@ -8,35 +7,30 @@ import { parsePlayerStats } from '../player-stats/player-stats';
 /**
  * Represents a player and their raw stats.
  *
- * @augments {BaseObject}
+ * @augments {Player}
  */
-class FreeAgentPlayer extends BaseObject {
+class FreeAgentPlayer extends Player {
   static displayName = 'FreeAgentPlayer';
 
+  /* eslint-disable jsdoc/no-undefined-types */
   /**
-   * @typedef {object} FreeAgentPlayerMap
+   * @typedef {PlayerMap} FreeAgentPlayerMap
    *
-   * @property {Player} player The player model representing the NFL player.
    * @property {PlayerStats} rawStats The PlayerStats model with the raw statistics registered by
    *                                  the player over the season.
    * @property {PlayerStats} projectedRawStats The PlayerStats model with the raw statistics
    *                                           projected by the player over the season.
    */
+  /* eslint-enable jsdoc/no-undefined-types */
 
   /**
    * @type {FreeAgentPlayerMap}
    */
   static responseMap = {
-    player: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => (
-        Player.buildFromServer(data, constructorParams)
-      )
-    },
-    rawStats: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
-        responseData: data,
+    rawStatsForYear: {
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
         constructorParams,
         usesPoints: false,
         seasonId: constructorParams.seasonId,
@@ -45,16 +39,43 @@ class FreeAgentPlayer extends BaseObject {
         statSplitTypeId: 0
       })
     },
-    projectedRawStats: {
-      key: 'player',
-      manualParse: (responseData, data, constructorParams) => parsePlayerStats({
-        responseData: data,
+    projectedRawStatsForYear: {
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
         constructorParams,
         usesPoints: false,
         seasonId: constructorParams.seasonId,
         statKey: 'stats',
         statSourceId: 1,
         statSplitTypeId: 0
+      })
+    },
+
+    rawStatsForScoringPeriod: {
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        seasonId: constructorParams.seasonId,
+        scoringPeriodId: constructorParams.scoringPeriodId,
+        statKey: 'stats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      })
+    },
+    projectedRawStatsForScoringPeriod: {
+      key: 'stats',
+      manualParse: (responseData, data, rawData, constructorParams) => parsePlayerStats({
+        responseData,
+        constructorParams,
+        usesPoints: false,
+        seasonId: constructorParams.seasonId,
+        scoringPeriodId: constructorParams.scoringPeriodId,
+        statKey: 'stats',
+        statSourceId: 1,
+        statSplitTypeId: 1
       })
     }
   };

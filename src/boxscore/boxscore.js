@@ -45,7 +45,7 @@ class Boxscore extends BaseObject {
     homeRoster: {
       key: 'home.rosterForCurrentScoringPeriod.entries',
       isArray: true,
-      manualParse: (responseData, data, constructorParams) => _.map(
+      manualParse: (responseData, data, rawData, constructorParams) => _.map(
         responseData,
         (playerData) => BoxscorePlayer.buildFromServer(playerData, constructorParams)
       )
@@ -62,7 +62,7 @@ class Boxscore extends BaseObject {
     awayRoster: {
       key: 'away.rosterForCurrentScoringPeriod.entries',
       isArray: true,
-      manualParse: (responseData, data, constructorParams) => _.map(
+      manualParse: (responseData, data, rawData, constructorParams) => _.map(
         responseData,
         (playerData) => BoxscorePlayer.buildFromServer(playerData, constructorParams)
       )

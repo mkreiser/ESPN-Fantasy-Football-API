@@ -32,7 +32,16 @@ class PlayerStats extends BaseObject {
 }
 
 export const parsePlayerStats = ({
-  responseData, constructorParams, usesPoints, seasonId, statKey, statSourceId, statSplitTypeId
+  responseData,
+  constructorParams,
+  usesPoints,
+
+  seasonId,
+  scoringPeriodId,
+
+  statKey,
+  statSourceId,
+  statSplitTypeId
 }) => {
   const filters = { statSourceId, statSplitTypeId };
 
@@ -40,7 +49,11 @@ export const parsePlayerStats = ({
     filters.seasonId = seasonId;
   }
 
-  const statData = _.find(responseData.player.stats, filters);
+  if (scoringPeriodId) {
+    filters.scoringPeriodId = scoringPeriodId;
+  }
+
+  const statData = _.find(responseData, filters);
   const params = _.assign({}, constructorParams, { usesPoints });
   return PlayerStats.buildFromServer(_.get(statData, statKey), params);
 };
