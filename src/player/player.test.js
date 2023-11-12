@@ -1,7 +1,5 @@
 import _ from 'lodash';
 
-import BaseCacheableObject from '../base-classes/base-cacheable-object/base-cacheable-object.js';
-
 import {
   nflTeamIdToNFLTeam,
   nflTeamIdToNFLTeamAbbreviation,
@@ -11,11 +9,6 @@ import {
 import Player from './player.js';
 
 describe('Player', () => {
-  test('extends BaseCacheableObject', () => {
-    const instance = new Player();
-    expect(instance).toBeInstanceOf(BaseCacheableObject);
-  });
-
   describe('constructor', () => {
     describe('when options are not passed', () => {
       const testPropIsUndefined = (prop) => {
@@ -26,6 +19,7 @@ describe('Player', () => {
       };
 
       testPropIsUndefined('seasonId');
+      testPropIsUndefined('scoringPeriodId');
     });
 
     describe('when options are passed', () => {
@@ -38,6 +32,7 @@ describe('Player', () => {
       };
 
       testPropIsSetFromOptions('seasonId');
+      testPropIsSetFromOptions('scoringPeriodId');
     });
   });
 
@@ -164,26 +159,57 @@ describe('Player', () => {
 
       describe('when id is defined', () => {
         describe('when seasonId is defined', () => {
-          test('returns a valid caching id', () => {
-            const params = { id: 341243, seasonId: 2017 };
+          describe('when scoringPeriodId is defined', () => {
+            test('returns a valid caching id', () => {
+              const params = {
+                id: 341243,
+                seasonId: 2017,
+                scoringPeriodId: 3
+              };
 
-            const returnedCachingId = Player.getIDParams(params);
-            expect(returnedCachingId).toEqual(params);
+              const returnedCachingId = Player.getIDParams(params);
+              expect(returnedCachingId).toEqual(params);
+            });
+          });
+
+          describe('when scoringPeriodId is undefined', () => {
+            testReturnsUndefined({
+              id: 341243,
+              seasonId: 2017
+            });
           });
         });
 
         describe('when seasonId is undefined', () => {
-          testReturnsUndefined({ id: 341243 });
+          describe('when scoringPeriodId is defined', () => {
+            testReturnsUndefined({ id: 341243, scoringPeriodId: 3 });
+          });
+
+          describe('when scoringPeriodId is undefined', () => {
+            testReturnsUndefined({ id: 341243 });
+          });
         });
       });
 
       describe('when id is undefined', () => {
         describe('when seasonId is defined', () => {
-          testReturnsUndefined({ seasonId: 2017 });
+          describe('when scoringPeriodId is defined', () => {
+            testReturnsUndefined({ seasonId: 2017, scoringPeriodId: 2 });
+          });
+
+          describe('when scoringPeriodId is undefined', () => {
+            testReturnsUndefined({ seasonId: 2017 });
+          });
         });
 
         describe('when seasonId is undefined', () => {
-          testReturnsUndefined({});
+          describe('when scoringPeriodId is defined', () => {
+            testReturnsUndefined({ scoringPeriodId: 4 });
+          });
+
+          describe('when scoringPeriodId is undefined', () => {
+            testReturnsUndefined({});
+          });
         });
       });
     });
