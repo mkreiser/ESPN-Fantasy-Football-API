@@ -39,6 +39,7 @@ describe('parsePlayerStats', () => {
         25: 46
       },
       seasonId: 2018,
+      scoringPeriodId: 3,
       stats: {
         24: 318,
         25: 63
@@ -51,6 +52,7 @@ describe('parsePlayerStats', () => {
         25: 6
       },
       seasonId: 2017,
+      scoringPeriodId: 2,
       stats: {
         24: 3,
         25: 6.4
@@ -80,6 +82,23 @@ describe('parsePlayerStats', () => {
         constructorParams: {},
         usesPoints: false,
         seasonId: 2018,
+        statKey: 'stats',
+        statSourceId: 0,
+        statSplitTypeId: 1
+      });
+
+      expect(stats).toBeInstanceOf(PlayerStats);
+      expect(stats.rushingYards).toBe(318);
+    });
+  });
+
+  describe('when scoringPeriodId is passed', () => {
+    test('filters based on scoringPeriodId in addition to stat ids', () => {
+      const stats = parsePlayerStats({
+        responseData: data,
+        constructorParams: {},
+        usesPoints: false,
+        scoringPeriodId: 3,
         statKey: 'stats',
         statSourceId: 0,
         statSplitTypeId: 1
