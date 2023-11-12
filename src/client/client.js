@@ -8,6 +8,8 @@ import League from '../league/league';
 import NFLGame from '../nfl-game/nfl-game';
 import Team from '../team/team';
 
+import { flattenObjectSansNumericKeys } from '../utils';
+
 axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
 
 /**
@@ -80,7 +82,7 @@ class Client {
       const data = _.filter(schedule, { matchupPeriodId });
 
       return _.map(data, (matchup) => (
-        Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
+        Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId, scoringPeriodId })
       ));
     });
   }
@@ -104,7 +106,7 @@ class Client {
     });
     const playerRoute = this.constructor._buildRoute({
       base: `${seasonId}/segments/0/leagues/${this.leagueId}`,
-      params: `?scoringPeriodId=${scoringPeriodId}&view=players_wl`
+      params: `?scoringPeriodId=${scoringPeriodId}&view=kona_player_info`
     });
 
     return Promise.all([
@@ -131,10 +133,10 @@ class Client {
 
         const data = {
           ...draftPick,
-          ...playerInfo.player
+          ...flattenObjectSansNumericKeys(playerInfo)
         };
 
-        return DraftPlayer.buildFromServer(data, { seasonId });
+        return DraftPlayer.buildFromServer(data, { seasonId, scoringPeriodId });
       })));
   }
 
@@ -175,7 +177,7 @@ class Client {
       const data = _.filter(schedule, { matchupPeriodId });
 
       return _.map(data, (matchup) => (
-        Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId })
+        Boxscore.buildFromServer(matchup, { leagueId: this.leagueId, seasonId, scoringPeriodId })
       ));
     });
   }
@@ -218,7 +220,11 @@ class Client {
     return axios.get(route, config).then((response) => {
       const data = _.get(response.data, 'players');
       return _.map(data, (player) => (
-        FreeAgentPlayer.buildFromServer(player, { leagueId: this.leagueId, seasonId })
+        FreeAgentPlayer.buildFromServer(player, {
+          leagueId: this.leagueId,
+          seasonId,
+          scoringPeriodId
+        })
       ));
     });
   }
@@ -240,7 +246,7 @@ class Client {
     });
 
     return axios.get(route, this._buildAxiosConfig()).then((response) => (
-      this._parseTeamResponse(response.data, seasonId)
+      this._parseTeamResponse(response.data, seasonId, scoringPeriodId)
     ));
   }
 
@@ -275,11 +281,11 @@ class Client {
 
     return axios.get(route, axiosConfig).then((response) => (
       // Data returns an array for historical teams (??)
-      this._parseTeamResponse(response.data[0], seasonId)
+      this._parseTeamResponse(response.data[0], seasonId, scoringPeriodId)
     ));
   }
 
-  _parseTeamResponse(responseData, seasonId) {
+  _parseTeamResponse(responseData, seasonId, scoringPeriodId) {
     // Join member (owner) information with team data before dumping into builder
     const teams = _.get(responseData, 'teams');
     const members = _.get(responseData, 'members');
@@ -290,7 +296,7 @@ class Client {
     });
 
     return _.map(mergedData, (team) => (
-      Team.buildFromServer(team, { leagueId: this.leagueId, seasonId })
+      Team.buildFromServer(team, { leagueId: this.leagueId, seasonId, scoringPeriodId })
     ));
   }
 
