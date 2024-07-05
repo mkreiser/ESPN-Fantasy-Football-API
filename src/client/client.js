@@ -10,7 +10,7 @@ import Team from '../team/team';
 
 import { flattenObjectSansNumericKeys } from '../utils';
 
-axios.defaults.baseURL = 'https://fantasy.espn.com/apis/v3/games/ffl/seasons/';
+axios.defaults.baseURL = 'https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/seasons/';
 
 /**
  * Provides functionality to make a variety of API calls to ESPN for a given fantasy football
@@ -170,7 +170,7 @@ class Client {
     });
 
     const axiosConfig = this._buildAxiosConfig({
-      baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
+      baseURL: 'https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
     });
     return axios.get(route, axiosConfig).then((response) => {
       const schedule = _.get(response.data[0], 'schedule'); // Data is an array instead of object
@@ -276,7 +276,7 @@ class Client {
     });
 
     const axiosConfig = this._buildAxiosConfig({
-      baseURL: 'https://fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
+      baseURL: 'https://lm-api-reads.fantasy.espn.com/apis/v3/games/ffl/leagueHistory/'
     });
 
     return axios.get(route, axiosConfig).then((response) => (
